@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.YamlUtils.*;
+import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
 
 public class PipelineTransform {
     private static final String JSON_PIPELINE_NAME_FIELD = "name";
@@ -17,7 +18,6 @@ public class PipelineTransform {
     private static final String JSON_PIPELINE_MINGLE_FIELD = "mingle";
     private static final String JSON_PIPELINE_TRACKING_TOOL_FIELD = "tracking_tool";
     private static final String JSON_PIPELINE_TIMER_FIELD = "timer";
-    private static final String JSON_PIPELINE_ENV_VAR_FIELD = "environment_variables";
     private static final String JSON_PIPELINE_MATERIALS_FIELD = "materials";
     private static final String JSON_PIPELINE_STAGES_FIELD = "stages";
 
@@ -27,8 +27,6 @@ public class PipelineTransform {
     private static final String YAML_PIPELINE_MINGLE_FIELD = "mingle";
     private static final String YAML_PIPELINE_TRACKING_TOOL_FIELD = "tracking_tool";
     private static final String YAML_PIPELINE_TIMER_FIELD = "timer";
-    private static final String YAML_PIPELINE_ENV_VAR_FIELD = "environment_variables";
-    private static final String YAML_PIPELINE_SEC_VAR_FIELD = "secure_variables";
     private static final String YAML_PIPELINE_MATERIALS_FIELD = "materials";
     private static final String YAML_PIPELINE_STAGES_FIELD = "stages";
 
@@ -64,10 +62,8 @@ public class PipelineTransform {
         addOptionalObject(pipeline, pipeMap, JSON_PIPELINE_MINGLE_FIELD, YAML_PIPELINE_MINGLE_FIELD);
         addTimer(pipeline, pipeMap);
 
-        Object pipeVariables = pipeMap.get(YAML_PIPELINE_ENV_VAR_FIELD);
-        Object pipeSecVariables = pipeMap.get(YAML_PIPELINE_SEC_VAR_FIELD);
-        JsonArray jsonEnvVariables = variablesTransform.transform(pipeVariables,pipeSecVariables);
-        pipeline.add(JSON_PIPELINE_ENV_VAR_FIELD,jsonEnvVariables);
+        JsonArray jsonEnvVariables = variablesTransform.transform(pipeMap);
+        pipeline.add(JSON_ENV_VAR_FIELD,jsonEnvVariables);
 
         addMaterials(pipeline, pipeMap);
         addStages(pipeline, pipeMap);

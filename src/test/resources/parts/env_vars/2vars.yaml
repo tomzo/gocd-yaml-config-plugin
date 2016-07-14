@@ -1,0 +1,4 @@
+environment_variables:
+  DEPLOYMENT: testing
+secure_variables:
+  ENV_PASSWORD: "s&Du#@$xsSa"

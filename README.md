@@ -196,6 +196,21 @@ gitMaterial1:
     - src/**/*.*
 ```
 
+### Environment variables
+
+[Environment variables](https://docs.go.cd/current/configuration/configuration_reference.html#environmentvariables)
+ can be declared in **Environments, Pipelines, Stages and Jobs**.
+
+In YAML you have 2 keywords for *secure* (encrypted) variables and standard variables.
+```yaml
+environment_variables:
+  DEPLOYMENT: testing
+  FOO: bar
+secure_variables:
+  # this value is encrypted by Go's private key (Note in 16.7.0 there is no easy way to obtain such value yet)
+  MY_PASSWORD: "s&Du#@$xsSa"
+```
+
 ### Boolean values
 
 Among all configuration elements there are boolean values, which can be defined

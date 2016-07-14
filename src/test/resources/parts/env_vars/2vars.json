@@ -1,0 +1,10 @@
+[
+  {
+    "name" : "DEPLOYMENT",
+    "value" : "testing"
+  },
+  {
+    "name" : "ENV_PASSWORD",
+    "encrypted_value" : "s&Du#@$xsSa"
+  }
+]

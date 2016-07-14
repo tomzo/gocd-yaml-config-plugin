@@ -19,7 +19,6 @@ public class YamlUtils {
             jsonObject.add(jsonField,new Gson().toJsonTree(obj));
     }
 
-
     public static void addOptionalBoolean(JsonObject material, Map<String, Object> map, String jsonFieldName, String yamlFieldName) {
         Boolean autoUpdate = getOptionalBoolean(map, yamlFieldName);
         if(autoUpdate != null) {

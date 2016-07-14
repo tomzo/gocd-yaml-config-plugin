@@ -63,7 +63,8 @@ public class PipelineTransform {
         addTimer(pipeline, pipeMap);
 
         JsonArray jsonEnvVariables = variablesTransform.transform(pipeMap);
-        pipeline.add(JSON_ENV_VAR_FIELD,jsonEnvVariables);
+        if(jsonEnvVariables.size() > 0)
+            pipeline.add(JSON_ENV_VAR_FIELD,jsonEnvVariables);
 
         addMaterials(pipeline, pipeMap);
         addStages(pipeline, pipeMap);

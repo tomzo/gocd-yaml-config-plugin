@@ -136,7 +136,59 @@ pipe2:
 
 ## Stage
 
-### Single job stages
+A minimal stage must contain `jobs:` element or `tasks:` in [single-job stage case](single-job-stage).
+```yaml
+build:
+  jobbs:
+    firstJob:
+      ...
+    secondJob:
+      ...
+```
+
+A custom stage:
+```yaml
+test:
+  fetch_materials: yes
+  keep_artifacts: yes
+  clean_workspace: yes
+  approval:
+    type: manual
+    roles:
+      - manager
+    users:
+      - john
+  environment_variables:
+    TEST_NUM: 1
+  secure_variables:
+    PASSWORD: "!@ESsdD323#sdu"
+  jobs:
+    one:
+      ...
+    two:
+      ...
+```
+
+### Approval
+
+Stage can have [approval](https://docs.go.cd/current/configuration/configuration_reference.html#approval),
+ which is `success` by default. There are 2 ways to declare approval:
+```yaml
+approval: manual
+```
+If you need to set associated users or roles:
+```yaml
+approval:
+  type: manual
+  roles:
+    - manager
+  users:
+    - john
+```
+
+## Job
+
+### Single job stage
 
 A common use case is that stage has only one job. This plugin provides a shorthand
 to declared such stages - just **omit the `jobs:` and job name** from configuration tree.
@@ -151,7 +203,7 @@ stages:
        - exec:
            command: make
 ```
-Above configuration declares `build` stage with `build` job which executes `make` task.
+Above configuration declares `build` **stage** with `build` **job** which executes `make` task.
 
 ## Materials
 

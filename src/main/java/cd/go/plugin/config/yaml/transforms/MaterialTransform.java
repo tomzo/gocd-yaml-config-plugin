@@ -38,42 +38,46 @@ public class MaterialTransform {
     public JsonObject transform(Object maybeMaterial) {
         Map<String,Object> map = (Map<String,Object>)maybeMaterial;
         for(Map.Entry<String, Object> entry : map.entrySet()) {
-            String materialName = entry.getKey();
-            JsonObject material = new JsonObject();
-            material.addProperty(JSON_MATERIAL_NAME_FIELD, materialName);
-            Map<String,Object> materialMap = (Map<String,Object>)entry.getValue();
-            String materialType = getOptionalString(materialMap,"type");
-            if(materialType != null)
-                material.addProperty(JSON_MATERIAL_TYPE_FIELD,materialType);
-            Boolean autoUpdate = getOptionalBoolean(materialMap,"auto_update");
-            if(autoUpdate != null)
-                material.addProperty(JSON_MATERIAL_AUTO_UPDATE_FIELD,autoUpdate);
-            Boolean shallowClone = getOptionalBoolean(materialMap,"shallow_clone");
-            if(shallowClone != null)
-                material.addProperty(JSON_MATERIAL_SHALLOW_CLONE_FIELD,shallowClone);
-            if(materialMap.containsKey("blacklist"))
-                addFilter(material, materialMap.get("blacklist"), "ignore");
-            if(materialMap.containsKey("whitelist"))
-                addFilter(material, materialMap.get("whitelist"), "whitelist");
-
-            String git = getOptionalString(materialMap,YAML_SHORT_KEYWORD_GIT);
-            if(git != null)
-            {
-                material.addProperty(JSON_MATERIAL_TYPE_FIELD,YAML_SHORT_KEYWORD_GIT);
-                material.addProperty("url",git);
-            }
-            //TODO other types
-
-            // copy all other members
-            for(Map.Entry<String, Object> materialProp : materialMap.entrySet()) {
-                if(yamlSpecialKeywords.contains(materialProp.getKey()))
-                    continue;
-                if(materialProp.getValue() instanceof String)
-                    material.addProperty(materialProp.getKey(),(String)materialProp.getValue());
-            }
-            return material;
+            return transform(entry);
         }
         throw new RuntimeException("expected material hash to have 1 item");
+    }
+
+    public JsonObject transform(Map.Entry<String, Object> entry) {
+        String materialName = entry.getKey();
+        JsonObject material = new JsonObject();
+        material.addProperty(JSON_MATERIAL_NAME_FIELD, materialName);
+        Map<String,Object> materialMap = (Map<String,Object>)entry.getValue();
+        String materialType = getOptionalString(materialMap,"type");
+        if(materialType != null)
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,materialType);
+        Boolean autoUpdate = getOptionalBoolean(materialMap,"auto_update");
+        if(autoUpdate != null)
+            material.addProperty(JSON_MATERIAL_AUTO_UPDATE_FIELD,autoUpdate);
+        Boolean shallowClone = getOptionalBoolean(materialMap,"shallow_clone");
+        if(shallowClone != null)
+            material.addProperty(JSON_MATERIAL_SHALLOW_CLONE_FIELD,shallowClone);
+        if(materialMap.containsKey("blacklist"))
+            addFilter(material, materialMap.get("blacklist"), "ignore");
+        if(materialMap.containsKey("whitelist"))
+            addFilter(material, materialMap.get("whitelist"), "whitelist");
+
+        String git = getOptionalString(materialMap,YAML_SHORT_KEYWORD_GIT);
+        if(git != null)
+        {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,YAML_SHORT_KEYWORD_GIT);
+            material.addProperty("url",git);
+        }
+        //TODO other types
+
+        // copy all other members
+        for(Map.Entry<String, Object> materialProp : materialMap.entrySet()) {
+            if(yamlSpecialKeywords.contains(materialProp.getKey()))
+                continue;
+            if(materialProp.getValue() instanceof String)
+                material.addProperty(materialProp.getKey(),(String)materialProp.getValue());
+        }
+        return material;
     }
 
     private void addFilter(JsonObject material, Object filterList, String jsonKeyword) {

@@ -1,0 +1,6 @@
+pipe1:
+  group: simple
+  materials:
+    mygit:
+  stages:
+    - null

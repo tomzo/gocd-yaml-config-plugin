@@ -1,0 +1,14 @@
+{
+  "name": "gitMaterial1",
+  "type": "git",
+  "url": "http://my.git.repository.com",
+  "branch": "feature12",
+  "filter": {
+    "ignore": [
+      "externals",
+      "tools"
+    ]
+  },
+  "destination": "dir1",
+  "auto_update": false
+}

@@ -1,0 +1,8 @@
+gitMaterial1:
+  git: "http://my.git.repository.com"
+  branch: "feature12"
+  blacklist:
+    - externals
+    - tools
+  destination: dir1
+  auto_update: false

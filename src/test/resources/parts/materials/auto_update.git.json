@@ -1,0 +1,6 @@
+{
+  "name" : "mygit",
+  "type" : "git",
+  "auto_update" : false,
+  "url" : "http://example.com/mygit.git"
+}

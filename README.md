@@ -2,19 +2,38 @@
 
 # gocd-yaml-config-plugin
 
-Plugin to declare Go pipeline and environments configuration in YAML.
+Plugin to declare [Go's](go.cd) pipelines and environments configuration in YAML.
 
 With this plugin and GoCD `>= 16.7.0` you can keep your pipeline and environments
  configuration in source control.
 
+This is second GoCD configuration plugin, which enhances some of shortcomings of
+[JSON configuration plugin](https://github.com/tomzo/gocd-json-config-plugin)
+
+* Format is **concise**. Unlike JSON, there are no unnecessary quotations `"`, brackets `{}` and commas `,`
+* Tries to **enforce correctness** where possible. By using maps instead of lists and shorter object graphs.
+* Allows to have multiple pipelines and environments in single file. But doesn't force it.
+* **Comments in configuration files** - YAML supports comments,
+so you can explain why pipeline/environment it is configured like this.
+
 ### Example
 
-More examples are in [test resources](src/testResources/examples/).
+More examples are in [test resources](src/test/resources/examples/).
 
 ```yaml
 #ci.gocd.yaml
-mygroup: # pipelines of mygroup by name
+environments:
+  testing:
+    environment_variables:
+      DEPLOYMENT: testing
+    secure_variables:
+      ENV_PASSWORD: "s&Du#@$xsSa"
+    pipelines:
+      - example-deploy-testing
+      - build-testing
+pipelines:
   mypipe1: # definition of mypipe1 pipeline
+    group: mygroup
     label_template: "${mygit[:8]}"
     materials:
       mygit: # this is the name of material
@@ -42,7 +61,7 @@ mygroup: # pipelines of mygroup by name
                  destination: test-reports/
             tabs:
               report: test-reports/index.html
-            tasks: # list of tasks to execute in job csharp
+            tasks: # ordered list of tasks to execute in job csharp
              - fetch:
                  pipeline: pipe2
                  stage: build
@@ -56,3 +75,5 @@ mygroup: # pipelines of mygroup by name
              # shorthand for script-executor plugin
              - script: ./build.sh ci
 ```
+
+# Specification

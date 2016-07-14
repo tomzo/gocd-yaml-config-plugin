@@ -1,13 +1,11 @@
-package cd.go.plugin.config.yaml.materials;
+package cd.go.plugin.config.yaml.transforms;
 
-import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static cd.go.plugin.config.yaml.YamlUtils.getOptionalBoolean;
 import static cd.go.plugin.config.yaml.YamlUtils.getOptionalString;
@@ -17,6 +15,7 @@ public class MaterialTransform {
     public static final String JSON_MATERIAL_TYPE_FIELD = "type";
     public static final String JSON_MATERIAL_NAME_FIELD = "name";
     public static final String JSON_MATERIAL_AUTO_UPDATE_FIELD = "auto_update";
+    public static final String JSON_MATERIAL_SHALLOW_CLONE_FIELD = "shallow_clone";
 
     public static final String YAML_SHORT_KEYWORD_GIT = "git";
     //TODO others
@@ -28,9 +27,10 @@ public class MaterialTransform {
 
     public MaterialTransform() {
         yamlSpecialKeywords.add(YAML_SHORT_KEYWORD_GIT);
-        // TODO all other materials
+        // TODO all other transforms
         yamlSpecialKeywords.add("type");
         yamlSpecialKeywords.add("auto_update");
+        yamlSpecialKeywords.add("shallow_clone");
         yamlSpecialKeywords.add("blacklist");
         yamlSpecialKeywords.add("whitelist");
     }
@@ -48,6 +48,9 @@ public class MaterialTransform {
             Boolean autoUpdate = getOptionalBoolean(materialMap,"auto_update");
             if(autoUpdate != null)
                 material.addProperty(JSON_MATERIAL_AUTO_UPDATE_FIELD,autoUpdate);
+            Boolean shallowClone = getOptionalBoolean(materialMap,"shallow_clone");
+            if(shallowClone != null)
+                material.addProperty(JSON_MATERIAL_SHALLOW_CLONE_FIELD,shallowClone);
             if(materialMap.containsKey("blacklist"))
                 addFilter(material, materialMap.get("blacklist"), "ignore");
             if(materialMap.containsKey("whitelist"))

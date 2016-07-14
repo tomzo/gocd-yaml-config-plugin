@@ -10,5 +10,6 @@
     ]
   },
   "destination": "dir1",
-  "auto_update": false
+  "auto_update": false,
+  "shallow_clone": true
 }

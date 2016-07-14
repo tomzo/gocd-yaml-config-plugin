@@ -77,3 +77,47 @@ pipelines:
 ```
 
 # Specification
+
+
+## Materials
+
+### Git
+
+Minimal configuration of a [**git** pipeline material](https://docs.go.cd/current/configuration/configuration_reference.html#git):
+ * material name is `mygit`
+ * git repository url is `http://example.com/mygit.git`
+
+```yaml
+mygit:
+  git: http://example.com/mygit.git
+```
+
+Above can be also written more explicitly:
+```yaml
+mygit:
+  type: git
+  url: http://example.com/mygit.git
+```
+
+More customized git material is possible:
+```yaml
+gitMaterial1:
+  git: "http://my.git.repository.com"
+  branch: feature12
+  blacklist:
+    - externals/**/*.*
+    - tools/**/*.*
+  destination: dir1
+  auto_update: false
+  shallow_clone: true
+```
+
+Since Go `>= 16.7.0` whitelist is also supported,
+you specify `whitelist` **instead** of `blacklist`, as such
+```yaml
+gitMaterial1:
+  git: "git@my.git.repository.com"
+  branch: "feature12"
+  whitelist:
+    - src/**/*.*
+```

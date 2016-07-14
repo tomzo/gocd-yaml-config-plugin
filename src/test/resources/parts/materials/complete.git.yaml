@@ -6,3 +6,4 @@ gitMaterial1:
     - tools
   destination: dir1
   auto_update: false
+  shallow_clone: true

@@ -11,7 +11,6 @@
     "spec": "0 15 10 * * ? *",
     "only_on_changes": true
   },
-  "environment_variables": null,
   "materials" : [ null, null ],
   "stages": [ null, null ]
 }

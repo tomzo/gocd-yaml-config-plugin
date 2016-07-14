@@ -56,7 +56,7 @@ public class StageTransform {
         addApproval(stage, stageMap);
 
         JsonArray jsonEnvVariables = environmentTransform.transform(stageMap);
-        if(jsonEnvVariables.size() > 0)
+        if(jsonEnvVariables != null && jsonEnvVariables.size() > 0)
             stage.add(JSON_ENV_VAR_FIELD,jsonEnvVariables);
 
         addJobs(stage, stageMap);

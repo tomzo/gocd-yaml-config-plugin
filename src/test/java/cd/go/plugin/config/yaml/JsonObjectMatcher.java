@@ -14,11 +14,20 @@ public class JsonObjectMatcher extends TypeSafeMatcher<JsonObject> {
         this.expected = expected;
     }
     @Override
-    protected boolean matchesSafely(JsonObject item) {
+    protected boolean matchesSafely(JsonObject actual) {
+        if(actual == null)
+            return false;
         for(Map.Entry<String,JsonElement> field : this.expected.entrySet()){
-            if(!item.has(field.getKey()))
+            if(!actual.has(field.getKey()))
                 return false;
-            if(!field.getValue().equals(item.get(field.getKey())))//TODO replace by another matcher
+            if(field.getValue().isJsonObject())
+            {
+                JsonObjectMatcher inner = new JsonObjectMatcher(field.getValue().getAsJsonObject());
+                JsonObject otherObj = actual.get(field.getKey()).getAsJsonObject();
+                if(!inner.matchesSafely(otherObj))
+                    return false;
+            }
+            else if(!field.getValue().equals(actual.get(field.getKey())))
                 return false;
         }
         return true;

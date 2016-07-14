@@ -18,17 +18,24 @@ public class PipelineTransformTest {
     private PipelineTransform parser;
     private MaterialTransform materialTransform;
     private StageTransform stageTransform;
+    private EnvironmentVariablesTransform environmentTransform;
 
     @Before
     public void SetUp() {
         materialTransform = mock(MaterialTransform.class);
         stageTransform = mock(StageTransform.class);
-        parser = new PipelineTransform(materialTransform,stageTransform);
+        environmentTransform = mock(EnvironmentVariablesTransform.class);
+        parser = new PipelineTransform(materialTransform,stageTransform,environmentTransform);
     }
 
     @Test
     public void shouldTransformSimplePipeline() throws IOException {
         testTransform("simple.pipe");
+    }
+
+    @Test
+    public void shouldTransformRichPipeline() throws IOException {
+        testTransform("rich.pipe");
     }
 
     private void testTransform(String caseFile) throws IOException {

@@ -78,6 +78,80 @@ pipelines:
 
 # Specification
 
+See [official GoCD XML configuration reference](https://docs.go.cd/current/configuration/configuration_reference.html)
+for details about each element.
+
+# Pipeline
+
+A minimal [pipeline](https://docs.go.cd/current/configuration/configuration_reference.html#pipeline) configuration must contain:
+ * pipeline name - as a key in hash
+ * [materials](#materials) - a **hash**
+ * [stages](#stage) - a **list**
+
+```yaml
+mypipe:
+  materials:
+    mygit:
+      git: http://example.com/mygit.git
+  stages:
+    - build:
+        jobs:
+          build:
+            tasks:
+             - exec:
+                 command: make
+```
+
+All elements available on a pipeline object are:
+
+ * `group`
+ * `label_template`
+ * `locking`
+ * `tracking_tool` or `mingle`
+ * `timer`
+ * `environment_variables`
+ * `secure_variables`
+ * `materials`
+ * `stages`
+
+```yaml
+pipe2:
+  group: group1
+  label_template: "foo-1.0-${COUNT}"
+  locking: on
+  tracking_tool:
+    link: "http://your-trackingtool/yourproject/${ID}"
+    regex: "evo-(\\d+)"
+  timer:
+    spec: "0 15 10 * * ? *"
+  environment_variables:
+    DEPLOYMENT: testing
+  secure_variables:
+    ENV_PASSWORD: "s&Du#@$xsSa"
+  materials:
+    ...
+  stages:
+    ...
+```
+
+## Stage
+
+### Single job stages
+
+A common use case is that stage has only one job. This plugin provides a shorthand
+to declared such stages - just **omit the `jobs:` and job name** from configuration tree.
+You can then declare job and stage options on the same (stage) level:
+```yaml
+stages:
+  - build:
+      approval: manual
+      resources:
+        - cpp
+      tasks:
+       - exec:
+           command: make
+```
+Above configuration declares `build` stage with `build` job which executes `make` task.
 
 ## Materials
 
@@ -113,7 +187,7 @@ gitMaterial1:
 ```
 
 Since Go `>= 16.7.0` whitelist is also supported,
-you specify `whitelist` **instead** of `blacklist`, as such
+you can specify `whitelist` **instead** of `blacklist`, as such
 ```yaml
 gitMaterial1:
   git: "git@my.git.repository.com"
@@ -121,3 +195,10 @@ gitMaterial1:
   whitelist:
     - src/**/*.*
 ```
+
+### Boolean values
+
+Among all configuration elements there are boolean values, which can be defined
+using any of the keywords below (as in [yaml specs](http://yaml.org/type/bool.html)):
+ * **true** - `y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON`
+ * **false** - `n|N|no|No|NO|false|False|FALSE|off|Off|OFF`

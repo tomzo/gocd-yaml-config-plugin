@@ -7,8 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static cd.go.plugin.config.yaml.YamlUtils.getOptionalBoolean;
-import static cd.go.plugin.config.yaml.YamlUtils.getOptionalString;
+import static cd.go.plugin.config.yaml.YamlUtils.*;
 
 public class MaterialTransform {
 
@@ -16,6 +15,10 @@ public class MaterialTransform {
     public static final String JSON_MATERIAL_NAME_FIELD = "name";
     public static final String JSON_MATERIAL_AUTO_UPDATE_FIELD = "auto_update";
     public static final String JSON_MATERIAL_SHALLOW_CLONE_FIELD = "shallow_clone";
+
+    public static final String YAML_MATERIAL_TYPE_FIELD = "type";
+    public static final String YAML_MATERIAL_AUTO_UPDATE_FIELD = "auto_update";
+    public static final String YAML_MATERIAL_SHALLOW_CLONE_FIELD = "shallow_clone";
 
     public static final String YAML_SHORT_KEYWORD_GIT = "git";
     //TODO others
@@ -48,15 +51,9 @@ public class MaterialTransform {
         JsonObject material = new JsonObject();
         material.addProperty(JSON_MATERIAL_NAME_FIELD, materialName);
         Map<String,Object> materialMap = (Map<String,Object>)entry.getValue();
-        String materialType = getOptionalString(materialMap,"type");
-        if(materialType != null)
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,materialType);
-        Boolean autoUpdate = getOptionalBoolean(materialMap,"auto_update");
-        if(autoUpdate != null)
-            material.addProperty(JSON_MATERIAL_AUTO_UPDATE_FIELD,autoUpdate);
-        Boolean shallowClone = getOptionalBoolean(materialMap,"shallow_clone");
-        if(shallowClone != null)
-            material.addProperty(JSON_MATERIAL_SHALLOW_CLONE_FIELD,shallowClone);
+        addOptionalString(material, materialMap, JSON_MATERIAL_TYPE_FIELD, YAML_MATERIAL_TYPE_FIELD);
+        addOptionalBoolean(material, materialMap, JSON_MATERIAL_AUTO_UPDATE_FIELD, YAML_MATERIAL_AUTO_UPDATE_FIELD);
+        addOptionalBoolean(material, materialMap, JSON_MATERIAL_SHALLOW_CLONE_FIELD, YAML_MATERIAL_SHALLOW_CLONE_FIELD);
         if(materialMap.containsKey("blacklist"))
             addFilter(material, materialMap.get("blacklist"), "ignore");
         if(materialMap.containsKey("whitelist"))

@@ -12,6 +12,15 @@ public class RootTransform {
     private PipelineTransform pipelineTransform;
     private EnvironmentsTransform environmentsTransform;
 
+    public RootTransform() {
+        EnvironmentVariablesTransform environmentVarsTransform = new EnvironmentVariablesTransform();
+        MaterialTransform material = new MaterialTransform();
+        JobTransform job = new JobTransform(environmentVarsTransform,new TaskTransform());
+        StageTransform stage = new StageTransform(environmentVarsTransform,job);
+        this.pipelineTransform = new PipelineTransform(material,stage,environmentVarsTransform);
+        this.environmentsTransform = new EnvironmentsTransform(environmentVarsTransform);
+    }
+
     public RootTransform(PipelineTransform pipelineTransform,EnvironmentsTransform environmentsTransform) {
         this.pipelineTransform = pipelineTransform;
         this.environmentsTransform = environmentsTransform;

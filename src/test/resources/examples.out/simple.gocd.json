@@ -1,0 +1,35 @@
+{
+  "target_version" : 1,
+  "errors" : [],
+  "environments" : [],
+  "pipelines" : [
+    {
+      "location" : "simple.gocd.yaml",
+      "name" : "pipe1",
+      "group" : "simple",
+      "materials" : [
+        {
+          "name" : "mygit",
+          "type" : "git",
+          "url" : "http://my.example.org/mygit.git"
+        }
+      ],
+      "stages" : [
+        {
+          "name" : "build",
+          "jobs" : [
+            {
+              "name" : "build",
+              "tasks" : [
+                {
+                  "type" : "exec",
+                  "command" : "make"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

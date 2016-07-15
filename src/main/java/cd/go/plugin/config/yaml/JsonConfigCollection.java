@@ -49,8 +49,17 @@ public class JsonConfigCollection {
         return errors;
     }
 
+    public void addError(String message,String location) {
+        this.addError(new PluginError(message,location));
+    }
+
     public void addError(PluginError error) {
         errors.add(gson.toJsonTree(error));
     }
 
+    public void append(JsonConfigCollection other) {
+        this.environments.addAll(other.environments);
+        this.pipelines.addAll(other.pipelines);
+        this.errors.addAll(other.errors);
+    }
 }

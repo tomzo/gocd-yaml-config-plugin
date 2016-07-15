@@ -30,7 +30,7 @@ public class TestUtils {
         return IOUtils.toString(resourceAsStream);
     }
 
-    private static InputStream getResourceAsStream( String resource ) {
+    public static InputStream getResourceAsStream( String resource ) {
         final InputStream in
                 = getContextClassLoader().getResourceAsStream( resource );
 

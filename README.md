@@ -409,3 +409,17 @@ Among all configuration elements there are boolean values, which can be defined
 using any of the keywords below (as in [yaml specs](http://yaml.org/type/bool.html)):
  * **true** - `y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON`
  * **false** - `n|N|no|No|NO|false|False|FALSE|off|Off|OFF`
+
+# Development
+
+Run all tests and create a ready to use jar
+```bash
+./gradlew test fatJar
+```
+
+## Tests structure
+
+There are [examples of yaml partials](src/test/resources/parts) and
+ their resulting json to be sent to Go server. If something is not working right
+ we can always add a new case covering exact yaml that user has and json that we
+ expect on server side.

@@ -1,0 +1,4 @@
+fetch:
+  stage: build
+  job: test
+  source: test-bin/

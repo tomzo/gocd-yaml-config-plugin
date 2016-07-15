@@ -1,0 +1,40 @@
+{
+  "name": "test",
+  "run_instance_count" : 7,
+  "environment_variables": [
+    {
+      "name" : "LD_LIBRARY_PATH",
+      "value" : "."
+    }
+  ],
+  "tabs": [
+     {
+       "name": "test",
+       "path": "results.xml"
+     }
+   ],
+   "resources": [
+    "linux"
+  ],
+  "artifacts": [
+    {
+      "source": "src",
+      "destination": "dest",
+      "type": "test"
+    },
+    {
+      "source": "bin",
+      "type": "build"
+    }
+  ],
+  "properties": [
+    {
+      "name": "perf",
+      "source": "test.xml",
+      "xpath": "substring-before(//report/data/all/coverage[starts-with(@type,\u0027class\u0027)]/@value, \u0027%\u0027)"
+    }
+  ],
+  "tasks": [
+    null
+  ]
+}

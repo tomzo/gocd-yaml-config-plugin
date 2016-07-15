@@ -1,0 +1,4 @@
+test:
+  run_instances: all
+  tasks:
+    - null

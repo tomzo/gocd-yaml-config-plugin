@@ -1,0 +1,20 @@
+test:
+  run_instances: 7
+  environment_variables:
+    LD_LIBRARY_PATH: .
+  tabs:
+    test: results.xml
+  resources:
+    - linux
+  artifacts:
+    - test:
+        source: src
+        destination: dest
+    - build:
+        source: bin
+  properties:
+    perf:
+      source: test.xml
+      xpath: "substring-before(//report/data/all/coverage[starts-with(@type,\u0027class\u0027)]/@value, \u0027%\u0027)"
+  tasks:
+    - null

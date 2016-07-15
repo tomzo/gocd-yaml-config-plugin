@@ -1,0 +1,9 @@
+plugin:
+  options:
+    ConverterType: jsunit
+  secure_options:
+    password: "ssd#%fFS*!Esx"
+  run_if: failed
+  configuration:
+    id: xunit.converter.task.plugin
+    version: 1

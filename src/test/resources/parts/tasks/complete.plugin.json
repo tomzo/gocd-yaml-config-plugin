@@ -1,0 +1,18 @@
+{
+  "type": "plugin",
+  "configuration": [
+    {
+      "key": "ConverterType",
+      "value": "jsunit"
+    },
+    {
+      "key": "password",
+      "encrypted_value": "ssd#%fFS*!Esx"
+    }
+  ],
+  "run_if": "failed",
+  "plugin_configuration": {
+    "id": "xunit.converter.task.plugin",
+    "version": "1"
+  }
+}

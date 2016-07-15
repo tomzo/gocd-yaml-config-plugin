@@ -1,0 +1,8 @@
+fetch:
+  run_if: any
+  pipeline: upstream
+  stage: upstream_stage
+  job: upstream_job
+  is_file: yes
+  source: result
+  destination: test

@@ -248,6 +248,129 @@ gitMaterial1:
     - src/**/*.*
 ```
 
+
+## Tasks
+
+Every task is a hash starting with its type.
+Type can be `exec`, `ant`, `nant`, `rake`, `fetch`, `plugin` or `script`.
+
+```yaml
+<type>:
+  <task-prop1>: <prop1-value>
+```
+
+Optionally any task can have `run_if` and `on_cancel`.
+
+ * `run_if` is a string. Valid values are `passed`, `failed`, `any`
+ * `on_cancel` is a task object. Same rules apply as to tasks described on this page.
+ See [rake example](#rake).
+
+### Exec
+
+```yaml
+exec:
+  run_if: any
+  working_directory: dir
+  command: make
+  arguments:
+   - -j3
+   - docs
+   - install
+```
+
+### Ant
+
+```yaml
+ant:
+  build_file: mybuild.xml
+  target: compile
+  run_if: passed
+```
+
+### Nant
+
+```yaml
+nant:
+  run_if: passed
+  working_directory: "script/build/123"
+  build_file: FilePath
+  target: Build
+  nant_path: NantExe
+```
+
+### Rake
+
+A minimal rake task with default values is very short
+```yaml
+rake:
+```
+
+A complete rake example:
+```yaml
+rake:
+  run_if: passed
+  working_directory: sample-project
+  build_file: SomeRakefile
+  target: build
+  on_cancel:
+    rake:
+      working_directory: sample-project
+      build_file: CancelRakefile
+      target: cancel
+```
+
+### Fetch
+
+```yaml
+fetch:
+  run_if: any
+  pipeline: upstream
+  stage: upstream_stage
+  job: upstream_job
+  is_file: yes
+  source: result
+  destination: test
+```
+
+### Plugin
+
+```yaml
+plugin:
+  options:
+    ConverterType: jsunit
+  secure_options:
+    password: "ssd#%fFS*!Esx"
+  run_if: failed
+  configuration:
+    id: xunit.converter.task.plugin
+    version: 1
+```
+
+### Script
+
+Because [script-executor plugin](https://github.com/gocd-contrib/script-executor-task)
+requires quite a lot of boiler-plate configuration
+there is a shorthand for defining tasks with it:
+```yaml
+script: ./build.sh compile
+```
+Above is equivalent of
+```yaml
+plugin:
+  options:
+    script: ./build.sh compile
+  configuration:
+    id: script-executor
+    version: 1
+```
+
+You can declare **multi-line scripts** too:
+```yaml
+script: |
+  ./build.sh compile
+  make test
+```
+
 ### Environment variables
 
 [Environment variables](https://docs.go.cd/current/configuration/configuration_reference.html#environmentvariables)

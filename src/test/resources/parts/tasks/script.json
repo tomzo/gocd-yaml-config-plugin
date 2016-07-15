@@ -1,0 +1,13 @@
+{
+  "type": "plugin",
+  "configuration": [
+    {
+      "key": "script",
+      "value": "./build.sh compile"
+    }
+  ],
+  "plugin_configuration": {
+    "id": "script-executor",
+    "version": "1"
+  }
+}

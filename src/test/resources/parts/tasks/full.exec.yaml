@@ -1,0 +1,8 @@
+exec:
+  run_if: any
+  command: make
+  arguments:
+   - -j3
+   - docs
+   - install
+  working_directory: dir

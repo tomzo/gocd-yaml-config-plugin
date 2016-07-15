@@ -23,13 +23,50 @@ public class TaskTransformTest {
         testTransform("minimal.fetch");
     }
 
-    private void testTransform(String caseFile) throws IOException {
-        testTransform(caseFile,caseFile);
+    @Test
+    public void shouldTransformCompleteFetch() throws IOException {
+        testTransform("complete.fetch");
     }
 
-    private void testTransform(String caseFile,String expectedFile) throws IOException {
+    @Test
+    public void shouldTransformCompleteRake() throws IOException {
+        testTransform("complete.rake");
+    }
+
+    @Test
+    public void shouldTransformCompletePlugin() throws IOException {
+        testTransform("complete.plugin");
+    }
+
+    @Test
+    public void shouldTransformMinimalRake() throws IOException {
+        testTransform("minimal.rake");
+    }
+
+    @Test
+    public void shouldTransformFullExec() throws IOException {
+        testTransform("full.exec");
+    }
+
+    @Test
+    public void shouldTransformScript() throws IOException {
+        testTransform("script");
+    }
+
+    @Test
+    public void shouldTransformMultilineScript() throws IOException {
+        JsonObject plugin = testTransform("script_multiline");
+        assertThat(plugin.getAsJsonArray("configuration").get(0).getAsJsonObject().get("value").getAsString(),is("./build.sh compile\nmake test"));
+    }
+
+    private JsonObject testTransform(String caseFile) throws IOException {
+        return testTransform(caseFile,caseFile);
+    }
+
+    private JsonObject testTransform(String caseFile,String expectedFile) throws IOException {
         JsonObject expectedObject = (JsonObject)readJsonObject("parts/tasks/" + expectedFile + ".json");
         JsonObject jsonObject = parser.transform(readYamlObject("parts/tasks/" + caseFile + ".yaml"));
         assertThat(jsonObject,is(new JsonObjectMatcher(expectedObject)));
+        return jsonObject;
     }
 }

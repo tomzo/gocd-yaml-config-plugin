@@ -1,0 +1,10 @@
+rake:
+  run_if: passed
+  working_directory: sample-project
+  build_file: SomeRakefile
+  target: build
+  on_cancel:
+    rake:
+      working_directory: sample-project
+      build_file: CancelRakefile
+      target: cancel

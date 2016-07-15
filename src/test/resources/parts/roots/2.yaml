@@ -1,0 +1,6 @@
+environments:
+  first:
+  second:
+pipelines:
+  pipe1:
+  pipe2:

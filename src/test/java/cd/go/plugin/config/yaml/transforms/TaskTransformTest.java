@@ -55,8 +55,14 @@ public class TaskTransformTest {
 
     @Test
     public void shouldTransformMultilineScript() throws IOException {
-        JsonObject plugin = testTransform("script_multiline");
+        JsonObject plugin = testTransform("multiline.script");
         assertThat(plugin.getAsJsonArray("configuration").get(0).getAsJsonObject().get("value").getAsString(),is("./build.sh compile\nmake test"));
+    }
+
+    @Test
+    public void shouldTransformBreaklineScript() throws IOException {
+        JsonObject plugin = testTransform("breakline.script");
+        assertThat(plugin.getAsJsonArray("configuration").get(0).getAsJsonObject().get("value").getAsString(),is("./build.sh compile && make test"));
     }
 
     private JsonObject testTransform(String caseFile) throws IOException {

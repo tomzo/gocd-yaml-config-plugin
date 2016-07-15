@@ -370,6 +370,23 @@ script: |
   ./build.sh compile
   make test
 ```
+Above executes a 2-line script:
+```bash
+./build.sh compile
+make test
+```
+
+If you want to **execute** a single *long* line script, but break it into multiple lines in YAML,
+you can do this with `>` as such:
+```yaml
+script: >
+  ./build.sh compile &&
+  make test
+```
+Above executes a **single line** script:
+```bash
+./build.sh compile && make test
+```
 
 ### Environment variables
 

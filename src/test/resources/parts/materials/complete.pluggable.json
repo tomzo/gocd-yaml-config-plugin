@@ -1,0 +1,12 @@
+{
+  "scm_id": "someScmGitRepositoryId",
+  "destination": "destinationDir",
+  "filter": {
+    "ignore": [
+      "dir1",
+      "dir2"
+    ]
+  },
+  "name": "myPluggableGit",
+  "type": "plugin"
+}

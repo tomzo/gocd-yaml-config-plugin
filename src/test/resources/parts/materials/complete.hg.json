@@ -1,0 +1,13 @@
+{
+  "url": "repos/myhg",
+  "filter": {
+    "ignore": [
+      "externals",
+      "tools"
+    ]
+  },
+  "destination": "dir1",
+  "auto_update": false,
+  "name": "hgMaterial1",
+  "type": "hg"
+}

@@ -24,7 +24,13 @@ public class MaterialTransform {
     //TODO others
 
     public static final String YAML_BLACKLIST_KEYWORD = "blacklist";
-
+    private static final String YAML_SHORT_KEYWORD_DEPENDENCY = "pipeline";
+    private static final String YAML_SHORT_KEYWORD_SCM_ID = "scm";
+    private static final String YAML_SHORT_KEYWORD_PACKAGE_ID = "package";
+    private static final String YAML_SHORT_KEYWORD_SVN = "svn";
+    private static final String JSON_MATERIAL_CHECK_EXTERNALS_FIELD = "check_externals";
+    private static final String YAML_MATERIAL_CHECK_EXTERNALS_FIELD = "check_externals";
+    private static final String YAML_SHORT_KEYWORD_HG = "hg";
 
     private final HashSet<String> yamlSpecialKeywords = new HashSet<String>();
 
@@ -36,6 +42,11 @@ public class MaterialTransform {
         yamlSpecialKeywords.add("shallow_clone");
         yamlSpecialKeywords.add("blacklist");
         yamlSpecialKeywords.add("whitelist");
+        yamlSpecialKeywords.add("scm_id");
+        yamlSpecialKeywords.add("package_id");
+        yamlSpecialKeywords.add("svn");
+        yamlSpecialKeywords.add("check_externals");
+        yamlSpecialKeywords.add("hg");
     }
 
     public JsonObject transform(Object maybeMaterial) {
@@ -54,6 +65,7 @@ public class MaterialTransform {
         addOptionalString(material, materialMap, JSON_MATERIAL_TYPE_FIELD, YAML_MATERIAL_TYPE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_AUTO_UPDATE_FIELD, YAML_MATERIAL_AUTO_UPDATE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_SHALLOW_CLONE_FIELD, YAML_MATERIAL_SHALLOW_CLONE_FIELD);
+        addOptionalBoolean(material, materialMap, JSON_MATERIAL_CHECK_EXTERNALS_FIELD, YAML_MATERIAL_CHECK_EXTERNALS_FIELD);
         if(materialMap.containsKey("blacklist"))
             addFilter(material, materialMap.get("blacklist"), "ignore");
         if(materialMap.containsKey("whitelist"))
@@ -62,8 +74,37 @@ public class MaterialTransform {
         String git = getOptionalString(materialMap,YAML_SHORT_KEYWORD_GIT);
         if(git != null)
         {
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,YAML_SHORT_KEYWORD_GIT);
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"git");
             material.addProperty("url",git);
+        }
+        String svn = getOptionalString(materialMap,YAML_SHORT_KEYWORD_SVN);
+        if(svn != null)
+        {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"svn");
+            material.addProperty("url",svn);
+        }
+        String hg = getOptionalString(materialMap,YAML_SHORT_KEYWORD_HG);
+        if(hg != null)
+        {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"hg");
+            material.addProperty("url",hg);
+        }
+        String dependency = getOptionalString(materialMap,YAML_SHORT_KEYWORD_DEPENDENCY);
+        if(dependency != null)
+        {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"dependency");
+        }
+        String scm_id = getOptionalString(materialMap,YAML_SHORT_KEYWORD_SCM_ID);
+        if(scm_id != null)
+        {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"plugin");
+            material.addProperty("scm_id",scm_id);
+        }
+        String package_id = getOptionalString(materialMap,YAML_SHORT_KEYWORD_PACKAGE_ID);
+        if(package_id != null)
+        {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"package");
+            material.addProperty("package_id",package_id);
         }
         //TODO other types
 

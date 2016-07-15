@@ -1,0 +1,7 @@
+hgMaterial1:
+  hg: repos/myhg
+  blacklist:
+    - externals
+    - tools
+  destination: dir1
+  auto_update: false

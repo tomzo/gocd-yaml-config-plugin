@@ -1,0 +1,5 @@
+{
+  "package_id": "apt-repo-id",
+  "name": "myapt",
+  "type": "package"
+}

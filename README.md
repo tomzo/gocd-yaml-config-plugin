@@ -35,6 +35,7 @@ pipelines:
   mypipe1: # definition of mypipe1 pipeline
     group: mygroup
     label_template: "${mygit[:8]}"
+    locking: off
     materials:
       mygit: # this is the name of material
         # keyword git says about type of material and url at once
@@ -47,7 +48,7 @@ pipelines:
         stage: test
     stages: # list of stages in order
       - build: # name of stage
-        clean: true
+        clean_workspace: true
         jobs:
           csharp: # name of the job
             resources:
@@ -70,16 +71,62 @@ pipelines:
                  destination: bin/
              - exec: # indicates type of task
                  command: make
-                 args:
+                 arguments:
                   - "VERBOSE=true"
              # shorthand for script-executor plugin
              - script: ./build.sh ci
+```
+
+## Setup
+
+Download plugin from releases page and place in you Go server (`>= 16.7.0`)
+in `plugins/external` directory.
+
+Add `config-repos` element right above first `<pipelines />`. Then you can
+add any number of YAML configuration repositories as such:
+
+```xml
+<config-repos>
+  <config-repo plugin="yaml.config.plugin">
+    <git url="https://github.com/tomzo/gocd-yaml-config-example.git" />
+  </config-repo>
+</config-repos>
 ```
 
 # Specification
 
 See [official GoCD XML configuration reference](https://docs.go.cd/current/configuration/configuration_reference.html)
 for details about each element.
+
+1. [Environment](#environment)
+1. [Environment variables](#environment-variables)
+1. [Pipeline](#pipeline)
+    * [Mingle](#mingle)
+    * [Tracking tool](#tracking-tool)
+    * [Timer](#timer)
+1. [Stage](#stage)
+    * [Approval](#approval)
+1. [Job](#job)
+    * [Property](#property)
+    * [Tab](#tab)
+    * [Many instances](#run-many-instances)
+1. [Tasks](#tasks)
+    * [rake](#rake)
+    * [ant](#ant)
+    * [nant](#nant)
+    * [exec](#exec)
+    * [fetch](#fetch)
+    * [pluggabletask](#plugin)
+    * [script](#script)
+1. [Materials](#materials)
+    * [dependency](#dependency)
+    * [package](#package)
+    * [git](#git)
+    * [svn](#svn)
+    * [perforce](#perforce)
+    * [tfs](#tfs)
+    * [hg](#hg)
+    * [pluggable scm](#pluggable)
 
 # Pipeline
 
@@ -111,8 +158,8 @@ All elements available on a pipeline object are:
  * `timer`
  * `environment_variables`
  * `secure_variables`
- * `materials`
- * `stages`
+ * [materials](#materials)
+ * [stages](#stage)
 
 ```yaml
 pipe2:
@@ -133,6 +180,11 @@ pipe2:
   stages:
     ...
 ```
+
+Please note:
+ * [templates](https://docs.go.cd/current/configuration/configuration_reference.html#templates) are not supported
+ * [parameters](https://docs.go.cd/current/configuration/configuration_reference.html#params) are not supported
+ * pipeline declares a group to which it belongs
 
 ## Stage
 
@@ -248,6 +300,68 @@ gitMaterial1:
     - src/**/*.*
 ```
 
+### Svn
+
+For details about each option, see [GoCD XML reference](https://docs.go.cd/current/configuration/configuration_reference.html#svn)
+```yaml
+svnMaterial1:
+  svn: "http://svn"
+  username: "user1"
+  password: "pass1"
+  check_externals: true
+  blacklist:
+    - tools
+    - lib
+  destination: destDir1
+  auto_update: false
+```
+
+### Hg
+
+```yaml
+hgMaterial1:
+  hg: repos/myhg
+  blacklist:
+    - externals
+    - tools
+  destination: dir1
+  auto_update: false
+```
+
+### Perforce
+
+*TODO*
+
+### Tfs
+
+*TODO*
+
+### Pluggable
+
+```yaml
+myPluggableGit:
+  scm: someScmGitRepositoryId
+  destination: destinationDir
+  blacklist:
+    - dir1
+    - dir2
+```
+
+### Dependency
+
+To add a dependency on another pipeline stage:
+```yaml
+upstream:
+  pipeline: upstream-pipeline-1
+  stage: test
+```
+
+### Package
+
+```yaml
+myapt:
+  package: apt-repo-id
+```
 
 ## Tasks
 

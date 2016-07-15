@@ -1,0 +1,16 @@
+{
+  "url": "http://svn",
+  "username": "user1",
+  "password": "pass1",
+  "check_externals": true,
+  "filter": {
+    "ignore": [
+      "tools",
+      "lib"
+    ]
+  },
+  "destination": "destDir1",
+  "auto_update": false,
+  "name": "svnMaterial1",
+  "type": "svn"
+}

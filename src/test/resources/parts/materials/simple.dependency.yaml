@@ -1,0 +1,3 @@
+upstream:
+  pipeline: upstream-pipeline-1
+  stage: test

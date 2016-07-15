@@ -1,0 +1,6 @@
+myPluggableGit:
+  scm: someScmGitRepositoryId
+  destination: destinationDir
+  blacklist:
+    - dir1
+    - dir2

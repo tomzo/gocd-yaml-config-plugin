@@ -43,6 +43,31 @@ public class MaterialTransformTest {
         testTransform("complete.git");
     }
 
+    @Test
+    public void shouldTransformCompleteSvn() throws IOException {
+        testTransform("complete.svn");
+    }
+
+    @Test
+    public void shouldTransformCompleteHg() throws IOException {
+        testTransform("complete.hg");
+    }
+
+    @Test
+    public void shouldTransformSimpleDependency() throws IOException {
+        testTransform("simple.dependency");
+    }
+
+    @Test
+    public void shouldTransformCompletePluggable() throws IOException {
+        testTransform("complete.pluggable");
+    }
+
+    @Test
+    public void shouldTransformPackage() throws IOException {
+        testTransform("package");
+    }
+
     private void testTransform(String caseFile) throws IOException {
         testTransform(caseFile,caseFile);
     }

@@ -1,0 +1,10 @@
+svnMaterial1:
+  svn: "http://svn"
+  username: "user1"
+  password: "pass1"
+  check_externals: true
+  blacklist:
+    - tools
+    - lib
+  destination: destDir1
+  auto_update: false

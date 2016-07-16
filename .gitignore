@@ -1,3 +1,5 @@
+/richCase/rich.gocd.yaml
+/simpleInvalidCase/simple-invalid.gocd.yaml
 /simpleCase/simple.gocd.yaml
 *.class
 

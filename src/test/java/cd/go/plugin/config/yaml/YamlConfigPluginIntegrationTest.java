@@ -20,6 +20,7 @@ import java.io.*;
 import static cd.go.plugin.config.yaml.TestUtils.getResourceAsStream;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -113,7 +114,7 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldRespondSuccessToParseDirectoryRequestWhenSimpleCaseFile() throws UnhandledRequestTypeException, IOException {
-        setupSimpleCase();
+        setupCase("simpleCase", "simple");
 
         DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo","1.0","parse-directory");
         String requestBody = "{\n" +
@@ -132,12 +133,54 @@ public class YamlConfigPluginIntegrationTest {
         assertThat(responseJsonObject,is(new JsonObjectMatcher(expected)));
     }
 
-    private void setupSimpleCase() throws IOException {
-        File simpleCase = new File("simpleCase");
-        FileUtils.deleteDirectory(simpleCase);
-        FileUtils.forceMkdir(simpleCase);
-        File simpleFile = new File("simpleCase/simple.gocd.yaml");
-        InputStream in = getResourceAsStream("examples/simple.gocd.yaml");
+    @Test
+    public void shouldRespondSuccessToParseDirectoryRequestWhenRichCaseFile() throws UnhandledRequestTypeException, IOException {
+        setupCase("richCase", "rich");
+
+        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo","1.0","parse-directory");
+        String requestBody = "{\n" +
+                "    \"directory\":\"richCase\",\n" +
+                "    \"configurations\":[]\n" +
+                "}";
+        parseDirectoryRequest.setRequestBody(requestBody);
+
+        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(),is(1));
+        JsonObject expected = (JsonObject)readJsonObject("examples.out/rich.gocd.json");
+        assertThat(responseJsonObject,is(new JsonObjectMatcher(expected)));
+    }
+
+    @Test
+    public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenSimpleInvalidCaseFile() throws UnhandledRequestTypeException, IOException {
+        setupCase("simpleInvalidCase", "simple-invalid");
+
+        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo","1.0","parse-directory");
+        String requestBody = "{\n" +
+                "    \"directory\":\"simpleInvalidCase\",\n" +
+                "    \"configurations\":[]\n" +
+                "}";
+        parseDirectoryRequest.setRequestBody(requestBody);
+
+        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        JsonArray errors = (JsonArray) responseJsonObject.get("errors");
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(),is(0));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(),is("Failed to parse pipeline pipe1; expected a hash of pipeline materials"));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(),is("simple-invalid.gocd.yaml"));
+    }
+
+    private void setupCase(String folder, String caseName) throws IOException {
+        File caseFolder = new File(folder);
+        FileUtils.deleteDirectory(caseFolder);
+        FileUtils.forceMkdir(caseFolder);
+        File simpleFile = new File(folder, caseName + ".gocd.yaml");
+        InputStream in = getResourceAsStream("examples/" + caseName + ".gocd.yaml");
         OutputStream out = new FileOutputStream(simpleFile);
         IOUtils.copy(in,out);
         in.close();

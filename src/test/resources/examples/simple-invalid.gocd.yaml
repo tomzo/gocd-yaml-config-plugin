@@ -1,0 +1,15 @@
+# simple.gocd.yaml
+pipelines:
+  pipe1:
+    group: simple
+    materials:
+      # materials should be a hash - bogus !
+      - mygit:
+          git: http://my.example.org/mygit.git
+    stages:
+      - build: # name of stage
+          jobs:
+            build: # name of the job
+              tasks:
+               - exec: # indicates type of task
+                   command: make

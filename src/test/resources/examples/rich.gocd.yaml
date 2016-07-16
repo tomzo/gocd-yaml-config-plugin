@@ -3,6 +3,7 @@ pipelines: # tells plugin that here are pipelines by name
   pipe2:
     group: rich
     label_template: "${mygit[:8]}"
+    locking: on
     tracking_tool:
       link: "http://your-trackingtool/yourproject/${ID}"
       regex: "evo-(\\d+)"
@@ -21,14 +22,14 @@ pipelines: # tells plugin that here are pipelines by name
         stage: test
     stages:
       - build: # name of stage
-          clean: true
+          clean_workspace: true
           approval:
             type: manual
             roles:
               - manager
           jobs:
             csharp: # name of the job
-              run_instance_count: 3
+              run_instances: 3
               resources:
                - net45
               artifacts:
@@ -57,7 +58,7 @@ pipelines: # tells plugin that here are pipelines by name
                    destination: bin/
                - exec: # indicates type of task
                    command: make
-                   args:
+                   arguments:
                     - "VERBOSE=true"
               # shorthand for script-executor plugin
                - script: ./build.sh ci

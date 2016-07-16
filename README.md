@@ -2,10 +2,10 @@
 
 # gocd-yaml-config-plugin
 
-Plugin to declare [Go's](go.cd) pipelines and environments configuration in YAML.
-
-With this plugin and GoCD `>= 16.7.0` you can keep your pipeline and environments
- configuration in source control.
+[GoCD](go.cd) server plugin to keep **pipelines** and **environments**
+configuration in source-control in [YAML](http://www.yaml.org/).
+See [this document](https://docs.google.com/document/d/1_eGZaqIz9ydnYQJ_Xrcb3obXc-T6jIfV_pgZQNCydVk/pub)
+to find out what are GoCD configuration repositories.
 
 This is second GoCD configuration plugin, which enhances some of shortcomings of
 [JSON configuration plugin](https://github.com/tomzo/gocd-json-config-plugin)
@@ -15,6 +15,27 @@ This is second GoCD configuration plugin, which enhances some of shortcomings of
 * Allows to have multiple pipelines and environments in single file. But doesn't force it.
 * **Comments in configuration files** - YAML supports comments,
 so you can explain why pipeline/environment it is configured like this.
+
+## Some highlights
+
+ * Shorter syntax for declaring [single-job stages](#single-job-stage)
+ * Very short syntax for [declaring tasks with script executor plugin](#script)
+
+## Setup
+
+Download plugin from releases page and place in your Go server (`>= 16.7.0`)
+in `plugins/external` directory.
+
+Add `config-repos` element right above first `<pipelines />`. Then you can
+add any number of YAML configuration repositories as such:
+
+```xml
+<config-repos>
+  <config-repo plugin="yaml.config.plugin">
+    <git url="https://github.com/tomzo/gocd-yaml-config-example.git" />
+  </config-repo>
+</config-repos>
+```
 
 ### Example
 
@@ -77,31 +98,16 @@ pipelines:
              - script: ./build.sh ci
 ```
 
-## Setup
-
-Download plugin from releases page and place in you Go server (`>= 16.7.0`)
-in `plugins/external` directory.
-
-Add `config-repos` element right above first `<pipelines />`. Then you can
-add any number of YAML configuration repositories as such:
-
-```xml
-<config-repos>
-  <config-repo plugin="yaml.config.plugin">
-    <git url="https://github.com/tomzo/gocd-yaml-config-example.git" />
-  </config-repo>
-</config-repos>
-```
-
 # Specification
 
 See [official GoCD XML configuration reference](https://docs.go.cd/current/configuration/configuration_reference.html)
-for details about each element.
+for details about each element. Below is a reference of format supported by this plugin.
+Feel free to improve it!
 
 1. [Environment](#environment)
 1. [Environment variables](#environment-variables)
 1. [Pipeline](#pipeline)
-    * [Mingle](#mingle)
+    * [Tabs](#tabs)
     * [Tracking tool](#tracking-tool)
     * [Timer](#timer)
 1. [Stage](#stage)
@@ -154,9 +160,9 @@ All elements available on a pipeline object are:
  * `group`
  * `label_template`
  * `locking`
- * `tracking_tool` or `mingle`
- * `timer`
- * `environment_variables`
+ * [tracking_tool](#tracking-tool) or `mingle`
+ * [timer](#timer)
+ * [environment_variables](#environment-variables)
  * `secure_variables`
  * [materials](#materials)
  * [stages](#stage)
@@ -186,12 +192,28 @@ Please note:
  * [parameters](https://docs.go.cd/current/configuration/configuration_reference.html#params) are not supported
  * pipeline declares a group to which it belongs
 
+### Tracking tool
+
+```yaml
+tracking_tool:
+  link: "http://your-trackingtool/yourproject/${ID}"
+  regex: "evo-(\\d+)"
+```
+
+### Timer
+
+```yaml
+timer:
+  spec: "0 15 10 * * ? *"
+  only_on_changes: yes
+```
+
 ## Stage
 
 A minimal stage must contain `jobs:` element or `tasks:` in [single-job stage case](single-job-stage).
 ```yaml
 build:
-  jobbs:
+  jobs:
     firstJob:
       ...
     secondJob:
@@ -239,6 +261,65 @@ approval:
 ```
 
 ## Job
+
+[Job](https://docs.go.cd/current/configuration/configuration_reference.html#job) is a hash starting with jobs name:
+
+```yaml
+test:
+  run_instances: 7
+  environment_variables:
+    LD_LIBRARY_PATH: .
+  tabs:
+    test: results.xml
+  resources:
+    - linux
+  artifacts:
+    - test:
+        source: src
+        destination: dest
+    - build:
+        source: bin
+  properties:
+    perf:
+      source: test.xml
+      xpath: "substring-before(//report/data/all/coverage[starts-with(@type,\u0027class\u0027)]/@value, \u0027%\u0027)"
+  tasks:
+    ...
+```
+
+### Run many instances
+
+Part of job object can be [number of job to runs](https://docs.go.cd/current/advanced_usage/admin_spawn_multiple_jobs.html):
+```yaml
+run_instances: 7
+```
+Or to run on all agents:
+```yaml
+run_instances: all
+```
+
+### Tabs
+
+Tabs are a hash with `<tab-name>: <path>` pairs.
+Path should exist in Go servers artifacts.
+```yaml
+tabs:
+  tests: test-reports/index.html
+  gauge: functional-reports/index.html
+```
+
+### Property
+
+Job can have properties, declared as a hash:
+```yaml
+properties:
+  cov1: # this is the name of property
+    source: test.xml
+    xpath: "substring-before(//report/data/all/coverage[starts-with(@type,\u0027class\u0027)]/@value, \u0027%\u0027)"
+  performance.ind1.mbps:
+    source: PerfTestReport.xml
+    xpath: "//PerformanceSuiteReport/WriteOnly/MBps"
+```
 
 ### Single job stage
 
@@ -500,6 +581,23 @@ script: >
 Above executes a **single line** script:
 ```bash
 ./build.sh compile && make test
+```
+
+## Environment
+
+*NOTE: The agents should be a guid, which is currently impossible to get for user*
+
+```yaml
+testing:
+  environment_variables:
+    DEPLOYMENT: testing
+  secure_variables:
+    ENV_PASSWORD: "s&Du#@$xsSa"
+  pipelines:
+    - example-deploy-testing
+    - build-testing
+  agents:
+    - 123
 ```
 
 ### Environment variables

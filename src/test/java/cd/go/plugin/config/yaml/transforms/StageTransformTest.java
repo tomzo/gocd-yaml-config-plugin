@@ -35,6 +35,12 @@ public class StageTransformTest {
         testTransform("short_approval");
     }
 
+    @Test
+    public void shouldTransformSingleJobStage() throws IOException {
+        parser = new StageTransform(environmentTransform,new JobTransform(environmentTransform,mock(TaskTransform.class)));
+        testTransform("stage-job");
+    }
+
     private void testTransform(String caseFile) throws IOException {
         testTransform(caseFile,caseFile);
     }

@@ -1,0 +1,7 @@
+build:
+  approval: manual
+  resources:
+    - cpp
+  tasks:
+   - exec:
+       command: make

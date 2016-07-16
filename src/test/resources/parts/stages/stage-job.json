@@ -1,0 +1,17 @@
+{
+  "name" : "build",
+  "approval" : {
+    "type" : "manual"
+  },
+  "jobs" : [
+    {
+      "name" : "build",
+      "resources" : [
+        "cpp"
+      ],
+      "tasks" : [
+        null
+      ]
+    }
+  ]
+}

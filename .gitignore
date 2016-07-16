@@ -1,3 +1,6 @@
+/token.sh
+/linux-amd64-github-release.tar.bz2
+/bin/linux/amd64/github-release
 /richCase/rich.gocd.yaml
 /simpleInvalidCase/simple-invalid.gocd.yaml
 /simpleCase/simple.gocd.yaml

@@ -1,0 +1,20 @@
+{
+  "name" : "testing",
+  "environment_variables" : [
+    {
+      "name":"DEPLOYMENT",
+      "value" : "testing"
+    },
+    {
+      "name" : "ENV_PASSWORD",
+      "encrypted_value" : "s&Du#@$xsSa"
+    }
+  ],
+  "pipelines" : [
+    "example-deploy-testing",
+    "build-testing"
+  ],
+  "agents" : [
+    "123"
+  ]
+}

@@ -2,7 +2,7 @@
 <go-plugin id="yaml.config.plugin" version="1">
     <about>
         <name>YAML Configuration Plugin</name>
-        <version>0.0.1</version>
+        <version>0.1.0</version>
         <target-go-version>16.6.0</target-go-version>
         <description>
             GoCD pipelines and environments configuration in YAML

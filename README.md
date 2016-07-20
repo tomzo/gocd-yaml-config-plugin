@@ -69,33 +69,33 @@ pipelines:
         stage: test
     stages: # list of stages in order
       - build: # name of stage
-        clean_workspace: true
-        jobs:
-          csharp: # name of the job
-            resources:
-             - net45
-            artifacts:
-             - build:
-                 source: bin/
-                 destination: build
-             - test:
-                 source: tests/
-                 destination: test-reports/
-            tabs:
-              report: test-reports/index.html
-            tasks: # ordered list of tasks to execute in job csharp
-             - fetch:
-                 pipeline: pipe2
-                 stage: build
-                 job: test
-                 source: test-bin/
-                 destination: bin/
-             - exec: # indicates type of task
-                 command: make
-                 arguments:
-                  - "VERBOSE=true"
-             # shorthand for script-executor plugin
-             - script: ./build.sh ci
+          clean_workspace: true
+          jobs:
+            csharp: # name of the job
+              resources:
+               - net45
+              artifacts:
+               - build:
+                   source: bin/
+                   destination: build
+               - test:
+                   source: tests/
+                   destination: test-reports/
+              tabs:
+                report: test-reports/index.html
+              tasks: # ordered list of tasks to execute in job csharp
+               - fetch:
+                   pipeline: pipe2
+                   stage: build
+                   job: test
+                   source: test-bin/
+                   destination: bin/
+               - exec: # indicates type of task
+                   command: make
+                   arguments:
+                    - "VERBOSE=true"
+               # shorthand for script-executor plugin
+               - script: ./build.sh ci
 ```
 
 ## File pattern

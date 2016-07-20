@@ -98,6 +98,10 @@ pipelines:
              - script: ./build.sh ci
 ```
 
+## File pattern
+
+By default GoCD configuration files should end with `.gocd.yaml`.
+
 # Specification
 
 See [official GoCD XML configuration reference](https://docs.go.cd/current/configuration/configuration_reference.html)

@@ -212,6 +212,8 @@ timer:
   only_on_changes: yes
 ```
 
+See [XML reference](https://docs.go.cd/current/configuration/configuration_reference.html#timer) for more information.
+
 ## Stage
 
 A minimal stage must contain `jobs:` element or `tasks:` in [single-job stage case](single-job-stage).

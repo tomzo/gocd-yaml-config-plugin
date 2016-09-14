@@ -54,11 +54,11 @@ environments:
       - build-testing
 pipelines:
   mypipe1: # definition of mypipe1 pipeline
-    group: mygroup
+    group: mygroup # note that the group name can contain only of alphanumeric & underscore characters 
     label_template: "${mygit[:8]}"
     locking: off
     materials:
-      mygit: # this is the name of material
+      mygit: # this is the name of material, the name can contain only of alphanumeric & underscore characters
         # keyword git says about type of material and url at once
         git: http://my.example.org/mygit.git
         branch: ci

@@ -440,10 +440,12 @@ myPluggableGit:
 
 To add a dependency on another pipeline stage:
 ```yaml
-upstream:
+mydependency:
   pipeline: upstream-pipeline-1
   stage: test
 ```
+
+**Note: `mydependency` is the name of material - it must be unique**
 
 ### Package
 

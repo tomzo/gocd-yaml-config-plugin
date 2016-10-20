@@ -8,7 +8,7 @@ import java.io.IOException;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class EnvironmentVariablesTransformTest {
     private final EnvironmentVariablesTransform parser;
@@ -33,12 +33,12 @@ public class EnvironmentVariablesTransformTest {
     }
 
     private void testTransform(String caseFile) throws IOException {
-        testTransform(caseFile,caseFile);
+        testTransform(caseFile, caseFile);
     }
 
-    private void testTransform(String caseFile,String expectedFile) throws IOException {
-        JsonArray expected = (JsonArray)readJsonObject("parts/env_vars/" + expectedFile + ".json");
+    private void testTransform(String caseFile, String expectedFile) throws IOException {
+        JsonArray expected = (JsonArray) readJsonObject("parts/env_vars/" + expectedFile + ".json");
         JsonArray actual = parser.transform(readYamlObject("parts/env_vars/" + caseFile + ".yaml"));
-        assertThat(actual,is(expected));
+        assertThat(actual, is(expected));
     }
 }

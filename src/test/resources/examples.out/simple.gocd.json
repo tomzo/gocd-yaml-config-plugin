@@ -1,29 +1,29 @@
 {
-  "target_version" : 1,
-  "errors" : [],
-  "environments" : [],
-  "pipelines" : [
+  "target_version": 1,
+  "errors": [],
+  "environments": [],
+  "pipelines": [
     {
-      "location" : "simple.gocd.yaml",
-      "name" : "pipe1",
-      "group" : "simple",
-      "materials" : [
+      "location": "simple.gocd.yaml",
+      "name": "pipe1",
+      "group": "simple",
+      "materials": [
         {
-          "name" : "mygit",
-          "type" : "git",
-          "url" : "http://my.example.org/mygit.git"
+          "name": "mygit",
+          "type": "git",
+          "url": "http://my.example.org/mygit.git"
         }
       ],
-      "stages" : [
+      "stages": [
         {
-          "name" : "build",
-          "jobs" : [
+          "name": "build",
+          "jobs": [
             {
-              "name" : "build",
-              "tasks" : [
+              "name": "build",
+              "tasks": [
                 {
-                  "type" : "exec",
-                  "command" : "make"
+                  "type": "exec",
+                  "command": "make"
                 }
               ]
             }

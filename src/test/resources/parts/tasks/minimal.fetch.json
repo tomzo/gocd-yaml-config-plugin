@@ -1,6 +1,6 @@
 {
-   "type": "fetch",
-   "stage": "build",
-   "job": "test",
-   "source": "test-bin/"
+  "type": "fetch",
+  "stage": "build",
+  "job": "test",
+  "source": "test-bin/"
 }

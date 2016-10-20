@@ -1,10 +1,10 @@
 {
-   "type": "fetch",
-   "run_if": "any",
-   "pipeline": "upstream",
-   "stage": "upstream_stage",
-   "job": "upstream_job",
-   "is_source_a_file": true,
-   "source": "result",
-   "destination": "test"
+  "type": "fetch",
+  "run_if": "any",
+  "pipeline": "upstream",
+  "stage": "upstream_stage",
+  "job": "upstream_job",
+  "is_source_a_file": true,
+  "source": "result",
+  "destination": "test"
 }

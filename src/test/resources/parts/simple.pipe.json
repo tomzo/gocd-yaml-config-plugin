@@ -1,7 +1,7 @@
 {
-  "name" : "pipe1",
-  "group" : "simple",
-  "materials" : [
+  "name": "pipe1",
+  "group": "simple",
+  "materials": [
     null
   ],
   "stages": [

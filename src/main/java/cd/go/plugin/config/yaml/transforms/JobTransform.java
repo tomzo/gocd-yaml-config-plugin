@@ -1,6 +1,5 @@
 package cd.go.plugin.config.yaml.transforms;
 
-
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -48,110 +47,109 @@ public class JobTransform {
     }
 
     public JsonObject transform(Object yamlObject) {
-        Map<String,Object> map = (Map<String,Object>)yamlObject;
-        for(Map.Entry<String, Object> entry : map.entrySet()) {
+        Map<String, Object> map = (Map<String, Object>) yamlObject;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             return transform(entry);
         }
         throw new RuntimeException("expected job hash to have 1 item");
     }
 
     public JsonObject transform(Map.Entry<String, Object> entry) {
-        return transform(entry.getKey(),(Map<String, Object>)entry.getValue());
+        return transform(entry.getKey(), (Map<String, Object>) entry.getValue());
     }
 
     public JsonObject transform(String jobName, Map<String, Object> jobMap) {
         JsonObject jobJson = new JsonObject();
-        jobJson.addProperty(JSON_JOB_NAME_FIELD,jobName);
+        jobJson.addProperty(JSON_JOB_NAME_FIELD, jobName);
         addRunInstances(jobMap, jobJson);
         JsonArray jsonEnvVariables = environmentTransform.transform(jobMap);
-        if(jsonEnvVariables != null && jsonEnvVariables.size() > 0)
-            jobJson.add(JSON_ENV_VAR_FIELD,jsonEnvVariables);
+        if (jsonEnvVariables != null && jsonEnvVariables.size() > 0)
+            jobJson.add(JSON_ENV_VAR_FIELD, jsonEnvVariables);
         addTabs(jobJson, jobMap);
-        addOptionalStringList(jobJson,jobMap,JSON_JOB_RESOURCES_FIELD,YAML_JOB_RESOURCES_FIELD);
+        addOptionalStringList(jobJson, jobMap, JSON_JOB_RESOURCES_FIELD, YAML_JOB_RESOURCES_FIELD);
         addArtifacts(jobJson, jobMap);
         addProperties(jobJson, jobMap);
-        addTasks(jobJson,jobMap);
+        addTasks(jobJson, jobMap);
         return jobJson;
     }
 
     private void addProperties(JsonObject jobJson, Map<String, Object> jobMap) {
         Object props = jobMap.get(YAML_JOB_PROPS_FIELD);
-        if(props == null)
+        if (props == null)
             return;
-        if(!(props instanceof Map))
+        if (!(props instanceof Map))
             throw new YamlConfigException("properties should be a hash");
         JsonArray propsJson = new JsonArray();
-        Map<String, Object> propsMap = (Map<String, Object>)props;
-        for(Map.Entry<String,Object> propEntry : propsMap.entrySet()){
+        Map<String, Object> propsMap = (Map<String, Object>) props;
+        for (Map.Entry<String, Object> propEntry : propsMap.entrySet()) {
             String propName = propEntry.getKey();
             Object propObj = propEntry.getValue();
-            if(!(propObj instanceof Map))
+            if (!(propObj instanceof Map))
                 throw new YamlConfigException("property " + propName + " should be a hash");
-            Map<String, Object> propMap = (Map<String, Object>)propObj;
+            Map<String, Object> propMap = (Map<String, Object>) propObj;
             JsonObject propJson = new JsonObject();
-            propJson.addProperty(JSON_JOB_PROP_NAME_FIELD,propName);
-            addRequiredString(propJson,propMap,JSON_JOB_PROP_SOURCE_FIELD,YAML_JOB_PROP_SOURCE_FIELD);
-            addRequiredString(propJson,propMap,JSON_JOB_PROP_XPATH_FIELD,YAML_JOB_PROP_XPATH_FIELD);
+            propJson.addProperty(JSON_JOB_PROP_NAME_FIELD, propName);
+            addRequiredString(propJson, propMap, JSON_JOB_PROP_SOURCE_FIELD, YAML_JOB_PROP_SOURCE_FIELD);
+            addRequiredString(propJson, propMap, JSON_JOB_PROP_XPATH_FIELD, YAML_JOB_PROP_XPATH_FIELD);
             propsJson.add(propJson);
         }
-        jobJson.add(JSON_JOB_PROPS_FIELD,propsJson);
+        jobJson.add(JSON_JOB_PROPS_FIELD, propsJson);
     }
 
     private void addArtifacts(JsonObject jobJson, Map<String, Object> jobMap) {
         Object artifacts = jobMap.get(YAML_JOB_ARTIFACTS_FIELD);
-        if(artifacts == null)
+        if (artifacts == null)
             return;
-        if(!(artifacts instanceof List))
+        if (!(artifacts instanceof List))
             throw new YamlConfigException("artifacts should be a list of hashes");
         JsonArray artifactArrayJson = new JsonArray();
-        List<Object> artifactsList = (List<Object>)artifacts;
-        for(Object artifactObj : artifactsList)
-        {
-            if(!(artifactObj instanceof Map))
+        List<Object> artifactsList = (List<Object>) artifacts;
+        for (Object artifactObj : artifactsList) {
+            if (!(artifactObj instanceof Map))
                 throw new YamlConfigException("artifact should be a hash - build: or test:");
 
             Map<String, Object> artifactMap = (Map<String, Object>) artifactObj;
-            for(Map.Entry<String,Object> artMap : artifactMap.entrySet()){
+            for (Map.Entry<String, Object> artMap : artifactMap.entrySet()) {
                 JsonObject artifactJson = new JsonObject();
-                if("build".equalsIgnoreCase(artMap.getKey()))
-                    artifactJson.addProperty("type","build");
-                else if("test".equalsIgnoreCase(artMap.getKey()))
-                    artifactJson.addProperty("type","test");
+                if ("build".equalsIgnoreCase(artMap.getKey()))
+                    artifactJson.addProperty("type", "build");
+                else if ("test".equalsIgnoreCase(artMap.getKey()))
+                    artifactJson.addProperty("type", "test");
                 else
                     throw new YamlConfigException("expected build: or test: in artifact, got " + artMap.getKey());
                 Map<String, Object> artMapValue = (Map<String, Object>) artMap.getValue();
-                addRequiredString(artifactJson, artMapValue,JSON_JOB_ARTIFACT_SOURCE_FIELD,YAML_JOB_ARTIFACT_SOURCE_FIELD);
-                addOptionalString(artifactJson, artMapValue,JSON_JOB_ARTIFACT_DEST_FIELD,YAML_JOB_ARTIFACT_DEST_FIELD);
+                addRequiredString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_SOURCE_FIELD, YAML_JOB_ARTIFACT_SOURCE_FIELD);
+                addOptionalString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_DEST_FIELD, YAML_JOB_ARTIFACT_DEST_FIELD);
                 artifactArrayJson.add(artifactJson);
                 break;// we read first hash and exit
             }
         }
-        jobJson.add(JSON_JOB_ARTIFACTS_FIELD,artifactArrayJson);
+        jobJson.add(JSON_JOB_ARTIFACTS_FIELD, artifactArrayJson);
     }
 
     private void addTabs(JsonObject jobJson, Map<String, Object> jobMap) {
         Object tabs = jobMap.get(YAML_JOB_TABS_FIELD);
-        if(tabs == null)
+        if (tabs == null)
             return;
-        if(!(tabs instanceof Map))
+        if (!(tabs instanceof Map))
             throw new YamlConfigException("tabs should be a hash");
         JsonArray tabsJson = new JsonArray();
-        Map<String, String> tabsMap = (Map<String, String>)tabs;
-        for(Map.Entry<String,String> tab : tabsMap.entrySet()){
+        Map<String, String> tabsMap = (Map<String, String>) tabs;
+        for (Map.Entry<String, String> tab : tabsMap.entrySet()) {
             String tabName = tab.getKey();
             String tabPath = tab.getValue();
             JsonObject tabJson = new JsonObject();
-            tabJson.addProperty(JSON_JOB_TAB_NAME_FIELD,tabName);
-            tabJson.addProperty(JSON_JOB_TAB_PATH_FIELD,tabPath);
+            tabJson.addProperty(JSON_JOB_TAB_NAME_FIELD, tabName);
+            tabJson.addProperty(JSON_JOB_TAB_PATH_FIELD, tabPath);
             tabsJson.add(tabJson);
         }
-        jobJson.add(JSON_JOB_TABS_FIELD,tabsJson);
+        jobJson.add(JSON_JOB_TABS_FIELD, tabsJson);
     }
 
     private void addRunInstances(Map<String, Object> jobMap, JsonObject jobJson) {
-        String runInstancesText = getOptionalString(jobMap,YAML_JOB_RUN_INSTANCES_FIELD);
-        if(runInstancesText != null){
-            if("all".equalsIgnoreCase(runInstancesText))
+        String runInstancesText = getOptionalString(jobMap, YAML_JOB_RUN_INSTANCES_FIELD);
+        if (runInstancesText != null) {
+            if ("all".equalsIgnoreCase(runInstancesText))
                 jobJson.addProperty(JSON_JOB_RUN_INSTANCES_FIELD, "all");
             else {
                 try {
@@ -165,15 +163,15 @@ public class JobTransform {
 
     private void addTasks(JsonObject jobJson, Map<String, Object> jobMap) {
         Object tasksObj = jobMap.get(YAML_JOB_TASKS_FIELD);
-        if(tasksObj == null)
+        if (tasksObj == null)
             throw new YamlConfigException("tasks are required in a job");
         JsonArray tasksJson = new JsonArray();
-        List<Object> taskList = (List<Object>)tasksObj;
-        for(Object maybeTask : taskList){
+        List<Object> taskList = (List<Object>) tasksObj;
+        for (Object maybeTask : taskList) {
             JsonObject task = taskTransform.transform(maybeTask);
             tasksJson.add(task);
         }
-        jobJson.add(JSON_JOB_TASKS_FIELD,tasksJson);
+        jobJson.add(JSON_JOB_TASKS_FIELD, tasksJson);
     }
 
 }

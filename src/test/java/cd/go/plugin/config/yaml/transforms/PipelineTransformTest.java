@@ -10,7 +10,7 @@ import java.io.IOException;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PipelineTransformTest {
@@ -25,7 +25,7 @@ public class PipelineTransformTest {
         materialTransform = mock(MaterialTransform.class);
         stageTransform = mock(StageTransform.class);
         environmentTransform = mock(EnvironmentVariablesTransform.class);
-        parser = new PipelineTransform(materialTransform,stageTransform,environmentTransform);
+        parser = new PipelineTransform(materialTransform, stageTransform, environmentTransform);
     }
 
     @Test
@@ -39,12 +39,12 @@ public class PipelineTransformTest {
     }
 
     private void testTransform(String caseFile) throws IOException {
-        testTransform(caseFile,caseFile);
+        testTransform(caseFile, caseFile);
     }
 
-    private void testTransform(String caseFile,String expectedFile) throws IOException {
-        JsonObject expectedObject = (JsonObject)readJsonObject("parts/" + expectedFile + ".json");
+    private void testTransform(String caseFile, String expectedFile) throws IOException {
+        JsonObject expectedObject = (JsonObject) readJsonObject("parts/" + expectedFile + ".json");
         JsonObject jsonObject = parser.transform(readYamlObject("parts/" + caseFile + ".yaml"));
-        assertThat(jsonObject,is(new JsonObjectMatcher(expectedObject)));
+        assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
     }
 }

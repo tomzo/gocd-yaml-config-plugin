@@ -1,12 +1,13 @@
 package cd.go.plugin.config.yaml;
 
-import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class TestUtils {
 
@@ -30,11 +31,11 @@ public class TestUtils {
         return IOUtils.toString(resourceAsStream);
     }
 
-    public static InputStream getResourceAsStream( String resource ) {
+    public static InputStream getResourceAsStream(String resource) {
         final InputStream in
-                = getContextClassLoader().getResourceAsStream( resource );
+                = getContextClassLoader().getResourceAsStream(resource);
 
-        return in == null ? TestUtils.class.getResourceAsStream( resource ) : in;
+        return in == null ? TestUtils.class.getResourceAsStream(resource) : in;
     }
 
     private static ClassLoader getContextClassLoader() {

@@ -34,15 +34,15 @@ public class PipelineTransform {
     private final StageTransform stageTransform;
     private final EnvironmentVariablesTransform variablesTransform;
 
-    public PipelineTransform(MaterialTransform materialTransform,StageTransform stageTransform, EnvironmentVariablesTransform variablesTransform){
+    public PipelineTransform(MaterialTransform materialTransform, StageTransform stageTransform, EnvironmentVariablesTransform variablesTransform) {
         this.materialTransform = materialTransform;
         this.stageTransform = stageTransform;
         this.variablesTransform = variablesTransform;
     }
 
     public JsonObject transform(Object maybePipe) {
-        Map<String,Object> map = (Map<String,Object>)maybePipe;
-        for(Map.Entry<String, Object> entry : map.entrySet()) {
+        Map<String, Object> map = (Map<String, Object>) maybePipe;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             return transform(entry);
         }
         throw new RuntimeException("expected pipeline hash to have 1 item");
@@ -63,8 +63,8 @@ public class PipelineTransform {
         addTimer(pipeline, pipeMap);
 
         JsonArray jsonEnvVariables = variablesTransform.transform(pipeMap);
-        if(jsonEnvVariables != null && jsonEnvVariables.size() > 0)
-            pipeline.add(JSON_ENV_VAR_FIELD,jsonEnvVariables);
+        if (jsonEnvVariables != null && jsonEnvVariables.size() > 0)
+            pipeline.add(JSON_ENV_VAR_FIELD, jsonEnvVariables);
 
         addMaterials(pipeline, pipeMap);
         addStages(pipeline, pipeMap);
@@ -74,27 +74,27 @@ public class PipelineTransform {
 
     private void addTimer(JsonObject pipeline, Map<String, Object> pipeMap) {
         Object timer = pipeMap.get(YAML_PIPELINE_TIMER_FIELD);
-        if(timer == null)
+        if (timer == null)
             return;
         JsonObject timerJson = new JsonObject();
-        Map<String, Object> timerMap = (Map<String, Object>)timer;
-        addRequiredString(timerJson,timerMap,"spec","spec");
-        addOptionalBoolean(timerJson,timerMap,"only_on_changes","only_on_changes");
-        pipeline.add(JSON_PIPELINE_TIMER_FIELD,timerJson);
+        Map<String, Object> timerMap = (Map<String, Object>) timer;
+        addRequiredString(timerJson, timerMap, "spec", "spec");
+        addOptionalBoolean(timerJson, timerMap, "only_on_changes", "only_on_changes");
+        pipeline.add(JSON_PIPELINE_TIMER_FIELD, timerJson);
     }
 
     private void addStages(JsonObject pipeline, Map<String, Object> pipeMap) {
         Object stages = pipeMap.get(YAML_PIPELINE_STAGES_FIELD);
-        if(stages == null || !(stages instanceof List))
+        if (stages == null || !(stages instanceof List))
             throw new YamlConfigException("expected a list of pipeline stages");
-        List<Object> stagesList = (List<Object>)stages;
+        List<Object> stagesList = (List<Object>) stages;
         JsonArray stagesArray = transformStages(stagesList);
-        pipeline.add(JSON_PIPELINE_STAGES_FIELD,stagesArray);
+        pipeline.add(JSON_PIPELINE_STAGES_FIELD, stagesArray);
     }
 
     private JsonArray transformStages(List<Object> stagesList) {
         JsonArray stagesArray = new JsonArray();
-        for(Object stage : stagesList){
+        for (Object stage : stagesList) {
             stagesArray.add(stageTransform.transform(stage));
         }
         return stagesArray;
@@ -102,16 +102,16 @@ public class PipelineTransform {
 
     private void addMaterials(JsonObject pipeline, Map<String, Object> pipeMap) {
         Object materials = pipeMap.get(YAML_PIPELINE_MATERIALS_FIELD);
-        if(materials == null || !(materials instanceof Map))
+        if (materials == null || !(materials instanceof Map))
             throw new YamlConfigException("expected a hash of pipeline materials");
-        Map<String,Object> materialsMap = (Map<String,Object>)materials;
+        Map<String, Object> materialsMap = (Map<String, Object>) materials;
         JsonArray materialsArray = transformMaterials(materialsMap);
-        pipeline.add(JSON_PIPELINE_MATERIALS_FIELD,materialsArray);
+        pipeline.add(JSON_PIPELINE_MATERIALS_FIELD, materialsArray);
     }
 
     private JsonArray transformMaterials(Map<String, Object> materialsMap) {
         JsonArray materialsArray = new JsonArray();
-        for(Map.Entry<String, Object> entry : materialsMap.entrySet()) {
+        for (Map.Entry<String, Object> entry : materialsMap.entrySet()) {
             materialsArray.add(materialTransform.transform(entry));
         }
         return materialsArray;

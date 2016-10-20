@@ -50,8 +50,8 @@ public class MaterialTransform {
     }
 
     public JsonObject transform(Object maybeMaterial) {
-        Map<String,Object> map = (Map<String,Object>)maybeMaterial;
-        for(Map.Entry<String, Object> entry : map.entrySet()) {
+        Map<String, Object> map = (Map<String, Object>) maybeMaterial;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             return transform(entry);
         }
         throw new RuntimeException("expected material hash to have 1 item");
@@ -61,72 +61,66 @@ public class MaterialTransform {
         String materialName = entry.getKey();
         JsonObject material = new JsonObject();
         material.addProperty(JSON_MATERIAL_NAME_FIELD, materialName);
-        Map<String,Object> materialMap = (Map<String,Object>)entry.getValue();
+        Map<String, Object> materialMap = (Map<String, Object>) entry.getValue();
         addOptionalString(material, materialMap, JSON_MATERIAL_TYPE_FIELD, YAML_MATERIAL_TYPE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_AUTO_UPDATE_FIELD, YAML_MATERIAL_AUTO_UPDATE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_SHALLOW_CLONE_FIELD, YAML_MATERIAL_SHALLOW_CLONE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_CHECK_EXTERNALS_FIELD, YAML_MATERIAL_CHECK_EXTERNALS_FIELD);
-        if(materialMap.containsKey("blacklist"))
+        if (materialMap.containsKey("blacklist"))
             addFilter(material, materialMap.get("blacklist"), "ignore");
-        if(materialMap.containsKey("whitelist"))
+        if (materialMap.containsKey("whitelist"))
             addFilter(material, materialMap.get("whitelist"), "whitelist");
 
-        String git = getOptionalString(materialMap,YAML_SHORT_KEYWORD_GIT);
-        if(git != null)
-        {
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"git");
-            material.addProperty("url",git);
+        String git = getOptionalString(materialMap, YAML_SHORT_KEYWORD_GIT);
+        if (git != null) {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD, "git");
+            material.addProperty("url", git);
         }
-        String svn = getOptionalString(materialMap,YAML_SHORT_KEYWORD_SVN);
-        if(svn != null)
-        {
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"svn");
-            material.addProperty("url",svn);
+        String svn = getOptionalString(materialMap, YAML_SHORT_KEYWORD_SVN);
+        if (svn != null) {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD, "svn");
+            material.addProperty("url", svn);
         }
-        String hg = getOptionalString(materialMap,YAML_SHORT_KEYWORD_HG);
-        if(hg != null)
-        {
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"hg");
-            material.addProperty("url",hg);
+        String hg = getOptionalString(materialMap, YAML_SHORT_KEYWORD_HG);
+        if (hg != null) {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD, "hg");
+            material.addProperty("url", hg);
         }
-        String dependency = getOptionalString(materialMap,YAML_SHORT_KEYWORD_DEPENDENCY);
-        if(dependency != null)
-        {
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"dependency");
+        String dependency = getOptionalString(materialMap, YAML_SHORT_KEYWORD_DEPENDENCY);
+        if (dependency != null) {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD, "dependency");
         }
-        String scm_id = getOptionalString(materialMap,YAML_SHORT_KEYWORD_SCM_ID);
-        if(scm_id != null)
-        {
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"plugin");
-            material.addProperty("scm_id",scm_id);
+        String scm_id = getOptionalString(materialMap, YAML_SHORT_KEYWORD_SCM_ID);
+        if (scm_id != null) {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD, "plugin");
+            material.addProperty("scm_id", scm_id);
         }
-        String package_id = getOptionalString(materialMap,YAML_SHORT_KEYWORD_PACKAGE_ID);
-        if(package_id != null)
-        {
-            material.addProperty(JSON_MATERIAL_TYPE_FIELD,"package");
-            material.addProperty("package_id",package_id);
+        String package_id = getOptionalString(materialMap, YAML_SHORT_KEYWORD_PACKAGE_ID);
+        if (package_id != null) {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD, "package");
+            material.addProperty("package_id", package_id);
         }
         //TODO other types
 
         // copy all other members
-        for(Map.Entry<String, Object> materialProp : materialMap.entrySet()) {
-            if(yamlSpecialKeywords.contains(materialProp.getKey()))
+        for (Map.Entry<String, Object> materialProp : materialMap.entrySet()) {
+            if (yamlSpecialKeywords.contains(materialProp.getKey()))
                 continue;
-            if(materialProp.getValue() instanceof String)
-                material.addProperty(materialProp.getKey(),(String)materialProp.getValue());
+            if (materialProp.getValue() instanceof String)
+                material.addProperty(materialProp.getKey(), (String) materialProp.getValue());
         }
         return material;
     }
 
     private void addFilter(JsonObject material, Object filterList, String jsonKeyword) {
         JsonObject filter = material.getAsJsonObject("filter");
-        if(filter == null) {
+        if (filter == null) {
             filter = new JsonObject();
             material.add("filter", filter);
         }
-        List<String> list = (List<String>)filterList;
+        List<String> list = (List<String>) filterList;
         JsonArray jsonIgnores = new JsonArray();
-        for(String path : list) {
+        for (String path : list) {
             jsonIgnores.add(path);
         }
         filter.add(jsonKeyword, jsonIgnores);

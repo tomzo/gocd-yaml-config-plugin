@@ -3,10 +3,14 @@
   "fetch_materials": true,
   "never_cleanup_artifacts": true,
   "clean_working_directory": true,
-  "approval" : {
-    "type" : "success",
-    "roles" : ["manager"],
-    "users" : ["john"]
+  "approval": {
+    "type": "success",
+    "roles": [
+      "manager"
+    ],
+    "users": [
+      "john"
+    ]
   },
   "environment_variables": [
     {
@@ -14,11 +18,12 @@
       "value": "1"
     },
     {
-      "name" : "PASSWORD",
-      "encrypted_value" : "!@ESsdD323#sdu"
+      "name": "PASSWORD",
+      "encrypted_value": "!@ESsdD323#sdu"
     }
   ],
   "jobs": [
-    null,null
+    null,
+    null
   ]
 }

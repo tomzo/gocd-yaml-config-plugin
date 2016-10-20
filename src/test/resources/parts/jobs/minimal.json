@@ -1,4 +1,6 @@
 {
-  "name" : "test",
-  "tasks" : [ null ]
+  "name": "test",
+  "tasks": [
+    null
+  ]
 }

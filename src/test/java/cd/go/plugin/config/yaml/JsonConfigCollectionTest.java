@@ -18,55 +18,50 @@ public class JsonConfigCollectionTest {
     private JsonObject pipeInGroup;
 
     @Before
-    public void SetUp()
-    {
+    public void SetUp() {
         jsonCollection = new JsonConfigCollection();
 
         pipe1 = new JsonObject();
-        pipe1.addProperty("name","pipe1");
+        pipe1.addProperty("name", "pipe1");
 
         pipe2 = new JsonObject();
-        pipe2.addProperty("name","pipe2");
+        pipe2.addProperty("name", "pipe2");
 
         pipeInGroup = new JsonObject();
-        pipeInGroup.addProperty("name","pipe3");
-        pipeInGroup.addProperty("group","mygroup");
+        pipeInGroup.addProperty("name", "pipe3");
+        pipeInGroup.addProperty("group", "mygroup");
 
         devEnv = new JsonObject();
-        devEnv.addProperty("name","dev");
+        devEnv.addProperty("name", "dev");
     }
 
     @Test
-    public void shouldReturnTargetVersion()
-    {
+    public void shouldReturnTargetVersion() {
         JsonObject jsonObject = jsonCollection.getJsonObject();
-        assertThat(jsonObject.get("target_version") instanceof JsonPrimitive,is(true));
+        assertThat(jsonObject.get("target_version") instanceof JsonPrimitive, is(true));
         assertThat(jsonObject.getAsJsonPrimitive("target_version").getAsInt(), is(1));
     }
 
     @Test
-    public void shouldReturnEnvironmentsArrayInJsonObjectWhenEmpty()
-    {
+    public void shouldReturnEnvironmentsArrayInJsonObjectWhenEmpty() {
         JsonObject jsonObject = jsonCollection.getJsonObject();
-        assertThat(jsonObject.get("environments") instanceof JsonArray,is(true));
+        assertThat(jsonObject.get("environments") instanceof JsonArray, is(true));
         assertThat(jsonObject.getAsJsonArray("environments"), is(new JsonArray()));
     }
 
     @Test
-    public void shouldAppendPipelinesToPipelinesCollection()
-    {
-        jsonCollection.addPipeline(pipe1,"pipe1.json");
-        jsonCollection.addPipeline(pipe2,"pipe2.json");
+    public void shouldAppendPipelinesToPipelinesCollection() {
+        jsonCollection.addPipeline(pipe1, "pipe1.json");
+        jsonCollection.addPipeline(pipe2, "pipe2.json");
         JsonObject jsonObject = jsonCollection.getJsonObject();
-        assertThat(jsonObject.getAsJsonArray("pipelines").size(),is(2));
+        assertThat(jsonObject.getAsJsonArray("pipelines").size(), is(2));
     }
 
 
     @Test
-    public void shouldReturnEnvironmentsInJsonObject()
-    {
-        jsonCollection.addEnvironment(devEnv,"dev.json");
+    public void shouldReturnEnvironmentsInJsonObject() {
+        jsonCollection.addEnvironment(devEnv, "dev.json");
         JsonObject jsonObject = jsonCollection.getJsonObject();
-        assertThat(jsonObject.getAsJsonArray("environments").size(),is(1));
+        assertThat(jsonObject.getAsJsonArray("environments").size(), is(1));
     }
 }

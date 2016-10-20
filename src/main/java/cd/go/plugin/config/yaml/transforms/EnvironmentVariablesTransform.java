@@ -17,21 +17,19 @@ public class EnvironmentVariablesTransform {
 
     public JsonArray transform(Object variables, Object secureVariables) {
         JsonArray array = new JsonArray();
-        if(variables != null && variables != "")
-        {
-            for(Map.Entry<String,String> env : ((Map<String,String>)variables).entrySet()) {
+        if (variables != null && variables != "") {
+            for (Map.Entry<String, String> env : ((Map<String, String>) variables).entrySet()) {
                 JsonObject evarJson = new JsonObject();
-                evarJson.addProperty(JSON_ENV_NAME_FIELD,env.getKey());
-                evarJson.addProperty(JSON_ENV_VALUE_FIELD,env.getValue());
+                evarJson.addProperty(JSON_ENV_NAME_FIELD, env.getKey());
+                evarJson.addProperty(JSON_ENV_VALUE_FIELD, env.getValue());
                 array.add(evarJson);
             }
         }
-        if(secureVariables != null && secureVariables != "")
-        {
-            for(Map.Entry<String,String> env : ((Map<String,String>)secureVariables).entrySet()) {
+        if (secureVariables != null && secureVariables != "") {
+            for (Map.Entry<String, String> env : ((Map<String, String>) secureVariables).entrySet()) {
                 JsonObject evarJson = new JsonObject();
-                evarJson.addProperty(JSON_ENV_NAME_FIELD,env.getKey());
-                evarJson.addProperty(JSON_ENV_ENCRYPTED_FIELD,env.getValue());
+                evarJson.addProperty(JSON_ENV_NAME_FIELD, env.getKey());
+                evarJson.addProperty(JSON_ENV_ENCRYPTED_FIELD, env.getValue());
                 array.add(evarJson);
             }
         }
@@ -39,7 +37,7 @@ public class EnvironmentVariablesTransform {
     }
 
     public JsonArray transform(Object all) {
-        Map<String,Object> map = (Map<String,Object>)all;
-        return transform(map.get(YAML_ENV_VAR_FIELD),map.get(YAML_SEC_VAR_FIELD));
+        Map<String, Object> map = (Map<String, Object>) all;
+        return transform(map.get(YAML_ENV_VAR_FIELD), map.get(YAML_SEC_VAR_FIELD));
     }
 }

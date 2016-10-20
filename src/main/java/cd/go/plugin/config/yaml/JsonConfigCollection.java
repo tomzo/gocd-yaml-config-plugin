@@ -11,34 +11,31 @@ public class JsonConfigCollection {
     private JsonArray pipelines = new JsonArray();
     private JsonArray errors = new JsonArray();
 
-    public JsonConfigCollection()
-    {
+    public JsonConfigCollection() {
         gson = new Gson();
 
-        mainObject.add("target_version",new JsonPrimitive(TARGET_VERSION));
-        mainObject.add("environments",environments);
-        mainObject.add("pipelines",pipelines);
-        mainObject.add("errors",errors);
+        mainObject.add("target_version", new JsonPrimitive(TARGET_VERSION));
+        mainObject.add("environments", environments);
+        mainObject.add("pipelines", pipelines);
+        mainObject.add("errors", errors);
     }
 
-    protected JsonArray getEnvironments()
-    {
+    protected JsonArray getEnvironments() {
         return environments;
     }
 
-    public void addEnvironment(JsonElement environment,String location) {
+    public void addEnvironment(JsonElement environment, String location) {
         environments.add(environment);
-        environment.getAsJsonObject().add("location",new JsonPrimitive(location));
+        environment.getAsJsonObject().add("location", new JsonPrimitive(location));
     }
 
-    public JsonObject getJsonObject()
-    {
+    public JsonObject getJsonObject() {
         return mainObject;
     }
 
-    public void addPipeline(JsonElement pipeline,String location) {
+    public void addPipeline(JsonElement pipeline, String location) {
         pipelines.add(pipeline);
-        pipeline.getAsJsonObject().add("location",new JsonPrimitive(location));
+        pipeline.getAsJsonObject().add("location", new JsonPrimitive(location));
     }
 
     public JsonArray getPipelines() {
@@ -49,8 +46,8 @@ public class JsonConfigCollection {
         return errors;
     }
 
-    public void addError(String message,String location) {
-        this.addError(new PluginError(message,location));
+    public void addError(String message, String location) {
+        this.addError(new PluginError(message, location));
     }
 
     public void addError(PluginError error) {

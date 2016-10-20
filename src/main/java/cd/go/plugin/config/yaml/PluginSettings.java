@@ -1,8 +1,5 @@
 package cd.go.plugin.config.yaml;
 
-import lombok.Getter;
-
-@Getter
 public class PluginSettings {
     private String filePattern;
 

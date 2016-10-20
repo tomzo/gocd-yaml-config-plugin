@@ -4,12 +4,14 @@ public class PluginError {
     private String location;
     private String message;
 
-    public PluginError(){}
-    public PluginError(String message){
+    public PluginError() {
+    }
+
+    public PluginError(String message) {
         this.message = message;
     }
-    public PluginError(String message,String location)
-    {
+
+    public PluginError(String message, String location) {
         this.location = location;
         this.message = message;
     }

@@ -1,6 +1,5 @@
 package cd.go.plugin.config.yaml;
 
-import cd.go.plugin.config.yaml.transforms.RootTransform;
 import com.google.gson.*;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
@@ -77,23 +76,21 @@ public class YamlConfigPlugin implements GoPlugin {
         JsonParser jsonParser = new JsonParser();
         try {
             String requestBody = request.requestBody();
-            if(requestBody == null) {
+            if (requestBody == null) {
                 return badRequest(EMPTY_REQUEST_BODY_MESSAGE);
             }
             JsonElement parsedResponse;
             try {
                 parsedResponse = jsonParser.parse(requestBody);
-            }
-            catch (JsonParseException parseException)
-            {
+            } catch (JsonParseException parseException) {
                 return badRequest("Request body must be valid JSON string");
             }
-            if(parsedResponse.equals(new JsonObject())) {
+            if (parsedResponse.equals(new JsonObject())) {
                 return badRequest(EMPTY_REQUEST_BODY_MESSAGE);
             }
             JsonObject parsedResponseObject = parsedResponse.getAsJsonObject();
             JsonPrimitive directoryJsonPrimitive = parsedResponseObject.getAsJsonPrimitive("directory");
-            if(directoryJsonPrimitive == null) {
+            if (directoryJsonPrimitive == null) {
                 return badRequest(MISSING_DIRECTORY_MESSAGE);
             }
             String directory = directoryJsonPrimitive.getAsString();
@@ -107,16 +104,15 @@ public class YamlConfigPlugin implements GoPlugin {
                     DEFAULT_FILE_PATTERN : settings.getFilePattern();
 
             String[] files = scanner.getFilesMatchingPattern(baseDir, pattern);
-            JsonConfigCollection config = parser.parseFiles(baseDir,files);
+            JsonConfigCollection config = parser.parseFiles(baseDir, files);
 
             JsonObject responseJsonObject = config.getJsonObject();
 
             return DefaultGoPluginApiResponse.success(gson.toJson(responseJsonObject));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Unexpected error occurred in YAML configuration plugin.", e);
             JsonConfigCollection config = new JsonConfigCollection();
-            config.addError(new PluginError(e.toString(),"YAML config plugin"));
+            config.addError(new PluginError(e.toString(), "YAML config plugin"));
             return DefaultGoPluginApiResponse.error(gson.toJson(config.getJsonObject()));
         }
     }
@@ -141,6 +137,7 @@ public class YamlConfigPlugin implements GoPlugin {
         response.put(PLUGIN_SETTINGS_FILE_PATTERN, createField(DISPLAY_NAME_FILE_PATTERN, DEFAULT_FILE_PATTERN, false, false, "0"));
         return renderJSON(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, response);
     }
+
     private Map<String, Object> createField(String displayName, String defaultValue, boolean isRequired, boolean isSecure, String displayOrder) {
         Map<String, Object> fieldProperties = new HashMap<String, Object>();
         fieldProperties.put("display-name", displayName);

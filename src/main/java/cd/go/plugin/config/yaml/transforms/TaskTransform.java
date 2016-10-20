@@ -7,9 +7,7 @@ import com.google.gson.JsonObject;
 import java.util.HashSet;
 import java.util.Map;
 
-import static cd.go.plugin.config.yaml.YamlUtils.addOptionalBoolean;
-import static cd.go.plugin.config.yaml.YamlUtils.addOptionalObject;
-import static cd.go.plugin.config.yaml.YamlUtils.addOptionalStringList;
+import static cd.go.plugin.config.yaml.YamlUtils.*;
 
 public class TaskTransform {
     private static final String JSON_TASK_TYPE_FIELD = "type";
@@ -40,8 +38,8 @@ public class TaskTransform {
     }
 
     public JsonObject transform(Object maybeTask) {
-        Map<String,Object> map = (Map<String,Object>)maybeTask;
-        for(Map.Entry<String, Object> entry : map.entrySet()) {
+        Map<String, Object> map = (Map<String, Object>) maybeTask;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             return transform(entry);
         }
         throw new RuntimeException("expected task hash to have 1 item");
@@ -51,20 +49,19 @@ public class TaskTransform {
         JsonObject taskJson = new JsonObject();
 
         String taskType = taskEntry.getKey();
-        if(taskEntry.getValue() instanceof String) {
-            if(taskType.equalsIgnoreCase("script"))
-            {
+        if (taskEntry.getValue() instanceof String) {
+            if (taskType.equalsIgnoreCase("script")) {
                 taskJson.addProperty(JSON_TASK_TYPE_FIELD, "plugin");
                 JsonArray config = new JsonArray();
                 JsonObject scriptKv = new JsonObject();
-                scriptKv.addProperty("key","script");
-                scriptKv.addProperty("value",(String)taskEntry.getValue());
+                scriptKv.addProperty("key", "script");
+                scriptKv.addProperty("value", (String) taskEntry.getValue());
                 config.add(scriptKv);
                 JsonObject pluginConfig = new JsonObject();
-                pluginConfig.addProperty("id","script-executor");
-                pluginConfig.addProperty("version","1");
-                taskJson.add(JSON_PLUGIN_CONFIGURATION_FIELD,config);
-                taskJson.add(JSON_TASK_PLUGIN_CONFIGURATION_FIELD,pluginConfig);
+                pluginConfig.addProperty("id", "script-executor");
+                pluginConfig.addProperty("version", "1");
+                taskJson.add(JSON_PLUGIN_CONFIGURATION_FIELD, config);
+                taskJson.add(JSON_TASK_PLUGIN_CONFIGURATION_FIELD, pluginConfig);
                 return taskJson;
             }
             if ("".equals(taskEntry.getValue())) {
@@ -72,23 +69,23 @@ public class TaskTransform {
                 return taskJson;
             }
         }
-        taskJson.addProperty(JSON_TASK_TYPE_FIELD,taskType);
-        if(!(taskEntry.getValue() instanceof Map))
+        taskJson.addProperty(JSON_TASK_TYPE_FIELD, taskType);
+        if (!(taskEntry.getValue() instanceof Map))
             throw new YamlConfigException("expected task " + taskType + " to be a hash");
-        Map<String, Object> taskMap = (Map<String, Object>)taskEntry.getValue();
+        Map<String, Object> taskMap = (Map<String, Object>) taskEntry.getValue();
         addOnCancel(taskJson, taskMap);
 
-        addOptionalObject(taskJson,taskMap, JSON_TASK_PLUGIN_CONFIGURATION_FIELD,YAML_PLUGIN_CONFIGURATION_FIELD);
+        addOptionalObject(taskJson, taskMap, JSON_TASK_PLUGIN_CONFIGURATION_FIELD, YAML_PLUGIN_CONFIGURATION_FIELD);
         addConfiguration(taskJson, taskMap);
 
-        addOptionalBoolean(taskJson,taskMap, JSON_TASK_IS_FILE_FIELD, YAML_TASK_IS_FILE_FIELD);
-        addOptionalStringList(taskJson,taskMap, JSON_TASK_EXEC_ARGS_FIELD, YAML_TASK_EXEC_ARGS_FIELD);
+        addOptionalBoolean(taskJson, taskMap, JSON_TASK_IS_FILE_FIELD, YAML_TASK_IS_FILE_FIELD);
+        addOptionalStringList(taskJson, taskMap, JSON_TASK_EXEC_ARGS_FIELD, YAML_TASK_EXEC_ARGS_FIELD);
         // copy all other members
-        for(Map.Entry<String, Object> taskProp : taskMap.entrySet()) {
-            if(yamlSpecialKeywords.contains(taskProp.getKey()))
+        for (Map.Entry<String, Object> taskProp : taskMap.entrySet()) {
+            if (yamlSpecialKeywords.contains(taskProp.getKey()))
                 continue;
-            if(taskProp.getValue() instanceof String)
-                taskJson.addProperty(taskProp.getKey(),(String)taskProp.getValue());
+            if (taskProp.getValue() instanceof String)
+                taskJson.addProperty(taskProp.getKey(), (String) taskProp.getValue());
         }
         return taskJson;
     }
@@ -97,35 +94,33 @@ public class TaskTransform {
         JsonArray configuration = new JsonArray();
         Object options = taskMap.get(YAML_PLUGIN_STD_CONFIG_FIELD);
         Object optionsSecure = taskMap.get(YAML_PLUGIN_SEC_CONFIG_FIELD);
-        if(options != null && options != "")
-        {
-            for(Map.Entry<String,String> env : ((Map<String,String>)options).entrySet()) {
+        if (options != null && options != "") {
+            for (Map.Entry<String, String> env : ((Map<String, String>) options).entrySet()) {
                 JsonObject kv = new JsonObject();
-                kv.addProperty(JSON_PLUGIN_CONFIG_KEY_FIELD,env.getKey());
-                kv.addProperty(JSON_PLUGIN_CONFIG_VALUE_FIELD,env.getValue());
+                kv.addProperty(JSON_PLUGIN_CONFIG_KEY_FIELD, env.getKey());
+                kv.addProperty(JSON_PLUGIN_CONFIG_VALUE_FIELD, env.getValue());
                 configuration.add(kv);
             }
         }
-        if(optionsSecure != null && optionsSecure != "")
-        {
-            for(Map.Entry<String,String> env : ((Map<String,String>)optionsSecure).entrySet()) {
+        if (optionsSecure != null && optionsSecure != "") {
+            for (Map.Entry<String, String> env : ((Map<String, String>) optionsSecure).entrySet()) {
                 JsonObject kv = new JsonObject();
-                kv.addProperty(JSON_PLUGIN_CONFIG_KEY_FIELD,env.getKey());
-                kv.addProperty(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD,env.getValue());
+                kv.addProperty(JSON_PLUGIN_CONFIG_KEY_FIELD, env.getKey());
+                kv.addProperty(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD, env.getValue());
                 configuration.add(kv);
             }
         }
-        if(configuration.size() > 0)
-            taskJson.add(JSON_PLUGIN_CONFIGURATION_FIELD,configuration);
+        if (configuration.size() > 0)
+            taskJson.add(JSON_PLUGIN_CONFIGURATION_FIELD, configuration);
     }
 
     private void addOnCancel(JsonObject taskJson, Map<String, Object> taskMap) {
         Object on_cancel = taskMap.get(YAML_TASK_CANCEL_FIELD);
-        if(on_cancel != null) {
+        if (on_cancel != null) {
             if (!(on_cancel instanceof Map))
                 throw new YamlConfigException("expected on_cancel task to be a hash");
             JsonObject onCancelJson = transform(on_cancel);
-            taskJson.add(JSON_TASK_CANCEL_FIELD,onCancelJson);
+            taskJson.add(JSON_TASK_CANCEL_FIELD, onCancelJson);
         }
     }
 }

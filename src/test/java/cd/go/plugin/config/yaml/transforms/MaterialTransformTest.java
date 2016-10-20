@@ -25,12 +25,12 @@ public class MaterialTransformTest {
 
     @Test
     public void shouldTransformMinimalExplicitGit() throws IOException {
-        testTransform("minimal-explicit.git","minimal.git");
+        testTransform("minimal-explicit.git", "minimal.git");
     }
 
     @Test
     public void shouldTransformMinimalNoUrlGit() throws IOException {
-        testTransform("minimal-nourl.git","minimal.git");
+        testTransform("minimal-nourl.git", "minimal.git");
     }
 
     @Test
@@ -69,13 +69,13 @@ public class MaterialTransformTest {
     }
 
     private void testTransform(String caseFile) throws IOException {
-        testTransform(caseFile,caseFile);
+        testTransform(caseFile, caseFile);
     }
 
-    private void testTransform(String caseFile,String expectedFile) throws IOException {
-        JsonObject expectedObject = (JsonObject)readJsonObject("parts/materials/" + expectedFile + ".json");
+    private void testTransform(String caseFile, String expectedFile) throws IOException {
+        JsonObject expectedObject = (JsonObject) readJsonObject("parts/materials/" + expectedFile + ".json");
         JsonObject jsonObject = parser.transform(readYamlObject("parts/materials/" + caseFile + ".yaml"));
-        assertThat(jsonObject,is(new JsonObjectMatcher(expectedObject)));
+        assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
     }
 
 }

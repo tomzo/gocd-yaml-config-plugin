@@ -4,7 +4,7 @@
   "working_directory": "sample-project",
   "build_file": "SomeRakefile",
   "target": "build",
-  "on_cancel" : {
+  "on_cancel": {
     "type": "rake",
     "working_directory": "sample-project",
     "build_file": "CancelRakefile",

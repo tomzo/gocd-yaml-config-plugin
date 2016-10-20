@@ -14,41 +14,39 @@ public class JsonObjectMatcher extends TypeSafeMatcher<JsonObject> {
     public JsonObjectMatcher(JsonObject expected) {
         this.expected = expected;
     }
+
     @Override
     protected boolean matchesSafely(JsonObject actual) {
-        if(actual == null)
+        if (actual == null)
             return false;
-        for(Map.Entry<String,JsonElement> field : this.expected.entrySet()){
-            if(!actual.has(field.getKey()))
+        for (Map.Entry<String, JsonElement> field : this.expected.entrySet()) {
+            if (!actual.has(field.getKey()))
                 return false;
-            if(field.getValue().isJsonObject())
-            {
+            if (field.getValue().isJsonObject()) {
                 JsonObjectMatcher inner = new JsonObjectMatcher(field.getValue().getAsJsonObject());
                 JsonObject otherObj = actual.get(field.getKey()).getAsJsonObject();
-                if(!inner.matchesSafely(otherObj))
+                if (!inner.matchesSafely(otherObj))
                     return false;
-            }
-            else if(field.getValue().isJsonArray()){
+            } else if (field.getValue().isJsonArray()) {
                 JsonArray thisArray = field.getValue().getAsJsonArray();
                 JsonArray otherArray = actual.get(field.getKey()).getAsJsonArray();
-                if(otherArray == null)
+                if (otherArray == null)
                     return false;
-                if(thisArray.size() != otherArray.size())
+                if (thisArray.size() != otherArray.size())
                     return false;
-                for(int i = 0; i < thisArray.size(); i++){
+                for (int i = 0; i < thisArray.size(); i++) {
                     JsonElement thisItem = thisArray.get(i);
-                    if(!equalToAnyOther(thisItem,otherArray))
+                    if (!equalToAnyOther(thisItem, otherArray))
                         return false;
                 }
-            }
-            else if(!field.getValue().equals(actual.get(field.getKey())))
+            } else if (!field.getValue().equals(actual.get(field.getKey())))
                 return false;
         }
         return true;
     }
 
     private boolean equalToAnyOther(JsonElement thisItem, JsonArray otherArray) {
-        for(int i = 0; i < otherArray.size();i++) {
+        for (int i = 0; i < otherArray.size(); i++) {
             JsonElement otherItem = otherArray.get(i);
             if (thisItem.isJsonObject()) {
                 if (!otherItem.isJsonObject())

@@ -9,12 +9,12 @@ import java.io.IOException;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class EnvironmentsTransformTest {
     private final EnvironmentsTransform parser;
 
-    public EnvironmentsTransformTest(){
+    public EnvironmentsTransformTest() {
         parser = new EnvironmentsTransform(new EnvironmentVariablesTransform());
     }
 
@@ -29,13 +29,13 @@ public class EnvironmentsTransformTest {
     }
 
     private JsonObject testTransform(String caseFile) throws IOException {
-        return testTransform(caseFile,caseFile);
+        return testTransform(caseFile, caseFile);
     }
 
-    private JsonObject testTransform(String caseFile,String expectedFile) throws IOException {
-        JsonObject expectedObject = (JsonObject)readJsonObject("parts/environments/" + expectedFile + ".json");
+    private JsonObject testTransform(String caseFile, String expectedFile) throws IOException {
+        JsonObject expectedObject = (JsonObject) readJsonObject("parts/environments/" + expectedFile + ".json");
         JsonObject jsonObject = parser.transform(readYamlObject("parts/environments/" + caseFile + ".yaml"));
-        assertThat(jsonObject,is(new JsonObjectMatcher(expectedObject)));
+        assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
         return jsonObject;
     }
 }

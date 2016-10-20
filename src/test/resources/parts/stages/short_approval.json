@@ -1,7 +1,9 @@
 {
-  "name" : "test",
-  "approval" : {
-    "type" : "manual"
+  "name": "test",
+  "approval": {
+    "type": "manual"
   },
-  "jobs" : [ null ]
+  "jobs": [
+    null
+  ]
 }

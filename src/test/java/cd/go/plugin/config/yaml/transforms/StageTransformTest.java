@@ -10,7 +10,7 @@ import java.io.IOException;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class StageTransformTest {
@@ -22,7 +22,7 @@ public class StageTransformTest {
     public void SetUp() {
         environmentTransform = new EnvironmentVariablesTransform();
         jobTransform = mock(JobTransform.class);
-        parser = new StageTransform(environmentTransform,jobTransform);
+        parser = new StageTransform(environmentTransform, jobTransform);
     }
 
     @Test
@@ -37,17 +37,17 @@ public class StageTransformTest {
 
     @Test
     public void shouldTransformSingleJobStage() throws IOException {
-        parser = new StageTransform(environmentTransform,new JobTransform(environmentTransform,mock(TaskTransform.class)));
+        parser = new StageTransform(environmentTransform, new JobTransform(environmentTransform, mock(TaskTransform.class)));
         testTransform("stage-job");
     }
 
     private void testTransform(String caseFile) throws IOException {
-        testTransform(caseFile,caseFile);
+        testTransform(caseFile, caseFile);
     }
 
-    private void testTransform(String caseFile,String expectedFile) throws IOException {
-        JsonObject expectedObject = (JsonObject)readJsonObject("parts/stages/" + expectedFile + ".json");
+    private void testTransform(String caseFile, String expectedFile) throws IOException {
+        JsonObject expectedObject = (JsonObject) readJsonObject("parts/stages/" + expectedFile + ".json");
         JsonObject jsonObject = parser.transform(readYamlObject("parts/stages/" + caseFile + ".yaml"));
-        assertThat(jsonObject,is(new JsonObjectMatcher(expectedObject)));
+        assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
     }
 }

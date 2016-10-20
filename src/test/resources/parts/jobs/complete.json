@@ -1,19 +1,19 @@
 {
   "name": "test",
-  "run_instance_count" : 7,
+  "run_instance_count": 7,
   "environment_variables": [
     {
-      "name" : "LD_LIBRARY_PATH",
-      "value" : "."
+      "name": "LD_LIBRARY_PATH",
+      "value": "."
     }
   ],
   "tabs": [
-     {
-       "name": "test",
-       "path": "results.xml"
-     }
-   ],
-   "resources": [
+    {
+      "name": "test",
+      "path": "results.xml"
+    }
+  ],
+  "resources": [
     "linux"
   ],
   "artifacts": [

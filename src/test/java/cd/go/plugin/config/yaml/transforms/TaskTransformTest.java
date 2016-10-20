@@ -9,7 +9,7 @@ import java.io.IOException;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class TaskTransformTest {
     private final TaskTransform parser;
@@ -56,23 +56,23 @@ public class TaskTransformTest {
     @Test
     public void shouldTransformMultilineScript() throws IOException {
         JsonObject plugin = testTransform("multiline.script");
-        assertThat(plugin.getAsJsonArray("configuration").get(0).getAsJsonObject().get("value").getAsString(),is("./build.sh compile\nmake test"));
+        assertThat(plugin.getAsJsonArray("configuration").get(0).getAsJsonObject().get("value").getAsString(), is("./build.sh compile\nmake test"));
     }
 
     @Test
     public void shouldTransformBreaklineScript() throws IOException {
         JsonObject plugin = testTransform("breakline.script");
-        assertThat(plugin.getAsJsonArray("configuration").get(0).getAsJsonObject().get("value").getAsString(),is("./build.sh compile && make test"));
+        assertThat(plugin.getAsJsonArray("configuration").get(0).getAsJsonObject().get("value").getAsString(), is("./build.sh compile && make test"));
     }
 
     private JsonObject testTransform(String caseFile) throws IOException {
-        return testTransform(caseFile,caseFile);
+        return testTransform(caseFile, caseFile);
     }
 
-    private JsonObject testTransform(String caseFile,String expectedFile) throws IOException {
-        JsonObject expectedObject = (JsonObject)readJsonObject("parts/tasks/" + expectedFile + ".json");
+    private JsonObject testTransform(String caseFile, String expectedFile) throws IOException {
+        JsonObject expectedObject = (JsonObject) readJsonObject("parts/tasks/" + expectedFile + ".json");
         JsonObject jsonObject = parser.transform(readYamlObject("parts/tasks/" + caseFile + ".yaml"));
-        assertThat(jsonObject,is(new JsonObjectMatcher(expectedObject)));
+        assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
         return jsonObject;
     }
 }

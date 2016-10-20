@@ -1,15 +1,15 @@
 {
-  "name" : "build",
-  "approval" : {
-    "type" : "manual"
+  "name": "build",
+  "approval": {
+    "type": "manual"
   },
-  "jobs" : [
+  "jobs": [
     {
-      "name" : "build",
-      "resources" : [
+      "name": "build",
+      "resources": [
         "cpp"
       ],
-      "tasks" : [
+      "tasks": [
         null
       ]
     }

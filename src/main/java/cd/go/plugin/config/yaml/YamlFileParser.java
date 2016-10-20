@@ -9,7 +9,7 @@ public class YamlFileParser {
     private RootTransform rootTransform;
 
     public YamlFileParser() {
-        this.rootTransform = new RootTransform();
+        this(new RootTransform());
     }
 
     public YamlFileParser(RootTransform rootTransform) {

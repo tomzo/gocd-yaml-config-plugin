@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class YamlUtils {
     // http://yaml.org/type/bool.html
     private static Pattern truePattern = Pattern.compile(
@@ -30,6 +32,12 @@ public class YamlUtils {
 
     public static void addOptionalString(JsonObject jsonObject, Map<String, Object> yamlSource, String jsonField, String yamlFieldName) {
         String value = getOptionalString(yamlSource, yamlFieldName);
+        if (value != null)
+            jsonObject.addProperty(jsonField, value);
+    }
+
+    public static void addOptionalInteger(JsonObject jsonObject, Map<String, Object> yamlSource, String jsonField, String yamlFieldName) {
+        Integer value = getOptionalInteger(yamlSource, yamlFieldName);
         if (value != null)
             jsonObject.addProperty(jsonField, value);
     }
@@ -80,6 +88,18 @@ public class YamlUtils {
         Object value = map.get(fieldName);
         if (value != null) {
             return (String) value;
+        }
+        return null;
+    }
+
+    public static Integer getOptionalInteger(Map map, String fieldName) {
+        Object value = map.get(fieldName);
+        if (value != null) {
+            if(value instanceof Integer)
+                return (Integer) value;
+            else if(value instanceof String){
+                return parseInt((String)value);
+            }
         }
         return null;
     }

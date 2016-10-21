@@ -56,7 +56,7 @@ environments:
       - build-testing
 pipelines:
   mypipe1: # definition of mypipe1 pipeline
-    group: mygroup # note that the group name can contain only of alphanumeric & underscore characters 
+    group: mygroup # note that the group name can contain only of alphanumeric & underscore characters
     label_template: "${mygit[:8]}"
     locking: off
     materials:
@@ -274,6 +274,7 @@ approval:
 
 ```yaml
 test:
+  timeout: 5
   run_instances: 7
   environment_variables:
     LD_LIBRARY_PATH: .
@@ -294,6 +295,8 @@ test:
   tasks:
     ...
 ```
+
+*Note: timeout is added since 0.2.0*
 
 ### Run many instances
 

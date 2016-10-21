@@ -1,5 +1,6 @@
 {
   "name": "test",
+  "timeout" : 5,
   "run_instance_count": 7,
   "environment_variables": [
     {

@@ -14,6 +14,8 @@ import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.
 
 public class JobTransform {
     private static final String JSON_JOB_NAME_FIELD = "name";
+    public static final String YAML_JOB_TIMEOUT_FIELD = "timeout";
+    public static final String JSON_JOB_TIMEOUT_FIELD = "timeout";
     public static final String YAML_JOB_TASKS_FIELD = "tasks";
     public static final String JSON_JOB_TASKS_FIELD = "tasks";
     public static final String YAML_JOB_RUN_INSTANCES_FIELD = "run_instances";
@@ -61,6 +63,7 @@ public class JobTransform {
     public JsonObject transform(String jobName, Map<String, Object> jobMap) {
         JsonObject jobJson = new JsonObject();
         jobJson.addProperty(JSON_JOB_NAME_FIELD, jobName);
+        addOptionalInteger(jobJson, jobMap, JSON_JOB_TIMEOUT_FIELD, YAML_JOB_TIMEOUT_FIELD);
         addRunInstances(jobMap, jobJson);
         JsonArray jsonEnvVariables = environmentTransform.transform(jobMap);
         if (jsonEnvVariables != null && jsonEnvVariables.size() > 0)

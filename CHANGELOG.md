@@ -1,4 +1,4 @@
-# 0.2.0 (not released)
+# 0.2.0 (21 Oct 2016)
 
 * added optional `timeout` field to job
 

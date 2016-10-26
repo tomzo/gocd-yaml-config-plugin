@@ -64,7 +64,7 @@ pipelines:
         # keyword git says about type of material and url at once
         git: http://my.example.org/mygit.git
         branch: ci
-      upstream:
+      myupstream:
         # type is optional here, material type is implied based on presence of pipeline and stage fields
         # type: dependency
         pipeline: pipe2
@@ -532,7 +532,7 @@ rake:
 ```yaml
 fetch:
   run_if: any
-  pipeline: upstream
+  pipeline: myupstream
   stage: upstream_stage
   job: upstream_job
   is_file: yes

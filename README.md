@@ -628,6 +628,12 @@ secure_variables:
   MY_PASSWORD: "s&Du#@$xsSa"
 ```
 
+> There is no easy way to generate obtain [encrypted value](https://github.com/tomzo/gocd-yaml-config-plugin/issues/5) from GoServer, alternatively you can login into go-server and execute the following command to generate encrypted value
+
+```sh
+sudo -u go bash -c 'echo -n 'YOUR-INPUT' | openssl enc -des-cbc -a -iv 0 -K $(cat /etc/go/cipher)'
+```
+
 ### Boolean values
 
 Among all configuration elements there are boolean values, which can be defined

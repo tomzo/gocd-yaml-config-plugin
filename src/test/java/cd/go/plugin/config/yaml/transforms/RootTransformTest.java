@@ -1,6 +1,8 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonConfigCollection;
+import cd.go.plugin.config.yaml.YamlConfigException;
+import com.esotericsoftware.yamlbeans.YamlReader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,6 +11,7 @@ import java.io.IOException;
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class RootTransformTest {
@@ -38,6 +41,12 @@ public class RootTransformTest {
         JsonConfigCollection collection = readRootYaml("2");
         assertThat(collection.getJsonObject().get("environments").getAsJsonArray().size(), is(2));
         assertThat(collection.getJsonObject().get("pipelines").getAsJsonArray().size(), is(2));
+    }
+
+    @Test(expected = YamlReader.YamlReaderException.class)
+    public void shouldNotTransformRootWhenYAMLHasDuplicateKeys() throws IOException {
+        readRootYaml("duplicate.materials.pipe");
+        fail("should have thrown duplicate keys error");
     }
 
     private JsonConfigCollection readRootYaml(String caseFile) throws IOException {

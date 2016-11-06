@@ -1,5 +1,6 @@
 package cd.go.plugin.config.yaml;
 
+import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -17,7 +18,9 @@ public class TestUtils {
     }
 
     public static Object readYamlObject(String path) throws IOException {
-        YamlReader reader = new YamlReader(TestUtils.createReader(path));
+        YamlConfig config = new YamlConfig();
+        config.setAllowDuplicates(false);
+        YamlReader reader = new YamlReader(TestUtils.createReader(path), config);
         return reader.read();
     }
 

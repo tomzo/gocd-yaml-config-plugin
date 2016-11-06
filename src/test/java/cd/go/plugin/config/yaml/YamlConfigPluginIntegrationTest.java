@@ -169,6 +169,27 @@ public class YamlConfigPluginIntegrationTest {
         assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("simple-invalid.gocd.yaml"));
     }
 
+    @Test
+    public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenDuplicateKeysCaseFile() throws UnhandledRequestTypeException, IOException {
+        setupCase("simpleInvalidCase", "duplicate-materials");
+
+        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
+        String requestBody = "{\n" +
+                "    \"directory\":\"simpleInvalidCase\",\n" +
+                "    \"configurations\":[]\n" +
+                "}";
+        parseDirectoryRequest.setRequestBody(requestBody);
+
+        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        JsonArray errors = (JsonArray) responseJsonObject.get("errors");
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(0));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is("YAML contains duplicate keys: Line 9, column 20: Duplicate key found 'upstream'"));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("duplicate-materials.gocd.yaml"));
+    }
+
     private void setupCase(String folder, String caseName) throws IOException {
         File caseFolder = new File(folder);
         FileUtils.deleteDirectory(caseFolder);

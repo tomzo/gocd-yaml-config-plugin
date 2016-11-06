@@ -1,0 +1,10 @@
+pipelines:
+  pipe1:
+    group: group
+    materials:
+      upstream:
+        pipeline: upstream-pipeline-1
+        stage: test1
+      upstream:
+        pipeline: upstream-pipeline-2
+        stage: test2

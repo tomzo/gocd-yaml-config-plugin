@@ -30,7 +30,7 @@ public class YamlFileParser {
                 JsonConfigCollection filePart = rootTransform.transform(rootObject, file);
                 collection.append(filePart);
             } catch (YamlReader.YamlReaderException ex) {
-                collection.addError("YAML contains duplicate keys: " + ex.getMessage() , file);
+                collection.addError(ex.getMessage() , file);
             } catch (FileNotFoundException ex) {
                 collection.addError("File matching Go YAML pattern disappeared", file);
             } catch (IOException ex) {

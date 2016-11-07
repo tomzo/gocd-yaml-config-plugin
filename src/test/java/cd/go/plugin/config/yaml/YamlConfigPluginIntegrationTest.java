@@ -186,7 +186,7 @@ public class YamlConfigPluginIntegrationTest {
         JsonArray errors = (JsonArray) responseJsonObject.get("errors");
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(0));
-        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is("YAML contains duplicate keys: Line 9, column 20: Duplicate key found 'upstream'"));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is("Line 9, column 20: Duplicate key found 'upstream'"));
         assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("duplicate-materials.gocd.yaml"));
     }
 

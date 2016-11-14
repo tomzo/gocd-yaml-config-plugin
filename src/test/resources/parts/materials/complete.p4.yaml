@@ -1,0 +1,7 @@
+p4Material1:
+  p4: "host.domain.com:12345"
+  username: "johndoe"
+  view: |
+    //depot/external... //ws/external...
+    //depot/tools... //ws/external...
+  auto_update: false

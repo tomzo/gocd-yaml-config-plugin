@@ -32,6 +32,10 @@ public class MaterialTransform {
     private static final String YAML_MATERIAL_CHECK_EXTERNALS_FIELD = "check_externals";
     private static final String YAML_SHORT_KEYWORD_HG = "hg";
 
+    private static final String YAML_SHORT_KEYWORD_PERFORCE = "p4";
+    private static final String JSON_MATERIAL_USE_TICKETS_FIELD = "use_tickets";
+    private static final String YAML_MATERIAL_USE_TICKETS_FIELD = "use_tickets";
+
     private final HashSet<String> yamlSpecialKeywords = new HashSet<String>();
 
     public MaterialTransform() {
@@ -47,6 +51,8 @@ public class MaterialTransform {
         yamlSpecialKeywords.add("svn");
         yamlSpecialKeywords.add("check_externals");
         yamlSpecialKeywords.add("hg");
+        yamlSpecialKeywords.add("p4");
+        yamlSpecialKeywords.add("use_tickets");
     }
 
     public JsonObject transform(Object maybeMaterial) {
@@ -66,6 +72,7 @@ public class MaterialTransform {
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_AUTO_UPDATE_FIELD, YAML_MATERIAL_AUTO_UPDATE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_SHALLOW_CLONE_FIELD, YAML_MATERIAL_SHALLOW_CLONE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_CHECK_EXTERNALS_FIELD, YAML_MATERIAL_CHECK_EXTERNALS_FIELD);
+        addOptionalBoolean(material, materialMap, JSON_MATERIAL_USE_TICKETS_FIELD, YAML_MATERIAL_USE_TICKETS_FIELD);
         if (materialMap.containsKey("blacklist"))
             addFilter(material, materialMap.get("blacklist"), "ignore");
         if (materialMap.containsKey("whitelist"))
@@ -99,6 +106,11 @@ public class MaterialTransform {
         if (package_id != null) {
             material.addProperty(JSON_MATERIAL_TYPE_FIELD, "package");
             material.addProperty("package_id", package_id);
+        }
+        String p4 = getOptionalString(materialMap, YAML_SHORT_KEYWORD_PERFORCE);
+        if (p4 != null) {
+            material.addProperty(JSON_MATERIAL_TYPE_FIELD, "p4");
+            material.addProperty("port", p4);
         }
         //TODO other types
 

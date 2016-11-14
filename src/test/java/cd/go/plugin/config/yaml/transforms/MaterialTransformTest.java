@@ -68,6 +68,11 @@ public class MaterialTransformTest {
         testTransform("package");
     }
 
+    @Test
+    public void shouldTransformCompleteP4() throws IOException {
+        testTransform("complete.p4");
+    }
+
     private void testTransform(String caseFile) throws IOException {
         testTransform(caseFile, caseFile);
     }

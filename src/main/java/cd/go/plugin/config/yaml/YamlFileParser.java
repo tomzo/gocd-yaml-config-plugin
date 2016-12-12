@@ -34,7 +34,7 @@ public class YamlFileParser {
             } catch (FileNotFoundException ex) {
                 collection.addError("File matching Go YAML pattern disappeared", file);
             } catch (IOException ex) {
-                collection.addError("IO error when reading Go YAML file", file);
+                collection.addError(ex.getMessage() +" : "+ ex.getCause().getMessage() + " : ", file);
             } finally {
                 if (inputStream != null) {
                     try {

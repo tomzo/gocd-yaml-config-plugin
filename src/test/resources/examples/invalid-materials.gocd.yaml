@@ -1,0 +1,21 @@
+pipelines:
+  pipe1:
+    group: group
+    materials:
+      upstream:
+        pipeline: upstream-pipeline-1
+        stage: test1
+    stages: # list of stages in order
+      - build-image: # name of stage
+          clean_workspace: true
+          jobs:
+            build-image: # name of the job
+              artifacts:
+               - build:
+                   source: image_ref
+              tasks:
+               - exec: # indicates type of task
+                   command: bash
+                   arguments:`
+                    - "-c"
+                    - "docker build"

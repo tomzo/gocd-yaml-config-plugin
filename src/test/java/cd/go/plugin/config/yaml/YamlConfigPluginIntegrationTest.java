@@ -190,6 +190,27 @@ public class YamlConfigPluginIntegrationTest {
         assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("duplicate-materials.gocd.yaml"));
     }
 
+    @Test
+    public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenParsingErrorCaseFile() throws UnhandledRequestTypeException, IOException {
+        setupCase("simpleInvalidCase", "invalid-materials");
+
+        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
+        String requestBody = "{\n" +
+                "    \"directory\":\"simpleInvalidCase\",\n" +
+                "    \"configurations\":[]\n" +
+                "}";
+        parseDirectoryRequest.setRequestBody(requestBody);
+
+        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        JsonArray errors = (JsonArray) responseJsonObject.get("errors");
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(0));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is("Error parsing YAML. : Line 21, column 0: Expected a 'block end' but found: scalar : "));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("invalid-materials.gocd.yaml"));
+    }
+
     private void setupCase(String folder, String caseName) throws IOException {
         File caseFolder = new File(folder);
         FileUtils.deleteDirectory(caseFolder);

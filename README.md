@@ -306,7 +306,7 @@ elastic_profile_id: "docker.unit-test"
 ```
 
 It MUST NOT be specified along with `resources`.
-Available in GoCD server since v16.10.0, yaml plugin 0.4.0.
+Available in GoCD server since v16.12.0, yaml plugin 0.4.0.
 
 ### Run many instances
 

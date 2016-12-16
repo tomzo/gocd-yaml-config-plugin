@@ -7,7 +7,7 @@ if [ ! -f linux-amd64-github-release.tar.bz2 ]; then
 fi
 tar xf linux-amd64-github-release.tar.bz2
 
-VERSION="0.2.0"
+VERSION="0.4.0"
 GHRELEASE_BIN="./bin/linux/amd64/github-release"
 
 $GHRELEASE_BIN release \

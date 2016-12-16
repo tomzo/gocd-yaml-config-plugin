@@ -26,6 +26,8 @@ public class JobTransform {
     private static final String JSON_JOB_TABS_FIELD = "tabs";
     private static final String JSON_JOB_RESOURCES_FIELD = "resources";
     private static final String YAML_JOB_RESOURCES_FIELD = "resources";
+    private static final String JSON_JOB_ELASTIC_PROFILE_FIELD = "elastic_profile_id";
+    private static final String YAML_JOB_ELASTIC_PROFILE_FIELD = "elastic_profile_id";
     private static final String YAML_JOB_ARTIFACTS_FIELD = "artifacts";
     private static final String JSON_JOB_ARTIFACTS_FIELD = "artifacts";
     private static final String JSON_JOB_ARTIFACT_SOURCE_FIELD = "source";
@@ -70,6 +72,7 @@ public class JobTransform {
             jobJson.add(JSON_ENV_VAR_FIELD, jsonEnvVariables);
         addTabs(jobJson, jobMap);
         addOptionalStringList(jobJson, jobMap, JSON_JOB_RESOURCES_FIELD, YAML_JOB_RESOURCES_FIELD);
+        addOptionalString(jobJson, jobMap, JSON_JOB_ELASTIC_PROFILE_FIELD, YAML_JOB_ELASTIC_PROFILE_FIELD);
         addArtifacts(jobJson, jobMap);
         addProperties(jobJson, jobMap);
         addTasks(jobJson, jobMap);

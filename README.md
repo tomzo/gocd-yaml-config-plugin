@@ -296,7 +296,17 @@ test:
     ...
 ```
 
-*Note: timeout is added since 0.2.0*
+*Note: timeout is added since 0.2.0 version of yaml plugin*
+
+### Elastic agent profile id
+
+Job configuration may define elastic agents profile id, as such:
+```yaml
+elastic_profile_id: "docker.unit-test"
+```
+
+It MUST NOT be specified along with `resources`.
+Available in GoCD server since v16.10.0, yaml plugin 0.4.0.
 
 ### Run many instances
 

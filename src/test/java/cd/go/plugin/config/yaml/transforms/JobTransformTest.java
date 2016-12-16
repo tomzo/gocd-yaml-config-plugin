@@ -42,6 +42,11 @@ public class JobTransformTest {
         testTransform("complete");
     }
 
+    @Test
+    public void shouldTransformElasticProfileJob() throws IOException {
+        testTransform("elastic_profile");
+    }
+
     private JsonObject testTransform(String caseFile) throws IOException {
         return testTransform(caseFile, caseFile);
     }

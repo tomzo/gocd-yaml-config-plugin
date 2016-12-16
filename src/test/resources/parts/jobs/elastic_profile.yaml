@@ -1,0 +1,4 @@
+test:
+  elastic_profile_id: "profile-id"
+  tasks:
+    - null

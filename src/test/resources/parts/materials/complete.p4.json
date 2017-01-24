@@ -1,0 +1,16 @@
+{
+  "name": "p4Material1",
+  "type": "p4",
+  "port": "host.domain.com:12345",
+  "username": "johndoe",
+  "password": "pass",
+  "use_tickets": false,
+  "view": "//depot/external... //ws/external...\n//depot/tools... //ws/external...",
+  "filter": {
+    "ignore": [
+      "externals",
+      "tools"
+    ]
+  },
+  "auto_update": false
+}

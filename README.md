@@ -432,7 +432,20 @@ hgMaterial1:
 
 ### Perforce
 
-*TODO*
+```yaml
+p4Material1:
+  p4: "host.domain.com:12345"
+  username: johndoe
+  password: pass
+  use_tickets: false
+  view: |
+    //depot/external... //ws/external...
+    //depot/tools... //ws/external...
+  blacklist:
+    - externals
+    - tools
+  auto_update: false
+```
 
 ### Tfs
 

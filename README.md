@@ -6,7 +6,7 @@
 
 [GoCD](go.cd) server plugin to keep **pipelines** and **environments**
 configuration in source-control in [YAML](http://www.yaml.org/).
-See [this document](https://docs.google.com/document/d/1_eGZaqIz9ydnYQJ_Xrcb3obXc-T6jIfV_pgZQNCydVk/pub)
+See [this document](https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html)
 to find out what are GoCD configuration repositories.
 
 This is second GoCD configuration plugin, which enhances some of shortcomings of

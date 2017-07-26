@@ -649,6 +649,14 @@ secure_variables:
   MY_PASSWORD: "s&Du#@$xsSa"
 ```
 
+#### To generate an encrypted value
+
+**For versions of GoCD >= 17.1:**
+
+See the [encryption API](https://api.gocd.org/current/#encrypt-a-plain-text-value).
+
+**For versions of GoCD <= 16.12:**
+
 > There is no easy way to generate obtain [encrypted value](https://github.com/tomzo/gocd-yaml-config-plugin/issues/5) from GoServer, alternatively you can login into go-server and execute the following command to generate encrypted value
 
 ```sh

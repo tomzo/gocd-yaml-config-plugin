@@ -173,11 +173,21 @@ public class JobTransform {
             throw new YamlConfigException("tasks are required in a job");
         JsonArray tasksJson = new JsonArray();
         List<Object> taskList = (List<Object>) tasksObj;
-        for (Object maybeTask : taskList) {
-            JsonObject task = taskTransform.transform(maybeTask);
-            tasksJson.add(task);
-        }
+        addTasks(taskList, tasksJson);
         jobJson.add(JSON_JOB_TASKS_FIELD, tasksJson);
+    }
+
+    private void addTasks(List<Object> taskList, JsonArray tasksJson) {
+        for (Object maybeTask : taskList) {
+            if (maybeTask instanceof List) {
+                List<Object> taskNestedList = (List<Object>) maybeTask;
+                addTasks(taskNestedList, tasksJson);
+            }
+            else {
+                JsonObject task = taskTransform.transform(maybeTask);
+                tasksJson.add(task);
+            }
+        }
     }
 
 }

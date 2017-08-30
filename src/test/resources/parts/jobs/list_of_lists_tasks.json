@@ -1,0 +1,20 @@
+{
+  "name": "test",
+  "tasks": [
+    {
+    "type": "exec",
+    "arguments": ["clean"],
+    "command": "./gradlew"
+    },
+    {
+      "type": "exec",
+      "arguments": ["assemble"],
+      "command": "./gradlew"
+    },
+    {
+      "type": "exec",
+      "arguments": ["test"],
+      "command": "./gradlew"
+    }
+  ]
+}

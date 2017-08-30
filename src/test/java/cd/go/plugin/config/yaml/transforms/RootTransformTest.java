@@ -43,6 +43,13 @@ public class RootTransformTest {
         assertThat(collection.getJsonObject().get("pipelines").getAsJsonArray().size(), is(2));
     }
 
+    @Test
+    public void shouldTransformRootWithCommonSection() throws IOException {
+        JsonConfigCollection collection = readRootYaml("common_section");
+        assertThat(collection.getJsonObject().get("environments").getAsJsonArray().size(), is(1));
+        assertThat(collection.getJsonObject().get("pipelines").getAsJsonArray().size(), is(1));
+    }
+
     @Test(expected = YamlReader.YamlReaderException.class)
     public void shouldNotTransformRootWhenYAMLHasDuplicateKeys() throws IOException {
         readRootYaml("duplicate.materials.pipe");

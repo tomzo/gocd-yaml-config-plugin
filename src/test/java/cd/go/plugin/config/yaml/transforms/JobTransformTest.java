@@ -47,6 +47,15 @@ public class JobTransformTest {
         testTransform("elastic_profile");
     }
 
+    @Test
+    public void shouldTransformJobWithListOfListsTasks() throws IOException {
+        environmentTransform = new EnvironmentVariablesTransform();
+        taskTransform = new TaskTransform();
+        parser = new JobTransform(environmentTransform, taskTransform);
+
+        JsonObject job = testTransform("list_of_lists_tasks");
+    }
+
     private JsonObject testTransform(String caseFile) throws IOException {
         return testTransform(caseFile, caseFile);
     }

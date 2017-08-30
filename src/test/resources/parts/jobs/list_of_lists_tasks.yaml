@@ -1,0 +1,15 @@
+test:
+  tasks:
+    -
+      - exec:
+          command: ./gradlew
+          arguments:
+            - clean
+      - exec:
+          command: ./gradlew
+          arguments:
+            - assemble
+    - exec:
+        command: ./gradlew
+        arguments:
+          - test

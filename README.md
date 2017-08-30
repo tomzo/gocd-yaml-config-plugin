@@ -139,6 +139,7 @@ Feel free to improve it!
     * [pluggable scm](#pluggable)
     * [config repo](#configrepo)
 1. [Secure variables](#to-generate-an-encrypted-value)
+1. [YAML Aliases](#yaml-aliases)
 
 # Pipeline
 
@@ -712,6 +713,55 @@ Among all configuration elements there are boolean values, which can be defined
 using any of the keywords below (as in [yaml specs](http://yaml.org/type/bool.html)):
  * **true** - `y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON`
  * **false** - `n|N|no|No|NO|false|False|FALSE|off|Off|OFF`
+
+ ## YAML Aliases
+
+YAML Aliases ([specification](http://www.yaml.org/spec/1.2/spec.html#id2786196)) are supported and provide a way to avoid duplication.
+
+Aliases can be defined anywhere in the configuration as long as they are valid configuration elements.
+
+```yaml
+- exec:
+  command: make
+  arguments:
+   - clean
+   - &verbose_arg "VERBOSE=true" # define the alias
+- exec:
+  command: make
+  arguments:
+   - world
+   - *verbose_arg # use the alias
+```
+
+There is also a dedicated top-level `common` section which allows you to have all aliases in one place and where you don't need to worry about correct placement within the configuration.
+
+```yaml
+common:
+  verbose_arg: &verbose_arg "VERBOSE=true"
+  build_tasks: &build_tasks
+    - exec:
+        command: make
+        arguments:
+         - clean
+    - exec:
+        command: make
+        arguments:
+         - world
+pipelines:
+  pipe1:
+    stages:
+      - build:
+          jobs:
+            build:
+              tasks: *build_tasks
+            test:
+              tasks:
+               - *build_tasks # task list aliases can also be mixed with additional tasks in the same job
+               - exec:
+                   command: make
+                   arguments:
+                    - test
+```
 
 # Development
 

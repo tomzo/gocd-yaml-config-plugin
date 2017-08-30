@@ -31,7 +31,7 @@ add any number of YAML configuration repositories as such:
 
 ```xml
 <config-repos>
-  <config-repo plugin="yaml.config.plugin">
+  <config-repo pluginId="yaml.config.plugin" id="repo1">
     <git url="https://github.com/tomzo/gocd-yaml-config-example.git" />
   </config-repo>
 </config-repos>

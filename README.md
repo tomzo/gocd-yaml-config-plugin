@@ -137,6 +137,7 @@ Feel free to improve it!
     * [tfs](#tfs)
     * [hg](#hg)
     * [pluggable scm](#pluggable)
+    * [config repo](#configrepo)
 
 # Pipeline
 
@@ -447,7 +448,7 @@ p4Material1:
 
 ### Tfs
 
-*TODO*
+*TODO: - not supported by yaml plugin yet*
 
 ### Pluggable
 
@@ -459,6 +460,45 @@ myPluggableGit:
     - dir1
     - dir2
 ```
+
+### Configrepo
+
+This is a convenience for shorter and more consistent material declaration.
+When configuration repository is the same as one of pipeline materials,
+then you usually need to repeat definitions in XML and in JSON, for example:
+
+```yaml
+materials:
+  foo:
+    git: "https://github.com/tomzo/gocd-json-config-example.git",
+    branch: ci
+```
+
+And in server XML:
+```xml
+<config-repos>
+   <config-repo pluginId="yaml.config.plugin" id="repo1">
+     <git url="https://github.com/tomzo/gocd-json-config-example.git" branch="ci" />
+   </config-repo>
+</config-repos>
+```
+
+Notice that url and branch is repeated. This is inconvenient in case when you move repository,
+because it requires 2 updates, in code and in server XML.
+
+Using  **`configrepo` material type**, above repetition can be avoided,
+last example can be refactored into:
+
+```yaml
+materials:
+  foo:
+    type: configrepo
+```
+
+Server interprets `configrepo` material in this way:
+
+> Clone the material configuration of the repository we are parsing **as is in XML** and replace **name, destination and filters (whitelist/blacklist)**,
+then use the modified clone in place of `configrepo` material.
 
 ### Dependency
 

@@ -44,6 +44,16 @@ public class MaterialTransformTest {
     }
 
     @Test
+    public void shouldTransformMinimalConfigRepo() throws IOException {
+        testTransform("minimal.cr");
+    }
+
+    @Test
+    public void shouldTransformCompleteConfigRepo() throws IOException {
+        testTransform("complete.cr");
+    }
+
+    @Test
     public void shouldTransformCompleteSvn() throws IOException {
         testTransform("complete.svn");
     }

@@ -1,0 +1,11 @@
+{
+  "name": "crMaterial",
+  "type": "configrepo",
+  "filter": {
+    "ignore": [
+      "externals",
+      "tools"
+    ]
+  },
+  "destination": "dir1"
+}

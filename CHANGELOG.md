@@ -1,6 +1,7 @@
 # 0.5.0 (Unreleased)
 
  * new release build tasks
+ * added configrepo material type
 
 # 0.4.0 (16 Dec 2016)
 

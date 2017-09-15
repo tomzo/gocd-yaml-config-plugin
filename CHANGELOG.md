@@ -2,6 +2,7 @@
 
  * new release build tasks
  * added configrepo material type
+ * added p4 material type support
 
 # 0.4.0 (16 Dec 2016)
 

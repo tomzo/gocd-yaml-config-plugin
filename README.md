@@ -138,6 +138,7 @@ Feel free to improve it!
     * [hg](#hg)
     * [pluggable scm](#pluggable)
     * [config repo](#configrepo)
+1. [Secure variables](#to-generate-an-encrypted-value)
 
 # Pipeline
 
@@ -445,6 +446,8 @@ p4Material1:
     - tools
   auto_update: false
 ```
+
+Instead of `password` you can use `encrypted_password`.
 
 ### Tfs
 

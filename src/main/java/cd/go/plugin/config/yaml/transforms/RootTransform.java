@@ -55,8 +55,8 @@ public class RootTransform {
                                 String.format("Failed to parse environment %s; %s", env.getKey(), ex.getMessage()), location));
                     }
                 }
-            } else
-                throw new YamlConfigException(pe.getKey() + " is invalid, expected pipelines or environments");
+            } else if (!"common".equalsIgnoreCase(pe.getKey()))
+                throw new YamlConfigException(pe.getKey() + " is invalid, expected pipelines, environments, or common");
         }
         return partialConfig;
     }

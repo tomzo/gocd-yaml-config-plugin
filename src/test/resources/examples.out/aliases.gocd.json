@@ -1,0 +1,59 @@
+{
+  "target_version": 1,
+  "environments": [],
+  "pipelines": [{
+    "name": "pipe1",
+    "group": "aliases",
+    "materials": [{
+      "name": "mygit",
+      "type": "git",
+      "url": "http://my.example.org/mygit.git",
+      "branch": "ci"
+    }],
+    "stages": [{
+      "name": "prepare",
+      "jobs": [{
+        "name": "prepare",
+        "tasks": [{
+          "type": "exec",
+          "arguments": ["hello world"],
+          "command": "prepare"
+        }]
+      }]
+    }, {
+      "name": "build",
+      "jobs": [{
+        "name": "build",
+        "tasks": [{
+          "type": "exec",
+          "command": "init"
+        }, {
+          "type": "exec",
+          "arguments": ["VERBOSE=true"],
+          "command": "make"
+        }]
+      }]
+    }, {
+      "name": "test",
+      "jobs": [{
+        "name": "test",
+        "tasks": [{
+          "type": "exec",
+          "command": "init"
+        }, {
+          "type": "exec",
+          "arguments": ["VERBOSE=true"],
+          "command": "make"
+        }, {
+          "type": "exec",
+          "command": "test_unit"
+        }, {
+          "type": "exec",
+          "command": "test_integration"
+        }]
+      }]
+    }],
+    "location": "aliases.gocd.yaml"
+  }],
+  "errors": []
+}

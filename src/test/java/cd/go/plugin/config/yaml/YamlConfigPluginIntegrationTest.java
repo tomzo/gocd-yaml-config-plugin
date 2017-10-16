@@ -320,4 +320,26 @@ public class YamlConfigPluginIntegrationTest {
         assertTrue(obj.has("environments"));
         assertTrue(obj.has("target_version"));
     }
+
+    @Test
+    public void shouldRespondSuccessToParseDirectoryRequestWhenAliasesCaseFile() throws UnhandledRequestTypeException,
+            IOException {
+        setupCase("aliasesCase", "aliases");
+
+        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
+        String requestBody = "{\n" +
+                "    \"directory\":\"aliasesCase\",\n" +
+                "    \"configurations\":[]\n" +
+                "}";
+        parseDirectoryRequest.setRequestBody(requestBody);
+
+        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(1));
+        JsonObject expected = (JsonObject) readJsonObject("examples.out/aliases.gocd.json");
+        assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
+    }
 }

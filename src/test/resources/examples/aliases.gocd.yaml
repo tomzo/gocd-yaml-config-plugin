@@ -1,0 +1,39 @@
+# aliases.gocd.yaml
+common: # aliases section
+  scalar_alias: &scalar_alias "hello world"
+  task_list_alias: &task_list_alias
+    - exec:
+        command: init
+    - exec:
+        command: make
+        arguments:
+          - "VERBOSE=true"
+pipelines:
+  pipe1:
+    group: aliases
+    materials:
+      mygit:
+        git: http://my.example.org/mygit.git
+        branch: ci
+    stages:
+      - prepare:
+          jobs:
+            prepare:
+              tasks:
+                - exec:
+                    command: prepare
+                    arguments: # use of scalar alias
+                      - *scalar_alias
+      - build:
+          jobs:
+            build:
+              tasks: *task_list_alias # use of task list alias as the full list
+      - test:
+          jobs:
+            test:
+              tasks:
+               - *task_list_alias # use of task list alias as a partial list with more added
+               - exec:
+                   command: test_unit
+               - exec:
+                  command: test_integration

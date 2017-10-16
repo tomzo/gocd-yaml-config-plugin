@@ -1,0 +1,6 @@
+common:
+  some_string: &alias1 hello world
+environments:
+  first:
+pipelines:
+  pipe1:

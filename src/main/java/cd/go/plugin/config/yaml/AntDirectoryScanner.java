@@ -10,7 +10,7 @@ public class AntDirectoryScanner implements ConfigDirectoryScanner {
     public String[] getFilesMatchingPattern(File directory, String pattern) {
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(directory);
-        scanner.setIncludes(new String[]{pattern});
+        scanner.setIncludes(pattern.trim().split(" *, *"));
         scanner.scan();
         return scanner.getIncludedFiles();
     }

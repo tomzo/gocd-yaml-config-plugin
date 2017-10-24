@@ -2,7 +2,7 @@
 
 # gocd-yaml-config-plugin
 
-[GoCD](go.cd) server plugin to keep **pipelines** and **environments**
+[GoCD](https://www.gocd.org) server plugin to keep **pipelines** and **environments**
 configuration in source-control in [YAML](http://www.yaml.org/).
 See [this document](https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html)
 to find out what are GoCD configuration repositories.
@@ -23,8 +23,9 @@ so you can explain why pipeline/environment it is configured like this.
 
 ## Setup
 
-Download plugin from releases page and place in your Go server (`>= 16.7.0`)
-in `plugins/external` directory.
+If you're using GoCD version *older than 17.8.0*, you need to install the plugin in the GoCD server. Download it from
+[the releases page](https://github.com/tomzo/gocd-yaml-config-plugin/releases) and place it on the GoCD server in
+`plugins/external` [directory](https://docs.gocd.org/current/extension_points/plugin_user_guide.html).
 
 Add `config-repos` element right above first `<pipelines />`. Then you can
 add any number of YAML configuration repositories as such:
@@ -104,7 +105,7 @@ By default GoCD configuration files should end with `.gocd.yaml`.
 
 # Specification
 
-See [official GoCD XML configuration reference](https://docs.go.cd/current/configuration/configuration_reference.html)
+See [official GoCD XML configuration reference](https://docs.gocd.org/current/configuration/configuration_reference.html)
 for details about each element. Below is a reference of format supported by this plugin.
 Feel free to improve it!
 
@@ -143,7 +144,7 @@ Feel free to improve it!
 
 # Pipeline
 
-A minimal [pipeline](https://docs.go.cd/current/configuration/configuration_reference.html#pipeline) configuration must contain:
+A minimal [pipeline](https://docs.gocd.org/current/configuration/configuration_reference.html#pipeline) configuration must contain:
  * pipeline name - as a key in hash
  * [materials](#materials) - a **hash**
  * [stages](#stage) - a **list**
@@ -195,8 +196,8 @@ pipe2:
 ```
 
 Please note:
- * [templates](https://docs.go.cd/current/configuration/configuration_reference.html#templates) are not supported
- * [parameters](https://docs.go.cd/current/configuration/configuration_reference.html#params) are not supported
+ * [templates](https://docs.gocd.org/current/configuration/configuration_reference.html#templates) are not supported
+ * [parameters](https://docs.gocd.org/current/configuration/configuration_reference.html#params) are not supported
  * pipeline declares a group to which it belongs
 
 ### Tracking tool
@@ -215,7 +216,7 @@ timer:
   only_on_changes: yes
 ```
 
-See [XML reference](https://docs.go.cd/current/configuration/configuration_reference.html#timer) for more information.
+See [XML reference](https://docs.gocd.org/current/configuration/configuration_reference.html#timer) for more information.
 
 ## Stage
 
@@ -254,7 +255,7 @@ test:
 
 ### Approval
 
-Stage can have [approval](https://docs.go.cd/current/configuration/configuration_reference.html#approval),
+Stage can have [approval](https://docs.gocd.org/current/configuration/configuration_reference.html#approval),
  which is `success` by default. There are 2 ways to declare approval:
 ```yaml
 approval: manual
@@ -271,7 +272,7 @@ approval:
 
 ## Job
 
-[Job](https://docs.go.cd/current/configuration/configuration_reference.html#job) is a hash starting with jobs name:
+[Job](https://docs.gocd.org/current/configuration/configuration_reference.html#job) is a hash starting with jobs name:
 
 ```yaml
 test:
@@ -311,7 +312,7 @@ Available in GoCD server since v16.12.0, yaml plugin 0.4.0.
 
 ### Run many instances
 
-Part of job object can be [number of job to runs](https://docs.go.cd/current/advanced_usage/admin_spawn_multiple_jobs.html):
+Part of job object can be [number of job to runs](https://docs.gocd.org/current/advanced_usage/admin_spawn_multiple_jobs.html):
 ```yaml
 run_instances: 7
 ```
@@ -323,7 +324,7 @@ run_instances: all
 ### Tabs
 
 Tabs are a hash with `<tab-name>: <path>` pairs.
-Path should exist in Go servers artifacts.
+Path should exist in GoCD servers artifacts.
 ```yaml
 tabs:
   tests: test-reports/index.html
@@ -364,7 +365,7 @@ Above configuration declares `build` **stage** with `build` **job** which execut
 
 ### Git
 
-Minimal configuration of a [**git** pipeline material](https://docs.go.cd/current/configuration/configuration_reference.html#git):
+Minimal configuration of a [**git** pipeline material](https://docs.gocd.org/current/configuration/configuration_reference.html#git):
  * material name is `mygit`
  * git repository url is `http://example.com/mygit.git`
 
@@ -393,7 +394,7 @@ gitMaterial1:
   shallow_clone: true
 ```
 
-Since Go `>= 16.7.0` whitelist is also supported,
+Since GoCD `>= 16.7.0` whitelist is also supported,
 you can specify `whitelist` **instead** of `blacklist`, as such
 ```yaml
 gitMaterial1:
@@ -405,7 +406,7 @@ gitMaterial1:
 
 ### Svn
 
-For details about each option, see [GoCD XML reference](https://docs.go.cd/current/configuration/configuration_reference.html#svn)
+For details about each option, see [GoCD XML reference](https://docs.gocd.org/current/configuration/configuration_reference.html#svn)
 ```yaml
 svnMaterial1:
   svn: "http://svn"
@@ -680,7 +681,7 @@ testing:
 
 ### Environment variables
 
-[Environment variables](https://docs.go.cd/current/configuration/configuration_reference.html#environmentvariables)
+[Environment variables](https://docs.gocd.org/current/configuration/configuration_reference.html#environmentvariables)
  can be declared in **Environments, Pipelines, Stages and Jobs**.
 
 In YAML you have 2 keywords for *secure* (encrypted) variables and standard variables.
@@ -773,6 +774,6 @@ Run all tests and create a ready to use jar
 ## Tests structure
 
 There are [examples of yaml partials](src/test/resources/parts) and
- their resulting json to be sent to Go server. If something is not working right
+ their resulting json to be sent to GoCD server. If something is not working right
  we can always add a new case covering exact yaml that user has and json that we
  expect on server side.

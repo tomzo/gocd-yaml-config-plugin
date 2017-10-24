@@ -1,6 +1,9 @@
 package cd.go.plugin.config.yaml;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.request.DefaultGoPluginApiRequest;
@@ -10,12 +13,14 @@ import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.core.Is;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 import static cd.go.plugin.config.yaml.TestUtils.getResourceAsStream;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
@@ -25,24 +30,20 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class YamlConfigPluginIntegrationTest {
+    @Rule
+    public TemporaryFolder tempDir = new TemporaryFolder();
     private YamlConfigPlugin plugin;
     private GoApplicationAccessor goAccessor;
-    private Gson gson;
     private JsonParser parser;
 
     @Before
-    public void SetUp() throws IOException {
+    public void setUp() throws IOException {
         plugin = new YamlConfigPlugin();
         goAccessor = mock(GoApplicationAccessor.class);
         plugin.initializeGoApplicationAccessor(goAccessor);
         GoApiResponse settingsResponse = DefaultGoApiResponse.success("{}");
         when(goAccessor.submit(any(GoApiRequest.class))).thenReturn(settingsResponse);
-        gson = new Gson();
         parser = new JsonParser();
-
-        File emptyDir = new File("emptyDir");
-        FileUtils.deleteDirectory(emptyDir);
-        FileUtils.forceMkdir(emptyDir);
     }
 
     @Test
@@ -70,11 +71,6 @@ public class YamlConfigPluginIntegrationTest {
         assertThat(patternAsJsonObject.get("display-order").getAsInt(), is(0));
     }
 
-    private JsonObject getJsonObjectFromResponse(GoPluginApiResponse response) {
-        String responseBody = response.responseBody();
-        return parser.parse(responseBody).getAsJsonObject();
-    }
-
     @Test
     public void shouldRespondSuccessToGetViewRequest() throws UnhandledRequestTypeException {
         DefaultGoPluginApiRequest getConfigRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "go.plugin-settings.get-view");
@@ -93,34 +89,20 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldRespondSuccessToParseDirectoryRequestWhenEmpty() throws UnhandledRequestTypeException {
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"emptyDir\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
+        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+        assertNoError(responseJsonObject);
     }
 
     @Test
     public void shouldRespondSuccessToParseDirectoryRequestWhenSimpleCaseFile() throws UnhandledRequestTypeException, IOException {
-        setupCase("simpleCase", "simple");
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("simple"));
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"simpleCase\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+        assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(1));
         JsonObject expected = (JsonObject) readJsonObject("examples.out/simple.gocd.json");
@@ -129,19 +111,11 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldRespondSuccessToParseDirectoryRequestWhenRichCaseFile() throws UnhandledRequestTypeException, IOException {
-        setupCase("richCase", "rich");
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("rich"));
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"richCase\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+        assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(1));
         JsonObject expected = (JsonObject) readJsonObject("examples.out/rich.gocd.json");
@@ -150,77 +124,35 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenSimpleInvalidCaseFile() throws UnhandledRequestTypeException, IOException {
-        setupCase("simpleInvalidCase", "simple-invalid");
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("simple-invalid"));
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"simpleInvalidCase\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-        JsonArray errors = (JsonArray) responseJsonObject.get("errors");
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(0));
-        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is("Failed to parse pipeline pipe1; expected a hash of pipeline materials"));
-        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("simple-invalid.gocd.yaml"));
+        assertFirstError(responseJsonObject, "Failed to parse pipeline pipe1; expected a hash of pipeline materials", "simple-invalid.gocd.yaml");
     }
 
     @Test
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenDuplicateKeysCaseFile() throws UnhandledRequestTypeException, IOException {
-        setupCase("simpleInvalidCase", "duplicate-materials");
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("duplicate-materials"));
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"simpleInvalidCase\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-        JsonArray errors = (JsonArray) responseJsonObject.get("errors");
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(0));
-        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is("Line 9, column 20: Duplicate key found 'upstream'"));
-        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("duplicate-materials.gocd.yaml"));
+        assertFirstError(responseJsonObject, "Line 9, column 20: Duplicate key found 'upstream'", "duplicate-materials.gocd.yaml");
     }
 
     @Test
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenParsingErrorCaseFile() throws UnhandledRequestTypeException, IOException {
-        setupCase("simpleInvalidCase", "invalid-materials");
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("invalid-materials"));
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"simpleInvalidCase\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-        JsonArray errors = (JsonArray) responseJsonObject.get("errors");
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(0));
-        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is("Error parsing YAML. : Line 21, column 0: Expected a 'block end' but found: scalar : "));
-        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is("invalid-materials.gocd.yaml"));
-    }
-
-    private void setupCase(String folder, String caseName) throws IOException {
-        File caseFolder = new File(folder);
-        FileUtils.deleteDirectory(caseFolder);
-        FileUtils.forceMkdir(caseFolder);
-        File simpleFile = new File(folder, caseName + ".gocd.yaml");
-        InputStream in = getResourceAsStream("examples/" + caseName + ".gocd.yaml");
-        OutputStream out = new FileOutputStream(simpleFile);
-        IOUtils.copy(in, out);
-        in.close();
-        out.close();
+        assertFirstError(responseJsonObject, "Error parsing YAML. : Line 21, column 0: Expected a 'block end' but found: scalar : ", "invalid-materials.gocd.yaml");
     }
 
     @Test
@@ -265,14 +197,7 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldTalkToGoApplicationAccessorToGetPluginSettings() throws UnhandledRequestTypeException {
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"emptyDir\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
         verify(goAccessor, times(1)).submit(any(GoApiRequest.class));
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
@@ -283,14 +208,7 @@ public class YamlConfigPluginIntegrationTest {
         GoApiResponse settingsResponse = DefaultGoApiResponse.success("{}");
         when(goAccessor.submit(any(GoApiRequest.class))).thenReturn(settingsResponse);
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"emptyDir\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
         verify(goAccessor, times(1)).submit(any(GoApiRequest.class));
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
@@ -301,14 +219,7 @@ public class YamlConfigPluginIntegrationTest {
         GoApiResponse settingsResponse = DefaultGoApiResponse.success("{}");
         when(goAccessor.submit(any(GoApiRequest.class))).thenReturn(settingsResponse);
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"emptyDir\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         final JsonParser parser = new JsonParser();
@@ -324,22 +235,77 @@ public class YamlConfigPluginIntegrationTest {
     @Test
     public void shouldRespondSuccessToParseDirectoryRequestWhenAliasesCaseFile() throws UnhandledRequestTypeException,
             IOException {
-        setupCase("aliasesCase", "aliases");
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("aliases"));
 
-        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = "{\n" +
-                "    \"directory\":\"aliasesCase\",\n" +
-                "    \"configurations\":[]\n" +
-                "}";
-        parseDirectoryRequest.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+        assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(1));
         JsonObject expected = (JsonObject) readJsonObject("examples.out/aliases.gocd.json");
         assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
+    }
+
+    @Test
+    public void shouldUpdateTargetVersionWhenItIsTheSameAcrossAllFiles() throws Exception {
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_2.yaml"), tempDir.newFile("v2_1.gocd.yaml"));
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_2.yaml"), tempDir.newFile("v2_2.gocd.yaml"));
+
+        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
+        assertNoError(getJsonObjectFromResponse(response));
+    }
+
+    @Test
+    public void shouldUpdateTargetVersionWhenItIsTheDefaultOrMissingAcrossAllPipelinesAndEnvironments() throws Exception {
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), tempDir.newFile("v1_1.gocd.yaml"));
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_not_present.yaml"), tempDir.newFile("v1_not_present.gocd.yaml"));
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), tempDir.newFile("v1_2.gocd.yaml"));
+
+        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
+        assertNoError(getJsonObjectFromResponse(response));
+    }
+
+    @Test
+    public void shouldFailToUpdateTargetVersionWhenItIs_NOT_TheSameAcrossAllFiles() throws Exception {
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), tempDir.newFile("v1_1.gocd.yaml"));
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), tempDir.newFile("v1_2.gocd.yaml"));
+        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_2.yaml"), tempDir.newFile("v2_1.gocd.yaml"));
+
+        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
+        String expectedFailureMessage = "java.lang.RuntimeException: Versions across files are not unique. Found" +
+                " versions: [1, 2]. There can only be one version across the whole repository.";
+        assertFirstError(getJsonObjectFromResponse(response), expectedFailureMessage, "YAML config plugin");
+    }
+
+    private File setupCase(String caseName) throws IOException {
+        File simpleFile = tempDir.newFile(caseName + ".gocd.yaml");
+        FileUtils.copyInputStreamToFile(getResourceAsStream("examples/" + caseName + ".gocd.yaml"), simpleFile);
+        return tempDir.getRoot();
+    }
+
+    private GoPluginApiResponse parseAndGetResponseForDir(File directory) throws UnhandledRequestTypeException {
+        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
+        String requestBody = "{\n" +
+                "    \"directory\":\"" + directory + "\",\n" +
+                "    \"configurations\":[]\n" +
+                "}";
+        parseDirectoryRequest.setRequestBody(requestBody);
+
+        return plugin.handle(parseDirectoryRequest);
+    }
+
+    private void assertNoError(JsonObject responseJsonObject) {
+        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+    }
+
+    private void assertFirstError(JsonObject responseJsonObject, String expectedMessage, String expectedLocation) {
+        JsonArray errors = (JsonArray) responseJsonObject.get("errors");
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("message").getAsString(), is(expectedMessage));
+        assertThat(errors.get(0).getAsJsonObject().getAsJsonPrimitive("location").getAsString(), is(expectedLocation));
+    }
+
+    private JsonObject getJsonObjectFromResponse(GoPluginApiResponse response) {
+        String responseBody = response.responseBody();
+        return parser.parse(responseBody).getAsJsonObject();
     }
 }

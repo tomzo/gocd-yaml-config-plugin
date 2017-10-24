@@ -106,6 +106,7 @@ public class YamlConfigPlugin implements GoPlugin {
             String[] files = scanner.getFilesMatchingPattern(baseDir, pattern);
             JsonConfigCollection config = parser.parseFiles(baseDir, files);
 
+            config.updateTargetVersionFromFiles();
             JsonObject responseJsonObject = config.getJsonObject();
 
             return DefaultGoPluginApiResponse.success(gson.toJson(responseJsonObject));

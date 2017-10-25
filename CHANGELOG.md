@@ -1,4 +1,8 @@
-# 0.6.0 - Unreleased
+# 0.6.0 (26 Oct 2017)
+
+ * adds support for referencing templates and specifying parameters
+ * adds better support for YAML aliases
+ * introduces format_version field, with future work for v2 format
 
 # 0.5.0 (15 Sep 2017)
 

@@ -38,6 +38,11 @@ public class PipelineTransformTest {
         testTransform("rich.pipe");
     }
 
+    @Test
+    public void shouldTransformRichPipeline2() throws IOException {
+        testTransform("lock_behavior.pipe");
+    }
+
     private void testTransform(String caseFile) throws IOException {
         testTransform(caseFile, caseFile);
     }

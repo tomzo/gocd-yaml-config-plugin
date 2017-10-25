@@ -9,10 +9,12 @@ import java.util.Map;
 
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
+import static cd.go.plugin.config.yaml.transforms.ParameterTransform.YAML_PIPELINE_PARAMETERS_FIELD;
 
 public class PipelineTransform {
     private static final String JSON_PIPELINE_NAME_FIELD = "name";
     private static final String JSON_PIPELINE_GROUP_FIELD = "group";
+    private static final String JSON_PIPELINE_TEMPLATE_FIELD = "template";
     private static final String JSON_PIPELINE_LABEL_TEMPLATE_FIELD = "label_template";
     private static final String JSON_PIPELINE_PIPE_LOCKING_FIELD = "enable_pipeline_locking";
     private static final String JSON_PIPELINE_MINGLE_FIELD = "mingle";
@@ -22,6 +24,7 @@ public class PipelineTransform {
     private static final String JSON_PIPELINE_STAGES_FIELD = "stages";
 
     private static final String YAML_PIPELINE_GROUP_FIELD = "group";
+    private static final String YAML_PIPELINE_TEMPLATE_FIELD = "template";
     private static final String YAML_PIPELINE_LABEL_TEMPLATE_FIELD = "label_template";
     private static final String YAML_PIPELINE_PIPE_LOCKING_FIELD = "locking";
     private static final String YAML_PIPELINE_MINGLE_FIELD = "mingle";
@@ -33,11 +36,13 @@ public class PipelineTransform {
     private final MaterialTransform materialTransform;
     private final StageTransform stageTransform;
     private final EnvironmentVariablesTransform variablesTransform;
+    private ParameterTransform parameterTransform;
 
-    public PipelineTransform(MaterialTransform materialTransform, StageTransform stageTransform, EnvironmentVariablesTransform variablesTransform) {
+    public PipelineTransform(MaterialTransform materialTransform, StageTransform stageTransform, EnvironmentVariablesTransform variablesTransform, ParameterTransform parameterTransform) {
         this.materialTransform = materialTransform;
         this.stageTransform = stageTransform;
         this.variablesTransform = variablesTransform;
+        this.parameterTransform = parameterTransform;
     }
 
     public JsonObject transform(Object maybePipe) {
@@ -55,6 +60,7 @@ public class PipelineTransform {
         Map<String, Object> pipeMap = (Map<String, Object>) entry.getValue();
 
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_GROUP_FIELD, YAML_PIPELINE_GROUP_FIELD);
+        addOptionalString(pipeline, pipeMap, JSON_PIPELINE_TEMPLATE_FIELD, YAML_PIPELINE_TEMPLATE_FIELD);
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_LABEL_TEMPLATE_FIELD, YAML_PIPELINE_LABEL_TEMPLATE_FIELD);
         addOptionalBoolean(pipeline, pipeMap, JSON_PIPELINE_PIPE_LOCKING_FIELD, YAML_PIPELINE_PIPE_LOCKING_FIELD);
 
@@ -67,7 +73,14 @@ public class PipelineTransform {
             pipeline.add(JSON_ENV_VAR_FIELD, jsonEnvVariables);
 
         addMaterials(pipeline, pipeMap);
-        addStages(pipeline, pipeMap);
+        if (!pipeline.has(JSON_PIPELINE_TEMPLATE_FIELD)) {
+            addStages(pipeline, pipeMap);
+        }
+
+        JsonArray params = parameterTransform.transform(pipeMap);
+        if (params != null && params.size() > 0) {
+            pipeline.add(YAML_PIPELINE_PARAMETERS_FIELD, params);
+        }
 
         return pipeline;
     }
@@ -86,7 +99,7 @@ public class PipelineTransform {
     private void addStages(JsonObject pipeline, Map<String, Object> pipeMap) {
         Object stages = pipeMap.get(YAML_PIPELINE_STAGES_FIELD);
         if (stages == null || !(stages instanceof List))
-            throw new YamlConfigException("expected a list of pipeline stages");
+            throw new YamlConfigException("expected a list of pipeline stages or a template reference");
         List<Object> stagesList = (List<Object>) stages;
         JsonArray stagesArray = transformStages(stagesList);
         pipeline.add(JSON_PIPELINE_STAGES_FIELD, stagesArray);

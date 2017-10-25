@@ -1,0 +1,19 @@
+{
+  "group": "group1",
+  "name": "pipe2",
+  "label_template": "foo-1.0-${COUNT}",
+  "enable_pipeline_locking": true,
+  "tracking_tool": {
+    "link": "http://your-trackingtool/yourproject/${ID}",
+    "regex": "evo-(\\d+)"
+  },
+  "timer": {
+    "spec": "0 15 10 * * ? *",
+    "only_on_changes": true
+  },
+  "materials": [
+    null,
+    null
+  ],
+  "template": "template"
+}

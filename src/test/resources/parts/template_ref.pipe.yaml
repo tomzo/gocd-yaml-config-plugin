@@ -9,10 +9,7 @@ pipe2:
     spec: "0 15 10 * * ? *"
     only_on_changes: yes
   environment_variables: null
-  parameters: null
   materials:
     foo:
     bar:
-  stages:
-    - null
-    - null
+  template: template

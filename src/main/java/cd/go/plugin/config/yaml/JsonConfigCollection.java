@@ -2,10 +2,14 @@ package cd.go.plugin.config.yaml;
 
 import com.google.gson.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class JsonConfigCollection {
-    private static final int TARGET_VERSION = 1;
+    private static final int DEFAULT_VERSION = 1;
     private final Gson gson;
 
+    private Set<Integer> uniqueVersions = new HashSet<Integer>();
     private JsonObject mainObject = new JsonObject();
     private JsonArray environments = new JsonArray();
     private JsonArray pipelines = new JsonArray();
@@ -14,7 +18,7 @@ public class JsonConfigCollection {
     public JsonConfigCollection() {
         gson = new Gson();
 
-        mainObject.add("target_version", new JsonPrimitive(TARGET_VERSION));
+        updateTargetVersionTo(DEFAULT_VERSION);
         mainObject.add("environments", environments);
         mainObject.add("pipelines", pipelines);
         mainObject.add("errors", errors);
@@ -58,5 +62,23 @@ public class JsonConfigCollection {
         this.environments.addAll(other.environments);
         this.pipelines.addAll(other.pipelines);
         this.errors.addAll(other.errors);
+        this.uniqueVersions.addAll(other.uniqueVersions);
+    }
+
+    public void updateFormatVersionFound(int version) {
+        uniqueVersions.add(version);
+        updateTargetVersionTo(version);
+    }
+
+    public void updateTargetVersionFromFiles() {
+        if (uniqueVersions.size() > 1) {
+            throw new RuntimeException("Versions across files are not unique. Found versions: " + uniqueVersions + ". There can only be one version across the whole repository.");
+        }
+        updateTargetVersionTo(uniqueVersions.iterator().hasNext() ? uniqueVersions.iterator().next() : DEFAULT_VERSION);
+    }
+
+    private void updateTargetVersionTo(int targetVersion) {
+        mainObject.remove("target_version");
+        mainObject.add("target_version", new JsonPrimitive(targetVersion));
     }
 }

@@ -3,6 +3,8 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.JsonConfigCollection;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.esotericsoftware.yamlbeans.YamlReader;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +52,13 @@ public class RootTransformTest {
         assertThat(collection.getJsonObject().get("pipelines").getAsJsonArray().size(), is(1));
     }
 
+    @Test
+    public void shouldRecognizeAndUpdateVersion() throws Exception {
+        assertTargetVersion(readRootYaml("version_not_present").getJsonObject(), 1);
+        assertTargetVersion(readRootYaml("version_1").getJsonObject(), 1);
+        assertTargetVersion(readRootYaml("version_2").getJsonObject(), 2);
+    }
+
     @Test(expected = YamlReader.YamlReaderException.class)
     public void shouldNotTransformRootWhenYAMLHasDuplicateKeys() throws IOException {
         readRootYaml("duplicate.materials.pipe");
@@ -58,5 +67,10 @@ public class RootTransformTest {
 
     private JsonConfigCollection readRootYaml(String caseFile) throws IOException {
         return rootTransform.transform(readYamlObject("parts/roots/" + caseFile + ".yaml"), "test code");
+    }
+
+    private void assertTargetVersion(JsonObject jsonObject, int expectedVersion) {
+        assertThat(jsonObject.get("target_version") instanceof JsonPrimitive, is(true));
+        assertThat(jsonObject.getAsJsonPrimitive("target_version").getAsInt(), is(expectedVersion));
     }
 }

@@ -1,0 +1,10 @@
+pipe2:
+  group: group1
+  lock_behavior: "lockOnFailure"
+  environment_variables: null
+  materials:
+    foo:
+    bar:
+  stages:
+    - null
+    - null

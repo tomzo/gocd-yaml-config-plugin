@@ -1,0 +1,13 @@
+{
+  "group": "group1",
+  "name": "pipe2",
+  "lock_behavior": "lockOnFailure",
+  "materials": [
+    null,
+    null
+  ],
+  "stages": [
+    null,
+    null
+  ]
+}

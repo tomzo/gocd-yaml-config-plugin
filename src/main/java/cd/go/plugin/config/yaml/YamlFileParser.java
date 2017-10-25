@@ -32,7 +32,7 @@ public class YamlFileParser {
             } catch (YamlReader.YamlReaderException ex) {
                 collection.addError(ex.getMessage() , file);
             } catch (FileNotFoundException ex) {
-                collection.addError("File matching Go YAML pattern disappeared", file);
+                collection.addError("File matching GoCD YAML pattern disappeared", file);
             } catch (IOException ex) {
                 collection.addError(ex.getMessage() +" : "+ ex.getCause().getMessage() + " : ", file);
             } finally {

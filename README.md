@@ -44,6 +44,7 @@ More examples are in [test resources](src/test/resources/examples/).
 
 ```yaml
 #ci.gocd.yaml
+format_version: 1
 environments:
   testing:
     environment_variables:
@@ -111,6 +112,7 @@ See [official GoCD XML configuration reference](https://docs.gocd.org/current/co
 for details about each element. Below is a reference of format supported by this plugin.
 Feel free to improve it!
 
+1. [**Format version**](#format-version)
 1. [Environment](#environment)
 1. [Environment variables](#environment-variables)
 1. [Parameters](#parameters)
@@ -144,6 +146,19 @@ Feel free to improve it!
     * [config repo](#configrepo)
 1. [Secure variables](#to-generate-an-encrypted-value)
 1. [YAML Aliases](#yaml-aliases)
+
+# Format version
+
+Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file.
+Version `2` will be most likely introduced in GoCD v17.12.
+Currently it is recommended to declare consistent version in all your files:
+
+```yaml
+format_version: 1
+pipelines:
+  ...
+environments:
+```
 
 # Pipeline
 
@@ -764,6 +779,7 @@ Aliases can be defined anywhere in the configuration as long as they are valid c
 There is also a dedicated top-level `common` section which allows you to have all aliases in one place and where you don't need to worry about correct placement within the configuration.
 
 ```yaml
+format_version: 1
 common:
   verbose_arg: &verbose_arg "VERBOSE=true"
   build_tasks: &build_tasks

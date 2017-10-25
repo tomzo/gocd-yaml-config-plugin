@@ -25,7 +25,8 @@ public class PipelineTransformTest {
         materialTransform = mock(MaterialTransform.class);
         stageTransform = mock(StageTransform.class);
         environmentTransform = mock(EnvironmentVariablesTransform.class);
-        parser = new PipelineTransform(materialTransform, stageTransform, environmentTransform);
+        ParameterTransform parameterTransform = mock(ParameterTransform.class);
+        parser = new PipelineTransform(materialTransform, stageTransform, environmentTransform, parameterTransform);
     }
 
     @Test
@@ -41,6 +42,11 @@ public class PipelineTransformTest {
     @Test
     public void shouldTransformRichPipeline2() throws IOException {
         testTransform("lock_behavior.pipe");
+    }
+    
+    @Test
+    public void shouldTransformAPipelineReferencingATemplate() throws IOException {
+        testTransform("template_ref.pipe");
     }
 
     private void testTransform(String caseFile) throws IOException {

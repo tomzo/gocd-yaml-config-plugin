@@ -57,6 +57,8 @@ pipelines:
     group: mygroup # note that the group name can contain only of alphanumeric & underscore characters
     label_template: "${mygit[:8]}"
     locking: off
+    parameters: # list of parameters that can be configured for a pipeline
+      param1: value1
     materials:
       mygit: # this is the name of material, the name can contain only of alphanumeric & underscore characters
         # keyword git says about type of material and url at once
@@ -110,6 +112,7 @@ Feel free to improve it!
 
 1. [Environment](#environment)
 1. [Environment variables](#environment-variables)
+1. [Parameters](#parameters)
 1. [Pipeline](#pipeline)
     * [Tabs](#tabs)
     * [Tracking tool](#tracking-tool)
@@ -146,7 +149,7 @@ Feel free to improve it!
 A minimal [pipeline](https://docs.go.cd/current/configuration/configuration_reference.html#pipeline) configuration must contain:
  * pipeline name - as a key in hash
  * [materials](#materials) - a **hash**
- * [stages](#stage) - a **list**
+ * [stages](#stage) - a **list** or a `template` - as a key in hash
 
 ```yaml
 mypipe:
@@ -170,9 +173,11 @@ All elements available on a pipeline object are:
  * [tracking_tool](#tracking-tool) or `mingle`
  * [timer](#timer)
  * [environment_variables](#environment-variables)
+ * [parameters](#parameters)
  * `secure_variables`
  * [materials](#materials)
  * [stages](#stage)
+ * `template`
 
 ```yaml
 pipe2:
@@ -193,11 +198,22 @@ pipe2:
   stages:
     ...
 ```
+#### Referencing an existing template in a pipeline:
+```yaml
+mypipe:
+  group: group1
+  label_template: "foo-1.0-${COUNT}"
+  locking: on
+  parameters:
+    param1: value
+  materials:
+    mygit:
+      git: http://example.com/mygit.git
+  template: template1
+```
 
 Please note:
- * [templates](https://docs.go.cd/current/configuration/configuration_reference.html#templates) are not supported
- * [parameters](https://docs.go.cd/current/configuration/configuration_reference.html#params) are not supported
- * pipeline declares a group to which it belongs
+ * Pipeline declares a group to which it belongs
 
 ### Tracking tool
 
@@ -692,6 +708,17 @@ secure_variables:
   # this value is encrypted by Go's private key (Note in 16.7.0 there is no easy way to obtain such value yet)
   MY_PASSWORD: "s&Du#@$xsSa"
 ```
+
+### Parameters
+
+[Parameters](https://docs.go.cd/current/configuration/configuration_reference.html#params) can be declared at the pipeline level.
+
+```yaml
+parameters:
+  param1: value1
+  production: no
+```
+
 
 #### To generate an encrypted value
 

@@ -31,7 +31,7 @@ public class YamlConfigPlugin implements GoPlugin {
     public static final String PLUGIN_SETTINGS_GET_CONFIGURATION = "go.plugin-settings.get-configuration";
     public static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
     public static final String PLUGIN_SETTINGS_VALIDATE_CONFIGURATION = "go.plugin-settings.validate-configuration";
-    public static final String DEFAULT_FILE_PATTERN = "**/*.gocd.yaml";
+    public static final String DEFAULT_FILE_PATTERN = "**/*.gocd.yaml,**/*.gocd.yml";
 
     private static Logger LOGGER = Logger.getLoggerFor(YamlConfigPlugin.class);
 

@@ -103,7 +103,7 @@ pipelines:
 
 ## File pattern
 
-By default GoCD configuration files should end with `.gocd.yaml`.
+By default GoCD configuration files should end with `.gocd.yaml` or `.gocd.yml`.
 
 # Specification
 

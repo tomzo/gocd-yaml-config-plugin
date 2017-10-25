@@ -65,7 +65,7 @@ public class YamlConfigPluginIntegrationTest {
         assertNotNull(pattern);
         JsonObject patternAsJsonObject = pattern.getAsJsonObject();
         assertThat(patternAsJsonObject.get("display-name").getAsString(), is("Go YAML files pattern"));
-        assertThat(patternAsJsonObject.get("default-value").getAsString(), is("**/*.gocd.yaml"));
+        assertThat(patternAsJsonObject.get("default-value").getAsString(), is("**/*.gocd.yaml,**/*.gocd.yml"));
         assertThat(patternAsJsonObject.get("required").getAsBoolean(), is(false));
         assertThat(patternAsJsonObject.get("secure").getAsBoolean(), is(false));
         assertThat(patternAsJsonObject.get("display-order").getAsInt(), is(0));

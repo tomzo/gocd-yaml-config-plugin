@@ -85,6 +85,8 @@ pipelines:
                - test:
                    source: tests/
                    destination: test-reports/
+               - test:
+                   source: coverage.xml
               tabs:
                 report: test-reports/index.html
               tasks: # ordered list of tasks to execute in job csharp

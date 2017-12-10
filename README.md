@@ -44,7 +44,7 @@ More examples are in [test resources](src/test/resources/examples/).
 
 ```yaml
 #ci.gocd.yaml
-format_version: 1
+format_version: 2
 environments:
   testing:
     environment_variables:
@@ -58,7 +58,7 @@ pipelines:
   mypipe1: # definition of mypipe1 pipeline
     group: mygroup # note that the group name can contain only of alphanumeric & underscore characters
     label_template: "${mygit[:8]}"
-    locking: off
+    lock_behavior: none
     parameters: # list of parameters that can be configured for a pipeline
       param1: value1
     materials:
@@ -120,6 +120,7 @@ Feel free to improve it!
     * [Tabs](#tabs)
     * [Tracking tool](#tracking-tool)
     * [Timer](#timer)
+    * [Locking](#pipeline-locking)
 1. [Stage](#stage)
     * [Approval](#approval)
 1. [Job](#job)
@@ -150,8 +151,10 @@ Feel free to improve it!
 # Format version
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file.
-Version `2` will be most likely introduced in GoCD v17.12.
+Version `2` was introduced in GoCD v17.12.
 Currently it is recommended to declare consistent version in all your files:
+
+For **GoCD < 17.12**:
 
 ```yaml
 format_version: 1
@@ -159,6 +162,17 @@ pipelines:
   ...
 environments:
 ```
+
+For **GoCD >= 17.12**:
+
+```yaml
+format_version: 2
+pipelines:
+  ...
+environments:
+```
+
+Format version V2 only changes the way [pipeline locking is configured](#pipeline-locking)
 
 # Pipeline
 
@@ -185,7 +199,7 @@ All elements available on a pipeline object are:
 
  * `group`
  * `label_template`
- * `locking`
+ * [locking](#pipeline-locking)
  * [tracking_tool](#tracking-tool) or `mingle`
  * [timer](#timer)
  * [environment_variables](#environment-variables)
@@ -199,7 +213,7 @@ All elements available on a pipeline object are:
 pipe2:
   group: group1
   label_template: "foo-1.0-${COUNT}"
-  locking: on
+  lock_behavior: none
   tracking_tool:
     link: "http://your-trackingtool/yourproject/${ID}"
     regex: "evo-(\\d+)"
@@ -219,7 +233,7 @@ pipe2:
 mypipe:
   group: group1
   label_template: "foo-1.0-${COUNT}"
-  locking: on
+  lock_behavior: none
   parameters:
     param1: value
   materials:
@@ -248,6 +262,27 @@ timer:
 ```
 
 See [XML reference](https://docs.gocd.org/current/configuration/configuration_reference.html#timer) for more information.
+
+### Pipeline locking
+
+For **GoCD >= 17.12 and `format_version: 2`**:
+
+```yaml
+lock_behavior: none
+```
+
+Where `lock_behavior` is defined as in [GoCD documentation](https://docs.gocd.org/17.12.0/configuration/admin_lock_pipelines.html) can be one of:
+
+ * `lockOnFailure` - same as `locking: true`
+ * `unlockWhenFinished`
+ * `none` - same `locking: false`
+
+For **GoCD < 17.12 and `format_version: 1`**:
+
+`locking: on`
+
+Where `locking` is a [boolean](#boolean-values).
+
 
 ## Stage
 
@@ -779,7 +814,7 @@ Aliases can be defined anywhere in the configuration as long as they are valid c
 There is also a dedicated top-level `common` section which allows you to have all aliases in one place and where you don't need to worry about correct placement within the configuration.
 
 ```yaml
-format_version: 1
+format_version: 2
 common:
   verbose_arg: &verbose_arg "VERBOSE=true"
   build_tasks: &build_tasks

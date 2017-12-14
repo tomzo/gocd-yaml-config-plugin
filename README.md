@@ -38,6 +38,8 @@ add any number of YAML configuration repositories as such:
 </config-repos>
 ```
 
+In your config repo (tomzo/gocd-yaml-config-example.git in this case), ensure that your gocd yaml config is suffixed with ".gocd.yaml". Any file ending in ".gocd.yaml" is picked up by the plugin. Give it a minute or so for the polling to happen. Once that happens, you should see your pipeline(s) on your dashboard.
+
 ### Example
 
 More examples are in [test resources](src/test/resources/examples/).

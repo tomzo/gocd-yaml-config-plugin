@@ -49,6 +49,10 @@ public class TaskTransform {
         JsonObject taskJson = new JsonObject();
 
         String taskType = taskEntry.getKey();
+        if (taskEntry.getValue() == null) {
+            taskJson.addProperty(JSON_TASK_TYPE_FIELD, taskType);
+            return taskJson;
+        }
         if (taskEntry.getValue() instanceof String) {
             if (taskType.equalsIgnoreCase("script")) {
                 taskJson.addProperty(JSON_TASK_TYPE_FIELD, "plugin");
@@ -62,10 +66,6 @@ public class TaskTransform {
                 pluginConfig.addProperty("version", "1");
                 taskJson.add(JSON_PLUGIN_CONFIGURATION_FIELD, config);
                 taskJson.add(JSON_TASK_PLUGIN_CONFIGURATION_FIELD, pluginConfig);
-                return taskJson;
-            }
-            if ("".equals(taskEntry.getValue())) {
-                taskJson.addProperty(JSON_TASK_TYPE_FIELD, taskType);
                 return taskJson;
             }
         }

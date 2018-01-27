@@ -1,0 +1,24 @@
+environments:
+  env1:
+    pipelines:
+      - pipe1
+
+pipelines:
+  pipe1:
+    group: simple
+    materials:
+      mygit:
+    stages:
+      - null
+  pipe2:
+    group: simple
+    materials:
+      mygit:
+    stages:
+      - null
+  pipe3:
+    group: simple
+    materials:
+      mygit:
+    stages:
+      - null

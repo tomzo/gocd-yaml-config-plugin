@@ -31,7 +31,7 @@ public class RootTransform {
         Map<String, Object> rootMap = (Map<String, Object>) rootObj;
         for (Map.Entry<String, Object> pe : rootMap.entrySet()) {
             if ("pipelines".equalsIgnoreCase(pe.getKey())) {
-                if ("".equals(pe.getValue()))
+                if (pe.getValue() == null)
                     continue;
                 Map<String, Object> pipelines = (Map<String, Object>) pe.getValue();
                 for (Map.Entry<String, Object> pipe : pipelines.entrySet()) {
@@ -44,7 +44,7 @@ public class RootTransform {
                     }
                 }
             } else if ("environments".equalsIgnoreCase(pe.getKey())) {
-                if ("".equals(pe.getValue()))
+                if (pe.getValue() == null)
                     continue;
                 Map<String, Object> environments = (Map<String, Object>) pe.getValue();
                 for (Map.Entry<String, Object> env : environments.entrySet()) {

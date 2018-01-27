@@ -30,7 +30,7 @@ public class EnvironmentsTransform {
         JsonObject envJson = new JsonObject();
         envJson.addProperty(JSON_ENV_NAME_FIELD, envName);
         Object envObj = env.getValue();
-        if ("".equals(envObj))
+        if (envObj == null)
             return envJson;
         if (!(envObj instanceof Map))
             throw new YamlConfigException("Expected environment to be a hash");

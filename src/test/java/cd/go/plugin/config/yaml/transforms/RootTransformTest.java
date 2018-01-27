@@ -3,6 +3,7 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.JsonConfigCollection;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.esotericsoftware.yamlbeans.YamlReader;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.junit.Before;
@@ -57,6 +58,22 @@ public class RootTransformTest {
         assertTargetVersion(readRootYaml("version_not_present").getJsonObject(), 1);
         assertTargetVersion(readRootYaml("version_1").getJsonObject(), 1);
         assertTargetVersion(readRootYaml("version_2").getJsonObject(), 2);
+    }
+    
+    @Test
+    public void shouldPreserveOrderOfPipelines() throws IOException {
+        MaterialTransform materialTransform = mock(MaterialTransform.class);
+        StageTransform stageTransform = mock(StageTransform.class);
+        EnvironmentVariablesTransform environmentTransform = mock(EnvironmentVariablesTransform.class);
+        ParameterTransform parameterTransform = mock(ParameterTransform.class);
+        pipelineTransform = new PipelineTransform(materialTransform, stageTransform, environmentTransform, parameterTransform);
+        rootTransform = new RootTransform(pipelineTransform, environmentsTransform);
+        
+        JsonConfigCollection collection = readRootYaml("pipeline_order");
+        JsonArray pipelines = collection.getJsonObject().get("pipelines").getAsJsonArray();
+        assertThat(pipelines.get(0).getAsJsonObject().get("name").getAsString(), is("pipe1"));
+        assertThat(pipelines.get(1).getAsJsonObject().get("name").getAsString(), is("pipe2"));
+        assertThat(pipelines.get(2).getAsJsonObject().get("name").getAsString(), is("pipe3"));
     }
 
     @Test(expected = YamlReader.YamlReaderException.class)

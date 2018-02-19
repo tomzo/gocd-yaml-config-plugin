@@ -108,6 +108,18 @@ pipelines:
 
 By default GoCD configuration files should end with `.gocd.yaml` or `.gocd.yml`.
 
+## Issues and questions
+
+ * If you have **questions on usage**, please ask them on the [gitter chat root dedicated for configrepo-plugins](https://gitter.im/gocd/configrepo-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ * If you think there is a bug, or you have an idea for a feature and *you are not sure if it's plugin's or [GoCD](https://github.com/gocd/gocd/issues) fault/responsibity*, please ask on the chat first too.
+
+Please note this brief overview of what is done by the plugin:
+ * parsing yaml into json when GoCD server asks for it.
+And this is done by the GoCD server:
+ * complex logic merging multiple config repo sources and XML
+ * validation of pipelines/stages/jobs/tasks domain
+ * any UI rendering
+
 # Specification
 
 See [official GoCD XML configuration reference](https://docs.gocd.org/current/configuration/configuration_reference.html)

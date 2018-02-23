@@ -1,3 +1,7 @@
+# 0.6.1 (23 Feb 2018)
+
+ * switch to EsotericSoftware's yamlbeans
+
 # 0.6.0 (26 Oct 2017)
 
  * adds support for referencing templates and specifying parameters

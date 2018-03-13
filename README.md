@@ -108,6 +108,22 @@ pipelines:
 
 By default GoCD configuration files should end with `.gocd.yaml` or `.gocd.yml`.
 
+You can set custom file pattern per configuration repository like this:
+
+```xml
+<config-repos>
+  <config-repo pluginId="yaml.config.plugin" id="repo1">
+    <git url="https://github.com/tomzo/gocd-yaml-config-example.git" />
+    <configuration>
+      <property>
+        <key>file_pattern</key>
+        <value>pipeline.gocd.yaml</value>
+      </property>
+    </configuration>
+  </config-repo>
+</config-repos>
+```
+
 ## Issues and questions
 
  * If you have **questions on usage**, please ask them on the [gitter chat root dedicated for configrepo-plugins](https://gitter.im/gocd/configrepo-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

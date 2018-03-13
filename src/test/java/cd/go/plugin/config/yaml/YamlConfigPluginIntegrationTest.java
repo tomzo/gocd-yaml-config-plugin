@@ -168,6 +168,29 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
+    public void shouldParseDirectoryWithCustomPatternWhenInConfigurations() throws UnhandledRequestTypeException, IOException {
+        File simpleCaseDir = setupCase("simple", "go.yml");
+        DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
+        String requestBody = "{\n" +
+                "    \"directory\":\"" + simpleCaseDir + "\",\n" +
+                "    \"configurations\":[" +
+                "{" +
+                    "\"key\" : \"file_pattern\"," +
+                    "\"value\" : \"simple.go.yml\" " +
+                "}" +
+                "]\n" +
+                "}";
+        parseDirectoryRequest.setRequestBody(requestBody);
+
+        GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertNoError(responseJsonObject);
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(1));
+    }
+
+    @Test
     public void shouldRespondBadRequestToParseDirectoryRequestWhenRequestBodyIsNull() throws UnhandledRequestTypeException {
         DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
         String requestBody = null;
@@ -278,7 +301,11 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     private File setupCase(String caseName) throws IOException {
-        File simpleFile = tempDir.newFile(caseName + ".gocd.yaml");
+        return setupCase(caseName, "gocd.yaml");
+    }
+
+    private File setupCase(String caseName, String extension) throws IOException {
+        File simpleFile = tempDir.newFile(caseName + "." + extension);
         FileUtils.copyInputStreamToFile(getResourceAsStream("examples/" + caseName + ".gocd.yaml"), simpleFile);
         return tempDir.getRoot();
     }

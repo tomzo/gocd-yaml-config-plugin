@@ -1,3 +1,7 @@
+# 0.6.2 (13 Mar 2018)
+
+ * fix ability to set custom file pattern per configuration repository
+
 # 0.6.1 (23 Feb 2018)
 
  * switch to EsotericSoftware's yamlbeans

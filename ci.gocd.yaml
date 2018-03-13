@@ -23,7 +23,14 @@ pipelines:
           approval: manual
           clean_workspace: true
           elastic_profile_id: w.c2.m2048.e10
+          secure_variables:
+            GITHUB_TOKEN: pAecqdOB4Fqa/YMwIQsoZf59vDSZKMSTPkwmZuX5DjcXw/4xA5ZlFBza1ujZS8Ff
           tasks:
+            - fetch:
+                stage: build
+                job: build
+                source: build/libs
+                destination: build
             - exec:
                 command: /bin/bash
                 arguments:

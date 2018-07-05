@@ -215,6 +215,7 @@ A minimal [pipeline](https://docs.gocd.org/current/configuration/configuration_r
 
 ```yaml
 mypipe:
+  group: mygroup
   materials:
     mygit:
       git: http://example.com/mygit.git

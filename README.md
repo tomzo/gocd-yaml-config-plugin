@@ -389,6 +389,15 @@ test:
         destination: dest
     - build:
         source: bin
+    - external:
+        id: docker-release-candidate
+        store_id: dockerhub
+        configuration:
+          options:
+            image: gocd/gocd-demo
+            tag: v${GO_PIPELINE_LABEL}
+          secure_options:
+            some_secure_property: "!@ESsdD323#sdu"
   properties:
     perf:
       source: test.xml
@@ -408,6 +417,45 @@ elastic_profile_id: "docker.unit-test"
 
 It MUST NOT be specified along with `resources`.
 Available in GoCD server since v16.12.0, yaml plugin 0.4.0.
+
+### Artifacts
+
+There are 3 types of artifacts recognized by GoCD. `Build` and `Test` artifacts are stored on the GoCD server.
+The source artifact and the destination on the GoCD server where the artifact must be stored can be specified.
+
+#### Build
+
+```yaml
+- build:
+    source: bin
+    destination: binaries
+```
+
+#### Test
+
+```yaml
+- test:
+    source: reports
+    destination: test-reports
+```
+
+#### External
+
+Artifacts of type `external` are stored in an artifact store outside of GoCD.
+The external artifact store's configuration must be created in the main GoCD config. Support for external artifact store config to be checked in as yaml is not available.
+The external artifact store is referenced by the `store_id`. The build specific artifact details that the artifact plugin needs to publish the artifact is provided as `configuration`.
+
+```yaml
+- external:
+    id: docker-release-candidate
+    store_id: dockerhub
+    configuration:
+      options:
+        image: gocd/gocd-demo
+        tag: v${GO_PIPELINE_LABEL}
+      secure_options:
+        some_secure_property: "!@ESsdD323#sdu"
+```
 
 ### Run many instances
 

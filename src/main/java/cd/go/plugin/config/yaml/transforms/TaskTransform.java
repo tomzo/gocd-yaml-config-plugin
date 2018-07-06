@@ -20,9 +20,6 @@ public class TaskTransform extends ConfigurationTransform {
     public static final String YAML_PLUGIN_STD_CONFIG_FIELD = "options";
     public static final String YAML_PLUGIN_SEC_CONFIG_FIELD = "secure_options";
     public static final String YAML_PLUGIN_CONFIGURATION_FIELD = "configuration";
-    private static final String JSON_PLUGIN_CONFIG_KEY_FIELD = "key";
-    private static final String JSON_PLUGIN_CONFIG_VALUE_FIELD = "value";
-    private static final String JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD = "encrypted_value";
     private static final String JSON_PLUGIN_CONFIGURATION_FIELD = "configuration";
     public static final String JSON_TASK_PLUGIN_CONFIGURATION_FIELD = "plugin_configuration";
     private HashSet<String> yamlSpecialKeywords = new HashSet<>();

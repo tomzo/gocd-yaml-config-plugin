@@ -1,0 +1,18 @@
+test:
+  tasks:
+    - null
+  artifacts:
+    - build:
+        source: src1
+        destination: dest1
+    - test:
+        source: src2
+        destination: dest2
+    - external:
+        id: blinky
+        store_id: shadow
+        configuration:
+          options:
+            white_russian: "cocktail"
+          secure_options:
+            fermented_coffee: "sfsggge124#"

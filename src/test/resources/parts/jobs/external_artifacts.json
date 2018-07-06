@@ -1,0 +1,30 @@
+{
+  "name": "test",
+  "artifacts": [
+    {
+      "type": "build",
+      "source": "src1",
+      "destination": "dest1"
+    },
+    {
+      "type": "test",
+      "source": "src2",
+      "destination": "dest2"
+    },
+    {
+      "type": "external",
+      "id": "blinky",
+      "store_id": "shadow",
+      "configuration": [
+        {
+          "key": "white_russian",
+          "value": "cocktail"
+        },
+        {
+          "key": "fermented_coffee",
+          "encrypted_value": "sfsggge124#"
+        }
+      ]
+    }
+  ]
+}

@@ -48,6 +48,11 @@ public class JobTransformTest {
     }
 
     @Test
+    public void shouldTransformExternalArtifactConfig() throws IOException {
+        testTransform("external_artifacts");
+    }
+
+    @Test
     public void shouldTransformJobWithListOfListsTasks() throws IOException {
         environmentTransform = new EnvironmentVariablesTransform();
         taskTransform = new TaskTransform();

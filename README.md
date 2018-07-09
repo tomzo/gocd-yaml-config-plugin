@@ -27,7 +27,7 @@ If you're using GoCD version *older than 17.8.0*, you need to install the plugin
 [the releases page](https://github.com/tomzo/gocd-yaml-config-plugin/releases) and place it on the GoCD server in
 `plugins/external` [directory](https://docs.gocd.org/current/extension_points/plugin_user_guide.html).
 
-Add `config-repos` element right above first `<pipelines />`. Then you can
+Add `config-repos` element right above first `<pipelines /> and <artifactStores /> if present`. Then you can
 add any number of YAML configuration repositories as such:
 
 ```xml
@@ -36,6 +36,9 @@ add any number of YAML configuration repositories as such:
     <git url="https://github.com/tomzo/gocd-yaml-config-example.git" />
   </config-repo>
 </config-repos>
+...
+<artifactStores />
+<pipelines />
 ```
 
 In your config repo (tomzo/gocd-yaml-config-example.git in this case), ensure that your gocd yaml config is suffixed with ".gocd.yaml". Any file ending in ".gocd.yaml" is picked up by the plugin. Give it a minute or so for the polling to happen. Once that happens, you should see your pipeline(s) on your dashboard.
@@ -183,7 +186,7 @@ Feel free to improve it!
 # Format version
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file.
-Version `2` was introduced in GoCD v17.12.
+Version `3` was introduced in GoCD v18.7.0
 Currently it is recommended to declare consistent version in all your files:
 
 For **GoCD < 17.12**:
@@ -195,7 +198,7 @@ pipelines:
 environments:
 ```
 
-For **GoCD >= 17.12**:
+For **GoCD >= 17.12 && GoCD < 18.7.0**:
 
 ```yaml
 format_version: 2
@@ -204,7 +207,18 @@ pipelines:
 environments:
 ```
 
-Format version V2 only changes the way [pipeline locking is configured](#pipeline-locking)
+For **GoCD >= 18.7.0**:
+
+```yaml
+format_version: 3
+pipelines:
+  ...
+environments:
+```
+
+Format version 2 only changes the way [pipeline locking is configured](#pipeline-locking)
+
+Format version 3 introduces support for external artifact configs. 
 
 # Pipeline
 
@@ -394,8 +408,8 @@ test:
         store_id: dockerhub
         configuration:
           options:
-            image: gocd/gocd-demo
-            tag: v${GO_PIPELINE_LABEL}
+            Image: gocd/gocd-demo
+            Tag: v${GO_PIPELINE_LABEL}
           secure_options:
             some_secure_property: "!@ESsdD323#sdu"
   properties:
@@ -421,7 +435,7 @@ Available in GoCD server since v16.12.0, yaml plugin 0.4.0.
 ### Artifacts
 
 There are 3 types of artifacts recognized by GoCD. `Build` and `Test` artifacts are stored on the GoCD server.
-The source artifact and the destination on the GoCD server where the artifact must be stored can be specified.
+The source and the destination of the artifact that should be stored on the GoCD server must be specified.
 
 #### Build
 
@@ -451,8 +465,8 @@ The external artifact store is referenced by the `store_id`. The build specific 
     store_id: dockerhub
     configuration:
       options:
-        image: gocd/gocd-demo
-        tag: v${GO_PIPELINE_LABEL}
+        Image: gocd/gocd-demo
+        Tag: v${GO_PIPELINE_LABEL}
       secure_options:
         some_secure_property: "!@ESsdD323#sdu"
 ```
@@ -742,15 +756,35 @@ rake:
 
 ### Fetch
 
+#### Fetch artifact from the GoCD server
+
 ```yaml
 fetch:
   run_if: any
+  artifact_origin: gocd
   pipeline: myupstream
   stage: upstream_stage
   job: upstream_job
   is_file: yes
   source: result
   destination: test
+```
+
+#### Fetch artifact from an external artifact store
+
+```yaml
+fetch:
+  run_if: any
+  artifact_origin: external
+  pipeline: myupstream
+  stage: upstream_stage
+  job: upstream_job
+  artifact_id: upstream_artifact_id
+  configuration:
+    options:
+      DestOnAgent: foo
+    secure_options:
+      some_secure_property: "!@ESsdD323#sdu"
 ```
 
 ### Plugin

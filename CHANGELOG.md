@@ -1,3 +1,7 @@
+# 0.7.0 (9 Jul 2018)
+
+ * introduces `format_version: 3` and external fetch task
+
 # 0.6.2 (13 Mar 2018)
 
  * fix ability to set custom file pattern per configuration repository

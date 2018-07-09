@@ -5,3 +5,8 @@ fetch:
   stage: upstream_stage
   job: upstream_job
   artifact_id: upstream_artifact_id
+  configuration:
+    options:
+      Foo: bar
+    secure_options:
+      secure_property: ssd#%fFS*!Esx

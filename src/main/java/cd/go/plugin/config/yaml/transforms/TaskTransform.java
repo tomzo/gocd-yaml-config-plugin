@@ -72,8 +72,14 @@ public class TaskTransform extends ConfigurationTransform {
         Map<String, Object> taskMap = (Map<String, Object>) taskEntry.getValue();
         addOnCancel(taskJson, taskMap);
 
-        addOptionalObject(taskJson, taskMap, JSON_TASK_PLUGIN_CONFIGURATION_FIELD, YAML_PLUGIN_CONFIGURATION_FIELD);
-        super.addConfiguration(taskJson, taskMap);
+        if ("fetch".equals(taskType)) {
+            addOptionalObject(taskJson, taskMap, JSON_PLUGIN_CONFIGURATION_FIELD, YAML_PLUGIN_CONFIGURATION_FIELD);
+            super.addConfiguration(taskJson, (Map<String, Object>) taskMap.get(JSON_PLUGIN_CONFIGURATION_FIELD));
+        } else {
+            addOptionalObject(taskJson, taskMap, JSON_TASK_PLUGIN_CONFIGURATION_FIELD, YAML_PLUGIN_CONFIGURATION_FIELD);
+            super.addConfiguration(taskJson, taskMap);
+        }
+
 
         addOptionalBoolean(taskJson, taskMap, JSON_TASK_IS_FILE_FIELD, YAML_TASK_IS_FILE_FIELD);
         addOptionalStringList(taskJson, taskMap, JSON_TASK_EXEC_ARGS_FIELD, YAML_TASK_EXEC_ARGS_FIELD);

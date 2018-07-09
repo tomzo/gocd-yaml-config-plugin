@@ -5,5 +5,15 @@
   "pipeline": "upstream",
   "stage": "upstream_stage",
   "job": "upstream_job",
-  "artifact_id": "upstream_artifact_id"
+  "artifact_id": "upstream_artifact_id",
+  "configuration": [
+    {
+      "key": "Foo",
+      "value": "bar"
+    },
+    {
+      "key": "secure_property",
+      "encrypted_value": "ssd#%fFS*!Esx"
+    }
+  ]
 }

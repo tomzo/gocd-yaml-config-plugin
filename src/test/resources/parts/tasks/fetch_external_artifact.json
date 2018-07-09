@@ -1,11 +1,9 @@
 {
   "type": "fetch",
-  "artifact_origin": "gocd",
   "run_if": "any",
+  "artifact_origin": "external",
   "pipeline": "upstream",
   "stage": "upstream_stage",
   "job": "upstream_job",
-  "is_source_a_file": true,
-  "source": "result",
-  "destination": "test"
+  "artifact_id": "upstream_artifact_id"
 }

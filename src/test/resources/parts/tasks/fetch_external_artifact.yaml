@@ -1,9 +1,7 @@
 fetch:
   run_if: any
-  artifact_origin: gocd
+  artifact_origin: external
   pipeline: upstream
   stage: upstream_stage
   job: upstream_job
-  is_file: yes
-  source: result
-  destination: test
+  artifact_id: upstream_artifact_id

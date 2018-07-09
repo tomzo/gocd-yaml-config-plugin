@@ -49,7 +49,7 @@ More examples are in [test resources](src/test/resources/examples/).
 
 ```yaml
 #ci.gocd.yaml
-format_version: 2
+format_version: 3
 environments:
   testing:
     environment_variables:
@@ -929,7 +929,7 @@ Aliases can be defined anywhere in the configuration as long as they are valid c
 There is also a dedicated top-level `common` section which allows you to have all aliases in one place and where you don't need to worry about correct placement within the configuration.
 
 ```yaml
-format_version: 2
+format_version: 3
 common:
   verbose_arg: &verbose_arg "VERBOSE=true"
   build_tasks: &build_tasks

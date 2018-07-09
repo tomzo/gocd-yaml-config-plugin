@@ -16,6 +16,9 @@ public class ConfigurationTransform {
 
 
     void addConfiguration(JsonObject json, Map<String, Object> configurationMap) {
+        if (configurationMap == null) {
+            return;
+        }
         JsonArray configuration = new JsonArray();
         Object options = configurationMap.get(YAML_PLUGIN_STD_CONFIG_FIELD);
         Object optionsSecure = configurationMap.get(YAML_PLUGIN_SEC_CONFIG_FIELD);

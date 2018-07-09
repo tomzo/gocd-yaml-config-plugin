@@ -29,6 +29,11 @@ public class TaskTransformTest {
     }
 
     @Test
+    public void shouldTransformFetchExternalArtifactTask() throws IOException {
+        testTransform("fetch_external_artifact");
+    }
+
+    @Test
     public void shouldTransformCompleteRake() throws IOException {
         testTransform("complete.rake");
     }

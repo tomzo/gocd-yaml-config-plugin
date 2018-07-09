@@ -1,5 +1,6 @@
 {
   "type": "fetch",
+  "artifact_origin": "gocd",
   "stage": "build",
   "job": "test",
   "source": "test-bin/"

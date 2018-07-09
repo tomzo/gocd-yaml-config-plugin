@@ -12,7 +12,7 @@ import java.util.Map;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
 
-public class JobTransform {
+public class JobTransform extends ConfigurationTransform {
     private static final String JSON_JOB_NAME_FIELD = "name";
     public static final String YAML_JOB_TIMEOUT_FIELD = "timeout";
     public static final String JSON_JOB_TIMEOUT_FIELD = "timeout";
@@ -34,6 +34,11 @@ public class JobTransform {
     private static final String YAML_JOB_ARTIFACT_SOURCE_FIELD = "source";
     private static final String JSON_JOB_ARTIFACT_DEST_FIELD = "destination";
     private static final String YAML_JOB_ARTIFACT_DEST_FIELD = "destination";
+    private static final String JSON_JOB_ARTIFACT_ARTIFACT_ID_FIELD = "id";
+    private static final String YAML_JOB_ARTIFACT_ARTIFACT_ID_FIELD = "id";
+    private static final String JSON_JOB_ARTIFACT_STORE_ID_FIELD = "store_id";
+    private static final String YAML_JOB_ARTIFACT_STORE_ID_FIELD = "store_id";
+
     private static final String YAML_JOB_PROPS_FIELD = "properties";
     private static final String JSON_JOB_PROPS_FIELD = "properties";
     private static final String JSON_JOB_PROP_NAME_FIELD = "name";
@@ -112,7 +117,7 @@ public class JobTransform {
         List<Object> artifactsList = (List<Object>) artifacts;
         for (Object artifactObj : artifactsList) {
             if (!(artifactObj instanceof Map))
-                throw new YamlConfigException("artifact should be a hash - build: or test:");
+                throw new YamlConfigException("artifact should be a hash - build:, test: or external:");
 
             Map<String, Object> artifactMap = (Map<String, Object>) artifactObj;
             for (Map.Entry<String, Object> artMap : artifactMap.entrySet()) {
@@ -121,11 +126,20 @@ public class JobTransform {
                     artifactJson.addProperty("type", "build");
                 else if ("test".equalsIgnoreCase(artMap.getKey()))
                     artifactJson.addProperty("type", "test");
-                else
-                    throw new YamlConfigException("expected build: or test: in artifact, got " + artMap.getKey());
+                else if ("external".equalsIgnoreCase(artMap.getKey())) {
+                    artifactJson.addProperty("type", "external");
+                } else
+                    throw new YamlConfigException("expected build:, test:, or external: in artifact, got " + artMap.getKey());
+
                 Map<String, Object> artMapValue = (Map<String, Object>) artMap.getValue();
-                addRequiredString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_SOURCE_FIELD, YAML_JOB_ARTIFACT_SOURCE_FIELD);
-                addOptionalString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_DEST_FIELD, YAML_JOB_ARTIFACT_DEST_FIELD);
+                if ("external".equalsIgnoreCase(artMap.getKey())) {
+                    addRequiredString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_ARTIFACT_ID_FIELD, YAML_JOB_ARTIFACT_ARTIFACT_ID_FIELD );
+                    addRequiredString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_STORE_ID_FIELD, YAML_JOB_ARTIFACT_STORE_ID_FIELD );
+                    super.addConfiguration(artifactJson, (Map<String, Object>) artMapValue.get("configuration"));
+                } else {
+                    addRequiredString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_SOURCE_FIELD, YAML_JOB_ARTIFACT_SOURCE_FIELD);
+                    addOptionalString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_DEST_FIELD, YAML_JOB_ARTIFACT_DEST_FIELD);
+                }
                 artifactArrayJson.add(artifactJson);
                 break;// we read first hash and exit
             }
@@ -182,8 +196,7 @@ public class JobTransform {
             if (maybeTask instanceof List) {
                 List<Object> taskNestedList = (List<Object>) maybeTask;
                 addTasks(taskNestedList, tasksJson);
-            }
-            else {
+            } else {
                 JsonObject task = taskTransform.transform(maybeTask);
                 tasksJson.add(task);
             }

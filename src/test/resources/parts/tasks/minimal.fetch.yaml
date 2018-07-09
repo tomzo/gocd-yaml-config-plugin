@@ -1,4 +1,5 @@
 fetch:
   stage: build
+  artifact_origin: gocd
   job: test
   source: test-bin/

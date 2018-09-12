@@ -26,7 +26,7 @@ public class RootTransform {
         this.environmentsTransform = environmentsTransform;
     }
 
-    public JsonConfigCollection transform(Object rootObj, String location) {
+    public JsonConfigCollection transform(Object rootObj, String location, String pipelineTag) {
         JsonConfigCollection partialConfig = new JsonConfigCollection();
         Map<String, Object> rootMap = (Map<String, Object>) rootObj;
         for (Map.Entry<String, Object> pe : rootMap.entrySet()) {
@@ -36,8 +36,10 @@ public class RootTransform {
                 Map<String, Object> pipelines = (Map<String, Object>) pe.getValue();
                 for (Map.Entry<String, Object> pipe : pipelines.entrySet()) {
                     try {
-                        JsonElement jsonPipeline = pipelineTransform.transform(pipe);
-                        partialConfig.addPipeline(jsonPipeline, location);
+                        JsonElement jsonPipeline = pipelineTransform.transform(pipe, pipelineTag);
+                        if (jsonPipeline != null) {
+                            partialConfig.addPipeline(jsonPipeline, location);
+                        }
                     } catch (Exception ex) {
                         partialConfig.addError(new PluginError(
                                 String.format("Failed to parse pipeline %s; %s", pipe.getKey(), ex.getMessage()), location));

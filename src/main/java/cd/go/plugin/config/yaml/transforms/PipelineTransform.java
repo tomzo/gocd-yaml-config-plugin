@@ -24,6 +24,7 @@ public class PipelineTransform {
     private static final String JSON_PIPELINE_MATERIALS_FIELD = "materials";
     private static final String JSON_PIPELINE_STAGES_FIELD = "stages";
 
+    private static final String YAML_PIPELINE_TAG_FIELD = "tag";
     private static final String YAML_PIPELINE_GROUP_FIELD = "group";
     private static final String YAML_PIPELINE_TEMPLATE_FIELD = "template";
     private static final String YAML_PIPELINE_LABEL_TEMPLATE_FIELD = "label_template";
@@ -55,11 +56,16 @@ public class PipelineTransform {
         throw new RuntimeException("expected pipeline hash to have 1 item");
     }
 
-    public JsonObject transform(Map.Entry<String, Object> entry) {
+    public JsonObject transform(Map.Entry<String, Object> entry, String pipelineTag) {
         String pipelineName = entry.getKey();
         JsonObject pipeline = new JsonObject();
         pipeline.addProperty(JSON_PIPELINE_NAME_FIELD, pipelineName);
         Map<String, Object> pipeMap = (Map<String, Object>) entry.getValue();
+
+        //we need to skip this as it is not tagged for us.
+        if(pipelineTag != null && !pipelineTag.equals(getOptionalString(pipeMap,YAML_PIPELINE_TAG_FIELD))) {
+            return null;
+        }
 
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_GROUP_FIELD, YAML_PIPELINE_GROUP_FIELD);
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_TEMPLATE_FIELD, YAML_PIPELINE_TEMPLATE_FIELD);

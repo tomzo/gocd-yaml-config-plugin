@@ -17,7 +17,7 @@ public class YamlFileParser {
         this.rootTransform = rootTransform;
     }
 
-    public JsonConfigCollection parseFiles(File baseDir, String[] files) {
+    public JsonConfigCollection parseFiles(File baseDir, String[] files, String pipelineTag) {
         JsonConfigCollection collection = new JsonConfigCollection();
         for (String file : files) {
             InputStream inputStream = null;
@@ -27,7 +27,7 @@ public class YamlFileParser {
                 config.setAllowDuplicates(false);
                 YamlReader reader = new YamlReader(new InputStreamReader(inputStream), config);
                 Object rootObject = reader.read();
-                JsonConfigCollection filePart = rootTransform.transform(rootObject, file);
+                JsonConfigCollection filePart = rootTransform.transform(rootObject, file, pipelineTag);
                 collection.append(filePart);
             } catch (YamlReader.YamlReaderException ex) {
                 collection.addError(ex.getMessage() , file);

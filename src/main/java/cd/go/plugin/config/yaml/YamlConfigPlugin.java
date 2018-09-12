@@ -115,7 +115,6 @@ public class YamlConfigPlugin implements GoPlugin {
                         return badRequest("Config repo configuration has invalid key=" + key);
                 }
             }
-            LOGGER.warn("the pipeline tag is " + pipelineTag);
             YamlFileParser parser = new YamlFileParser();
             PluginSettings settings = getPluginSettings();
             ConfigDirectoryScanner scanner = new AntDirectoryScanner();

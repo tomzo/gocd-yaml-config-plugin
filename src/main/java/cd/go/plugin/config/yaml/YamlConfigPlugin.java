@@ -29,7 +29,7 @@ public class YamlConfigPlugin implements GoPlugin {
     private static final String PLUGIN_SETTINGS_PIPELINE_TAG = "pipeline_tag";
     private static final String MISSING_DIRECTORY_MESSAGE = "directory property is missing in parse-directory request";
     private static final String EMPTY_REQUEST_BODY_MESSAGE = "Request body cannot be null or empty";
-    private static final String PLUGIN_ID = "yaml-tag.config.plugin";
+    private static final String PLUGIN_ID = "yaml.config.plugin";
     public static final String PLUGIN_SETTINGS_GET_CONFIGURATION = "go.plugin-settings.get-configuration";
     public static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
     public static final String PLUGIN_SETTINGS_VALIDATE_CONFIGURATION = "go.plugin-settings.validate-configuration";

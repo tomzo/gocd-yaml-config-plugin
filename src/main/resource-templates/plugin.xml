@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<go-plugin id="yaml.config.plugin" version="1">
+<go-plugin id="yaml-tag.config.plugin" version="1">
     <about>
-        <name>YAML Configuration Plugin</name>
+        <name>YAML Tag Configuration Plugin</name>
         <version>${version}</version>
         <target-go-version>${goCdVersion}</target-go-version>
         <description>
             GoCD pipelines and environments configuration in YAML
         </description>
         <vendor>
-            <name>Tomasz Setkowski</name>
-            <url>https://github.com/tomzo/gocd-yaml-config-plugin</url>
+            <name>Ashley Stovall</name>
+            <url>https://github.com/plainsane/gocd-yaml-config-plugin</url>
         </vendor>
     </about>
 </go-plugin>

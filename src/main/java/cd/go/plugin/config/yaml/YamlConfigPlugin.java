@@ -24,14 +24,17 @@ import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse
 public class YamlConfigPlugin implements GoPlugin {
     public static final String GET_PLUGIN_SETTINGS = "go.processor.plugin-settings.get";
     private static final String DISPLAY_NAME_FILE_PATTERN = "Go YAML files pattern";
+    private static final String DISPLAY_NAME_TAG = "Go YAML pipeline tag";
     private static final String PLUGIN_SETTINGS_FILE_PATTERN = "file_pattern";
+    private static final String PLUGIN_SETTINGS_TAG = "pipeline_tag";
     private static final String MISSING_DIRECTORY_MESSAGE = "directory property is missing in parse-directory request";
     private static final String EMPTY_REQUEST_BODY_MESSAGE = "Request body cannot be null or empty";
-    private static final String PLUGIN_ID = "yaml.config.plugin";
+    private static final String PLUGIN_ID = "yaml-tag.config.plugin";
     public static final String PLUGIN_SETTINGS_GET_CONFIGURATION = "go.plugin-settings.get-configuration";
     public static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
     public static final String PLUGIN_SETTINGS_VALIDATE_CONFIGURATION = "go.plugin-settings.validate-configuration";
     public static final String DEFAULT_FILE_PATTERN = "**/*.gocd.yaml,**/*.gocd.yml";
+    public static final String DEFAULT_TAG = "master";
 
     private static Logger LOGGER = Logger.getLoggerFor(YamlConfigPlugin.class);
 
@@ -152,6 +155,7 @@ public class YamlConfigPlugin implements GoPlugin {
     private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
         Map<String, Object> response = new HashMap<String, Object>();
         response.put(PLUGIN_SETTINGS_FILE_PATTERN, createField(DISPLAY_NAME_FILE_PATTERN, DEFAULT_FILE_PATTERN, false, false, "0"));
+        response.put(PLUGIN_SETTINGS_TAG, createField(DISPLAY_NAME_TAG, DEFAULT_TAG, false, false, "1"));
         return renderJSON(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, response);
     }
 

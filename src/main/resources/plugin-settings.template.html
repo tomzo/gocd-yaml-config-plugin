@@ -3,3 +3,8 @@
     <input type="text" ng-model="file_pattern" ng-required="false" placeholder="**/*.gocd.yaml,**/*.gocd.yml" />
     <span class="form_error" ng-show="GOINPUTNAME[file_pattern].$error.server">{{ GOINPUTNAME[file_pattern].$error.server }}</span>
 </div>
+<div class="form_item_block">
+    <label>Go YAML pipeline tag:</label>
+    <input type="text" ng-model="pipeline_tag" ng-required="false" placeholder="master" />
+    <span class="form_error" ng-show="GOINPUTNAME[pipeline_tag].$error.server">{{ GOINPUTNAME[pipeline_tag].$error.server }}</span>
+</div>

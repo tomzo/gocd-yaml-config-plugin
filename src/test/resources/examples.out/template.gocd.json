@@ -1,0 +1,112 @@
+{
+  "target_version": 1,
+  "errors": [],
+  "environments": [],
+  "pipelines": [
+    {
+      "location": "template.gocd.yaml",
+      "name": "pipe1",
+      "group": "simple",
+      "template": "template1",
+      "materials": [
+        {
+          "name": "mygit",
+          "type": "git",
+          "url": "http://my.example.org/mygit.git"
+        }
+      ]
+    }
+  ],
+  "templates": [
+    {
+      "location": "template.gocd.yaml",
+      "name": "template1",
+      "stages": [
+        {
+          "name": "build",
+          "clean_working_directory": true,
+          "approval": {
+            "type": "manual",
+            "roles": [
+              "manager"
+            ]
+          },
+          "jobs": [
+            {
+              "name": "csharp",
+              "run_instance_count": 3,
+              "resources": [
+                "net45"
+              ],
+              "artifacts": [
+                {
+                  "type": "build",
+                  "source": "bin/",
+                  "destination": "build"
+                },
+                {
+                  "type": "test",
+                  "source": "tests/",
+                  "destination": "test-reports/"
+                }
+              ],
+              "tabs": [
+                {
+                  "name": "report",
+                  "path": "test-reports/index.html"
+                }
+              ],
+              "environment_variables": [
+                {
+                  "name": "MONO_PATH",
+                  "value": "/usr/bin/local/mono"
+                },
+                {
+                  "name": "PASSWORD",
+                  "encrypted_value": "s&Du#@$xsSa"
+                }
+              ],
+              "properties": [
+                {
+                  "name": "perf",
+                  "source": "test.xml",
+                  "xpath": "substring-before(//report/data/all/coverage[starts-with(@type,\u0027class\u0027)]/@value, \u0027%\u0027)"
+                }
+              ],
+              "tasks": [
+                {
+                  "type": "fetch",
+                  "pipeline": "pipe2",
+                  "stage": "build",
+                  "job": "test",
+                  "source": "test-bin/",
+                  "destination": "bin/"
+                },
+                {
+                  "type": "exec",
+                  "command": "make",
+                  "arguments": [
+                    "VERBOSE=true"
+                  ]
+                },
+                {
+                  "type": "plugin",
+                  "configuration": [
+                    {
+                      "key": "script",
+                      "value": "./build.sh ci"
+                    }
+                  ],
+                  "plugin_configuration": {
+                    "id": "script-executor",
+                    "version": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

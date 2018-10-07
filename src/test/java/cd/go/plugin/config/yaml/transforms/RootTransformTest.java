@@ -21,12 +21,14 @@ public class RootTransformTest {
     private RootTransform rootTransform;
     private PipelineTransform pipelineTransform;
     private EnvironmentsTransform environmentsTransform;
+    private TemplateTransform templateTransform;
 
     @Before
     public void Setup() {
         pipelineTransform = mock(PipelineTransform.class);
         environmentsTransform = mock(EnvironmentsTransform.class);
-        rootTransform = new RootTransform(pipelineTransform, environmentsTransform);
+        templateTransform = mock(TemplateTransform.class);
+        rootTransform = new RootTransform(pipelineTransform, environmentsTransform, templateTransform);
     }
 
     @Test
@@ -37,6 +39,7 @@ public class RootTransformTest {
         assertThat(empty.getJsonObject().get("pipelines").isJsonArray(), is(true));
         assertThat(empty.getJsonObject().get("environments").getAsJsonArray().size(), is(0));
         assertThat(empty.getJsonObject().get("pipelines").getAsJsonArray().size(), is(0));
+        assertThat(empty.getJsonObject().get("templates").getAsJsonArray().size(), is(0));
     }
 
     @Test
@@ -66,8 +69,9 @@ public class RootTransformTest {
         StageTransform stageTransform = mock(StageTransform.class);
         EnvironmentVariablesTransform environmentTransform = mock(EnvironmentVariablesTransform.class);
         ParameterTransform parameterTransform = mock(ParameterTransform.class);
+        TemplateTransform templateTransform = mock(TemplateTransform.class);
         pipelineTransform = new PipelineTransform(materialTransform, stageTransform, environmentTransform, parameterTransform);
-        rootTransform = new RootTransform(pipelineTransform, environmentsTransform);
+        rootTransform = new RootTransform(pipelineTransform, environmentsTransform, templateTransform);
         
         JsonConfigCollection collection = readRootYaml("pipeline_order");
         JsonArray pipelines = collection.getJsonObject().get("pipelines").getAsJsonArray();

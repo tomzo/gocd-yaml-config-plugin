@@ -1,0 +1,54 @@
+# template.gocd.yaml
+pipelines:
+  pipe1:
+    group: simple
+    template: template1
+    materials:
+      mygit:  # this is the name of material
+        # says about type of material and url at once
+        git: http://my.example.org/mygit.git
+
+templates:
+  template1:
+    stages:
+      - build: # name of stage
+          clean_workspace: true
+          approval:
+            type: manual
+            roles:
+              - manager
+          jobs:
+            csharp: # name of the job
+              run_instances: 3
+              resources:
+               - net45
+              artifacts:
+               - build:
+                   source: bin/
+                   destination: build
+               - test:
+                   source: tests/
+                   destination: test-reports/
+              tabs:
+                report: test-reports/index.html
+              environment_variables:
+                MONO_PATH: /usr/bin/local/mono
+              secure_variables:
+                PASSWORD: "s&Du#@$xsSa"
+              properties:
+                perf:
+                  source: test.xml
+                  xpath: "substring-before(//report/data/all/coverage[starts-with(@type,\u0027class\u0027)]/@value, \u0027%\u0027)"
+              tasks:
+               - fetch:
+                   pipeline: pipe2
+                   stage: build
+                   job: test
+                   source: test-bin/
+                   destination: bin/
+               - exec: # indicates type of task
+                   command: make
+                   arguments:
+                    - "VERBOSE=true"
+              # shorthand for script-executor plugin
+               - script: ./build.sh ci

@@ -123,6 +123,21 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
+    public void shouldRespondSuccessToParseDirectoryRequestWhenTemplateCaseFile() throws UnhandledRequestTypeException, IOException {
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("template"));
+
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertNoError(responseJsonObject);
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(1));
+        JsonArray templates = responseJsonObject.get("templates").getAsJsonArray();
+        assertThat(templates.size(), is(1));
+        JsonObject expected = (JsonObject) readJsonObject("examples.out/template.gocd.json");
+        assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
+    }
+
+    @Test
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenSimpleInvalidCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("simple-invalid"));
 

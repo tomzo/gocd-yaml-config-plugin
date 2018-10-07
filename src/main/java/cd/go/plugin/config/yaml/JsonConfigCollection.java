@@ -13,6 +13,7 @@ public class JsonConfigCollection {
     private JsonObject mainObject = new JsonObject();
     private JsonArray environments = new JsonArray();
     private JsonArray pipelines = new JsonArray();
+    private JsonArray templates = new JsonArray();
     private JsonArray errors = new JsonArray();
 
     public JsonConfigCollection() {
@@ -21,6 +22,7 @@ public class JsonConfigCollection {
         updateTargetVersionTo(DEFAULT_VERSION);
         mainObject.add("environments", environments);
         mainObject.add("pipelines", pipelines);
+        mainObject.add("templates", templates);
         mainObject.add("errors", errors);
     }
 
@@ -46,6 +48,15 @@ public class JsonConfigCollection {
         return pipelines;
     }
 
+    public void addTemplate(JsonElement template, String location) {
+        templates.add(template);
+        template.getAsJsonObject().add("location", new JsonPrimitive(location));
+    }
+
+    public JsonArray getTemplates() {
+        return templates;
+    }
+
     public JsonArray getErrors() {
         return errors;
     }
@@ -61,6 +72,7 @@ public class JsonConfigCollection {
     public void append(JsonConfigCollection other) {
         this.environments.addAll(other.environments);
         this.pipelines.addAll(other.pipelines);
+        this.templates.addAll(other.templates);
         this.errors.addAll(other.errors);
         this.uniqueVersions.addAll(other.uniqueVersions);
     }

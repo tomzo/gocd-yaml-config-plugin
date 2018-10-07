@@ -16,6 +16,7 @@ public class JsonConfigCollectionTest {
     private JsonObject pipe2;
     private JsonObject devEnv;
     private JsonObject pipeInGroup;
+    private JsonObject template1;
 
     @Before
     public void SetUp() {
@@ -33,6 +34,9 @@ public class JsonConfigCollectionTest {
 
         devEnv = new JsonObject();
         devEnv.addProperty("name", "dev");
+
+        template1 = new JsonObject();
+        template1.addProperty("name", "template1");
     }
 
     @Test
@@ -57,11 +61,18 @@ public class JsonConfigCollectionTest {
         assertThat(jsonObject.getAsJsonArray("pipelines").size(), is(2));
     }
 
-
+    @Test
+    public void shouldAppendTemplatesToTemplatesCollection() {
+        jsonCollection.addTemplate(template1, "template1.json");
+        JsonObject jsonObject = jsonCollection.getJsonObject();
+        assertThat(jsonObject.getAsJsonArray("templates").size(), is(1));
+    }
+    
     @Test
     public void shouldReturnEnvironmentsInJsonObject() {
         jsonCollection.addEnvironment(devEnv, "dev.json");
         JsonObject jsonObject = jsonCollection.getJsonObject();
         assertThat(jsonObject.getAsJsonArray("environments").size(), is(1));
     }
+
 }

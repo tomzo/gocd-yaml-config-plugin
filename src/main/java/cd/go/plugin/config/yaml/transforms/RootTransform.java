@@ -10,6 +10,7 @@ import java.util.Map;
 public class RootTransform {
     private PipelineTransform pipelineTransform;
     private EnvironmentsTransform environmentsTransform;
+    private TemplateTransform templateTransform;
 
     public RootTransform() {
         EnvironmentVariablesTransform environmentVarsTransform = new EnvironmentVariablesTransform();
@@ -19,11 +20,13 @@ public class RootTransform {
         StageTransform stage = new StageTransform(environmentVarsTransform, job);
         this.pipelineTransform = new PipelineTransform(material, stage, environmentVarsTransform, parameterTransform);
         this.environmentsTransform = new EnvironmentsTransform(environmentVarsTransform);
+        this.templateTransform = new TemplateTransform(stage);
     }
 
-    public RootTransform(PipelineTransform pipelineTransform, EnvironmentsTransform environmentsTransform) {
+    public RootTransform(PipelineTransform pipelineTransform, EnvironmentsTransform environmentsTransform, TemplateTransform templateTransform) {
         this.pipelineTransform = pipelineTransform;
         this.environmentsTransform = environmentsTransform;
+        this.templateTransform = templateTransform;
     }
 
     public JsonConfigCollection transform(Object rootObj, String location) {
@@ -41,6 +44,19 @@ public class RootTransform {
                     } catch (Exception ex) {
                         partialConfig.addError(new PluginError(
                                 String.format("Failed to parse pipeline %s; %s", pipe.getKey(), ex.getMessage()), location));
+                    }
+                }
+            } else if ("templates".equalsIgnoreCase(pe.getKey())) {
+                if (pe.getValue() == null)
+                    continue;
+                Map<String, Object> templates = (Map<String, Object>) pe.getValue();
+                for (Map.Entry<String, Object> template : templates.entrySet()) {
+                    try {
+                        JsonElement jsonTemplate = templateTransform.transform(template);
+                        partialConfig.addTemplate(jsonTemplate, location);
+                    } catch (Exception ex) {
+                        partialConfig.addError(new PluginError(
+                                String.format("Failed to parse template %s; %s", template.getKey(), ex.getMessage()), location));
                     }
                 }
             } else if ("environments".equalsIgnoreCase(pe.getKey())) {

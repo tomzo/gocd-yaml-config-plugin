@@ -1,5 +1,6 @@
 package cd.go.plugin.config.yaml;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class YamlGeneratorConfigParser {
         public String pattern;
         public String script;
     }
-    public List<YamlGenerator> parseFile(String file) {
-        try (FileInputStream inputStream = new FileInputStream(file)) {
+    public List<YamlGenerator> parseFile(File baseDir, String file) {
+        try (FileInputStream inputStream = new FileInputStream(new File(baseDir, file))) {
             YamlConfig config = new YamlConfig();
             config.setAllowDuplicates(false);
             YamlReader reader = new YamlReader(new InputStreamReader(inputStream), config);

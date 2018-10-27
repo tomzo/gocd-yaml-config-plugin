@@ -24,16 +24,17 @@ public class YamlGenerator {
         String[] inputFiles = scanner.getFilesMatchingPattern(baseDir, pattern);
         List<String> outputFiles = new ArrayList<>();
         for (String file : inputFiles) {
+            String outputFile = file + ".out";
+            String absPath = new File(baseDir, file).getAbsolutePath();
             ProcessBuilder builder = new ProcessBuilder();
-            String instance = script.replace("{{file}}", file);
+            String instance = script.replace("{{file}}", absPath);
             if (isWindows) {
                 builder.command("cmd.exe", "/c", instance);
             } else {
                 builder.command("sh", "-c", instance);
             }
-            String outputFile = file + ".out";
-            builder.redirectOutput(new File(outputFile));
-            builder.redirectError(new File(file + ".err"));
+            builder.redirectOutput(new File(baseDir, outputFile));
+            builder.redirectError(new File(absPath + ".err"));
             Process process = builder.start();
             int exitCode = process.waitFor();
             if (exitCode == 0)

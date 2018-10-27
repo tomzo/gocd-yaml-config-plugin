@@ -131,7 +131,7 @@ public class YamlConfigPlugin implements GoPlugin {
             if (generatorConfigFiles.length > 0) {
                 YamlGeneratorConfigParser parser = new YamlGeneratorConfigParser();
                 for (String file : generatorConfigFiles) {
-                    generators.addAll(parser.parseFile(file));
+                    generators.addAll(parser.parseFile(baseDir, file));
                 }
             }
 

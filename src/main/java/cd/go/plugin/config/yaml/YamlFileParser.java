@@ -5,6 +5,7 @@ import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
 import java.io.*;
+import java.util.List;
 
 public class YamlFileParser {
     private RootTransform rootTransform;
@@ -17,7 +18,7 @@ public class YamlFileParser {
         this.rootTransform = rootTransform;
     }
 
-    public JsonConfigCollection parseFiles(File baseDir, String[] files) {
+    public JsonConfigCollection parseFiles(File baseDir, List<String> files) {
         JsonConfigCollection collection = new JsonConfigCollection();
         for (String file : files) {
             InputStream inputStream = null;

@@ -24,7 +24,9 @@ import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse
 public class YamlConfigPlugin implements GoPlugin {
     public static final String GET_PLUGIN_SETTINGS = "go.processor.plugin-settings.get";
     private static final String DISPLAY_NAME_FILE_PATTERN = "Go YAML files pattern";
+    private static final String DISPLAY_NAME_GENERATOR_CONFIG_PATTERN = "Go YAML generator config files pattern";
     private static final String PLUGIN_SETTINGS_FILE_PATTERN = "file_pattern";
+    private static final String PLUGIN_SETTINGS_GENERATOR_CONFIG_PATTERN = "generator_config_pattern";
     private static final String MISSING_DIRECTORY_MESSAGE = "directory property is missing in parse-directory request";
     private static final String EMPTY_REQUEST_BODY_MESSAGE = "Request body cannot be null or empty";
     private static final String PLUGIN_ID = "yaml.config.plugin";
@@ -32,6 +34,7 @@ public class YamlConfigPlugin implements GoPlugin {
     public static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
     public static final String PLUGIN_SETTINGS_VALIDATE_CONFIGURATION = "go.plugin-settings.validate-configuration";
     public static final String DEFAULT_FILE_PATTERN = "**/*.gocd.yaml,**/*.gocd.yml";
+    public static final String DEFAULT_GENERATOR_CONFIG_PATTERN = "**/*.gocd-yaml-generator.yaml,**/*.gocd-yaml-generator.yml";
 
     private static Logger LOGGER = Logger.getLoggerFor(YamlConfigPlugin.class);
 
@@ -97,6 +100,7 @@ public class YamlConfigPlugin implements GoPlugin {
             File baseDir = new File(directory);
 
             String pattern = null;
+            String generatorConfigPattern = null;
             JsonArray perRepoConfig = parsedResponseObject.getAsJsonArray("configurations");
             if(perRepoConfig != null) {
                 for(JsonElement config : perRepoConfig) {
@@ -105,21 +109,46 @@ public class YamlConfigPlugin implements GoPlugin {
                     if(key.equals(PLUGIN_SETTINGS_FILE_PATTERN)) {
                         pattern = configObj.getAsJsonPrimitive("value").getAsString();
                     }
+                    else if(key.equals(PLUGIN_SETTINGS_GENERATOR_CONFIG_PATTERN)) {
+                        generatorConfigPattern = configObj.getAsJsonPrimitive("value").getAsString();
+                    }
                     else
                         return badRequest("Config repo configuration has invalid key=" + key);
                 }
             }
 
-            YamlFileParser parser = new YamlFileParser();
             PluginSettings settings = getPluginSettings();
             ConfigDirectoryScanner scanner = new AntDirectoryScanner();
+
+            if(generatorConfigPattern == null) {
+                generatorConfigPattern = isBlank(settings.getGeneratorConfigPattern()) ?
+                        DEFAULT_GENERATOR_CONFIG_PATTERN : settings.getGeneratorConfigPattern();
+            }
+
+            List<YamlGenerator> generators = new ArrayList<>();
+
+            String[] generatorConfigFiles = scanner.getFilesMatchingPattern(baseDir, generatorConfigPattern);
+            if (generatorConfigFiles.length > 0) {
+                YamlGeneratorConfigParser parser = new YamlGeneratorConfigParser();
+                for (String file : generatorConfigFiles) {
+                    generators.addAll(parser.parseFile(file));
+                }
+            }
+
+            List<String> files = new ArrayList<>();
+
+            for (YamlGenerator generator : generators) {
+                files.addAll(generator.generateFiles(baseDir));
+            }
 
             if(pattern == null) {
                 pattern = isBlank(settings.getFilePattern()) ?
                         DEFAULT_FILE_PATTERN : settings.getFilePattern();
             }
 
-            String[] files = scanner.getFilesMatchingPattern(baseDir, pattern);
+            YamlFileParser parser = new YamlFileParser();
+            for (String file : scanner.getFilesMatchingPattern(baseDir, pattern))
+               files.add(file);
             JsonConfigCollection config = parser.parseFiles(baseDir, files);
 
             config.updateTargetVersionFromFiles();
@@ -152,6 +181,7 @@ public class YamlConfigPlugin implements GoPlugin {
     private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
         Map<String, Object> response = new HashMap<String, Object>();
         response.put(PLUGIN_SETTINGS_FILE_PATTERN, createField(DISPLAY_NAME_FILE_PATTERN, DEFAULT_FILE_PATTERN, false, false, "0"));
+        response.put(PLUGIN_SETTINGS_GENERATOR_CONFIG_PATTERN, createField(DISPLAY_NAME_GENERATOR_CONFIG_PATTERN, DEFAULT_GENERATOR_CONFIG_PATTERN, false, false, "0"));
         return renderJSON(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, response);
     }
 
@@ -174,7 +204,8 @@ public class YamlConfigPlugin implements GoPlugin {
         }
         Map<String, String> responseBodyMap = (Map<String, String>) JSONUtils.fromJSON(response.responseBody());
         return new PluginSettings(
-                responseBodyMap.get(PLUGIN_SETTINGS_FILE_PATTERN));
+                responseBodyMap.get(PLUGIN_SETTINGS_FILE_PATTERN),
+                responseBodyMap.get(PLUGIN_SETTINGS_GENERATOR_CONFIG_PATTERN));
     }
 
     private GoApiRequest createGoApiRequest(final String api, final String responseBody) {

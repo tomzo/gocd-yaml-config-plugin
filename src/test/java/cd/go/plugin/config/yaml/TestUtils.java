@@ -29,7 +29,7 @@ public class TestUtils {
         return new InputStreamReader(resourceAsStream);
     }
 
-    private static String loadString(String path) throws IOException {
+    public static String loadString(String path) throws IOException {
         final InputStream resourceAsStream = getResourceAsStream(path);
         return IOUtils.toString(resourceAsStream);
     }

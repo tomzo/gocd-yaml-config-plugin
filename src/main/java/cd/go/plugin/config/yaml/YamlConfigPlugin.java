@@ -1,5 +1,6 @@
 package cd.go.plugin.config.yaml;
 
+import cd.go.plugin.config.yaml.transforms.JsonToYamlTransform;
 import com.google.gson.*;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
@@ -49,7 +50,7 @@ public class YamlConfigPlugin implements GoPlugin {
     }
 
     private GoPluginIdentifier getGoPluginIdentifier() {
-        return new GoPluginIdentifier("configrepo", Arrays.asList("1.0"));
+        return new GoPluginIdentifier("configrepo", Arrays.asList("1.0", "2.0"));
     }
 
     @Override
@@ -68,8 +69,18 @@ public class YamlConfigPlugin implements GoPlugin {
         }
         if ("parse-directory".equals(request.requestName())) {
             return handleParseDirectoryRequest(request);
+        } else if ("pipeline-export".equals(requestName)) {
+            return handlePipelineExportRequest(request);
+        } else if ("get-capabilities".equals(requestName)) {
+            return DefaultGoPluginApiResponse.success(gson.toJson(new Capabilities()));
         }
         throw new UnhandledRequestTypeException(request.requestName());
+    }
+
+    private GoPluginApiResponse handlePipelineExportRequest(GoPluginApiRequest request) {
+        Map<String, String> response = new HashMap<>();
+        response.put("pipeline", new JsonToYamlTransform().transform(request.requestBody()));
+        return DefaultGoPluginApiResponse.success(gson.toJson(response));
     }
 
     private GoPluginApiResponse handleParseDirectoryRequest(GoPluginApiRequest request) {
@@ -186,7 +197,7 @@ public class YamlConfigPlugin implements GoPlugin {
 
             @Override
             public String apiVersion() {
-                return "1.0";
+                return "2.0";
             }
 
             @Override

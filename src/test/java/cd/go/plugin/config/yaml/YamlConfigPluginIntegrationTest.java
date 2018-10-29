@@ -1,9 +1,6 @@
 package cd.go.plugin.config.yaml;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.request.DefaultGoPluginApiRequest;
@@ -22,8 +19,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 
-import static cd.go.plugin.config.yaml.TestUtils.getResourceAsStream;
-import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
+import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -298,6 +294,35 @@ public class YamlConfigPluginIntegrationTest {
         String expectedFailureMessage = "java.lang.RuntimeException: Versions across files are not unique. Found" +
                 " versions: [1, 2]. There can only be one version across the whole repository.";
         assertFirstError(getJsonObjectFromResponse(response), expectedFailureMessage, "YAML config plugin");
+    }
+
+    @Test
+    public void shouldExportPipeline() throws UnhandledRequestTypeException, IOException {
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "1.0", "pipeline-export");
+        String requestBody = "{\n" +
+                "    \"pipeline\":" + loadString("parts/export.pipe.json") + "\n" +
+                "}";
+        request.setRequestBody(requestBody);
+
+        GoPluginApiResponse response = plugin.handle(request);
+
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+
+        String pipeline = responseJsonObject.get("pipeline").getAsString();
+        String expected = "pipe2:\n  tracking_tool:\n    regex: evo-(\\d+)\n    link: http://your-trackingtool/yourproject/${ID}\n  timer:\n    only_on_changes: true\n    spec: 0 15 10 * * ? *\n  materials:\n  - null\n  - null\n  enable_pipeline_locking: true\n  name: pipe2\n  stages:\n  - null\n  - null\n  label_template: foo-1.0-${COUNT}\n  group: group1\n";
+        assertEquals(expected, pipeline);
+    }
+
+    @Test
+    public void shouldRespondWithCapabilities() throws UnhandledRequestTypeException {
+        String expected = new Gson().toJson(new Capabilities());
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo","2.0","get-capabilities");
+
+        GoPluginApiResponse response = plugin.handle(request);
+
+        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseBody(), is(expected));
     }
 
     private File setupCase(String caseName) throws IOException {

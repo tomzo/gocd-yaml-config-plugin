@@ -2,7 +2,10 @@ package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class EnvironmentVariablesTransform extends ConfigurationTransform {
@@ -17,6 +20,21 @@ public class EnvironmentVariablesTransform extends ConfigurationTransform {
         JsonArray array = new JsonArray();
         transformPlainAndSecureOptions(array, variables, secureVariables, JSON_ENV_NAME_FIELD);
         return array;
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransform(List<LinkedTreeMap<String, Object>> vars) {
+        if (vars == null)
+            return null;
+        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
+        List<LinkedTreeMap<String, Object>> variables = new ArrayList<>();
+        List<LinkedTreeMap<String, Object>> secureVariables = new ArrayList<>();
+        for (LinkedTreeMap<String, Object> var: vars) {
+
+        }
+
+        result.put(YAML_ENV_VAR_FIELD, variables);
+        result.put(YAML_SEC_VAR_FIELD, secureVariables);
+        return result;
     }
 
     public JsonArray transform(Object all) {

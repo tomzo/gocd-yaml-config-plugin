@@ -3,7 +3,13 @@ package cd.go.plugin.config.yaml;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -16,6 +22,14 @@ public class YamlUtils {
             "y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON");
     private static Pattern falsePattern = Pattern.compile(
             "n|N|no|No|NO|false|False|FALSE|off|Off|OFF");
+    public static final Type TYPE = new TypeToken<HashMap<String, LinkedTreeMap<String, Object>>>() {}.getType();
+
+    public static String dump(Object o) {
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setPrettyFlow(true);
+        return new Yaml(options).dump(o);
+    }
 
     public static void addOptionalObject(JsonObject jsonObject, Map<String, Object> yamlSource, String jsonField, String yamlFieldName) {
         Object obj = getOptionalObject(yamlSource, yamlFieldName);
@@ -74,6 +88,8 @@ public class YamlUtils {
     public static Boolean getOptionalBoolean(Map<String, Object> map, String fieldName) {
         Object value = map.get(fieldName);
         if (value != null) {
+            if (value instanceof Boolean)
+                return (Boolean) value;
             String boolText = (String) value;
             if (truePattern.matcher(boolText).matches())
                 return true;

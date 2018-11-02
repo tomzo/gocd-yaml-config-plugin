@@ -3,7 +3,9 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.JsonConfigCollection;
 import cd.go.plugin.config.yaml.PluginError;
 import cd.go.plugin.config.yaml.YamlConfigException;
+import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonElement;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.Map;
 
@@ -24,6 +26,10 @@ public class RootTransform {
     public RootTransform(PipelineTransform pipelineTransform, EnvironmentsTransform environmentsTransform) {
         this.pipelineTransform = pipelineTransform;
         this.environmentsTransform = environmentsTransform;
+    }
+
+    public String inverseTransformPipeline(LinkedTreeMap<String, Object> pipeline) {
+       return YamlUtils.dump(pipelineTransform.inverseTransform(pipeline));
     }
 
     public JsonConfigCollection transform(Object rootObj, String location) {

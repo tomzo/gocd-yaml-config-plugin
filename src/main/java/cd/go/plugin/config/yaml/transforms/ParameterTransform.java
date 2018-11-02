@@ -2,6 +2,7 @@ package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.Map;
 

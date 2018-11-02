@@ -1,7 +1,8 @@
 package cd.go.plugin.config.yaml;
 
-import cd.go.plugin.config.yaml.transforms.JsonToYamlTransform;
+import cd.go.plugin.config.yaml.transforms.RootTransform;
 import com.google.gson.*;
+import com.google.gson.internal.LinkedTreeMap;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static cd.go.plugin.config.yaml.YamlUtils.TYPE;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.badRequest;
 
 @Extension
@@ -79,7 +81,9 @@ public class YamlConfigPlugin implements GoPlugin {
 
     private GoPluginApiResponse handlePipelineExportRequest(GoPluginApiRequest request) {
         Map<String, String> response = new HashMap<>();
-        response.put("pipeline", new JsonToYamlTransform().transform(request.requestBody()));
+        HashMap<String, LinkedTreeMap<String, Object>> d = gson.fromJson(request.requestBody(), TYPE);
+        LinkedTreeMap<String, Object> pipeline = d.get("pipeline");
+        response.put("pipeline", new RootTransform().inverseTransformPipeline(pipeline));
         return DefaultGoPluginApiResponse.success(gson.toJson(response));
     }
 

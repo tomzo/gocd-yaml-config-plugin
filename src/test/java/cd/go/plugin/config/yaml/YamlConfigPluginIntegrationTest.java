@@ -297,24 +297,6 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
-    public void shouldExportPipeline() throws UnhandledRequestTypeException, IOException {
-        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "1.0", "pipeline-export");
-        String requestBody = "{\n" +
-                "    \"pipeline\":" + loadString("parts/export.pipe.json") + "\n" +
-                "}";
-        request.setRequestBody(requestBody);
-
-        GoPluginApiResponse response = plugin.handle(request);
-
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
-        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
-
-        String pipeline = responseJsonObject.get("pipeline").getAsString();
-        String expected = "pipe2:\n  tracking_tool:\n    regex: evo-(\\d+)\n    link: http://your-trackingtool/yourproject/${ID}\n  timer:\n    only_on_changes: true\n    spec: 0 15 10 * * ? *\n  materials:\n  - null\n  - null\n  enable_pipeline_locking: true\n  name: pipe2\n  stages:\n  - null\n  - null\n  label_template: foo-1.0-${COUNT}\n  group: group1\n";
-        assertEquals(expected, pipeline);
-    }
-
-    @Test
     public void shouldRespondWithCapabilities() throws UnhandledRequestTypeException {
         String expected = new Gson().toJson(new Capabilities());
         DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo","2.0","get-capabilities");

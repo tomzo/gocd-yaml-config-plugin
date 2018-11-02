@@ -2,11 +2,13 @@ package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 
 public class MaterialTransform {
@@ -53,6 +55,8 @@ public class MaterialTransform {
         yamlSpecialKeywords.add("hg");
         yamlSpecialKeywords.add("p4");
         yamlSpecialKeywords.add("use_tickets");
+        yamlSpecialKeywords.add(YAML_SHORT_KEYWORD_PACKAGE_ID);
+        yamlSpecialKeywords.add(YAML_SHORT_KEYWORD_SCM_ID);
     }
 
     public JsonObject transform(Object maybeMaterial) {
@@ -61,6 +65,62 @@ public class MaterialTransform {
             return transform(entry);
         }
         throw new RuntimeException("expected material hash to have 1 item");
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransform(LinkedTreeMap<String, Object> material) {
+        String materialName = (String) material.get(JSON_MATERIAL_NAME_FIELD);
+        LinkedTreeMap<String, Object> inverseMaterial = new LinkedTreeMap<>();
+        LinkedTreeMap<String, Object> materialdata = new LinkedTreeMap<>();
+
+        String materialType = (String) material.get(JSON_MATERIAL_TYPE_FIELD);
+
+        switch (materialType) {
+            case "p4":
+                materialdata.put(YAML_SHORT_KEYWORD_PERFORCE, material.get("port"));
+                break;
+            case "package":
+                materialdata.put(YAML_SHORT_KEYWORD_PACKAGE_ID, material.get("package_id"));
+                break;
+            case "plugin":
+                materialdata.put(YAML_SHORT_KEYWORD_SCM_ID, material.get("scm_id"));
+                break;
+            case "hg":
+                materialdata.put(YAML_SHORT_KEYWORD_HG, material.get("url"));
+                break;
+            case "git":
+                materialdata.put(YAML_SHORT_KEYWORD_GIT, material.get("url"));
+                break;
+            case "svn":
+                materialdata.put(YAML_SHORT_KEYWORD_SVN, material.get("url"));
+                break;
+            case "configrepo":
+                materialdata.put(YAML_MATERIAL_TYPE_FIELD, material.get(JSON_MATERIAL_TYPE_FIELD));
+                break;
+        }
+
+        addOptionalValue(materialdata, material, "username", "username");
+        addOptionalValue(materialdata, material, "password", "password");
+        addOptionalValue(materialdata, material, JSON_MATERIAL_USE_TICKETS_FIELD, YAML_MATERIAL_USE_TICKETS_FIELD );
+        addOptionalValue(materialdata, material, "view", "view" );
+
+        if (material.containsKey("filter"))
+            addInverseFilter(materialdata, (LinkedTreeMap<String, Object>) material.get("filter"));
+
+        addOptionalValue(materialdata, material, JSON_MATERIAL_SHALLOW_CLONE_FIELD, YAML_MATERIAL_SHALLOW_CLONE_FIELD);
+        addOptionalValue(materialdata, material, JSON_MATERIAL_CHECK_EXTERNALS_FIELD, YAML_MATERIAL_CHECK_EXTERNALS_FIELD);
+        addOptionalValue(materialdata, material, JSON_MATERIAL_AUTO_UPDATE_FIELD, YAML_MATERIAL_AUTO_UPDATE_FIELD);
+
+
+        // copy all other members
+        for (Map.Entry<String, Object> materialProp : material.entrySet()) {
+            if (yamlSpecialKeywords.contains(materialProp.getKey()))
+                continue;
+            if (materialProp.getValue() instanceof String)
+                materialdata.put(materialProp.getKey(), (String) materialProp.getValue());
+        }
+
+        inverseMaterial.put(materialName, materialdata);
+        return inverseMaterial;
     }
 
     public JsonObject transform(Map.Entry<String, Object> entry) {
@@ -122,6 +182,17 @@ public class MaterialTransform {
                 material.addProperty(materialProp.getKey(), (String) materialProp.getValue());
         }
         return material;
+    }
+
+    private void addInverseFilter(LinkedTreeMap<String, Object> material, LinkedTreeMap<String, Object> filterList) {
+        List<String> filter = (List<String>) filterList.get("ignore");
+        if (filter != null) {
+            material.put("blacklist", filter);
+        }
+        filter = (List<String>) material.get("whitelist");
+        if (filter != null) {
+            material.put("whitelist", filter);
+        }
     }
 
     private void addFilter(JsonObject material, Object filterList, String jsonKeyword) {

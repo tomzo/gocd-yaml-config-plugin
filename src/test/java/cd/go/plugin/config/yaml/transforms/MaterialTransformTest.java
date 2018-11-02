@@ -1,14 +1,19 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
+import cd.go.plugin.config.yaml.YamlUtils;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
-import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
+import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class MaterialTransformTest {
@@ -83,6 +88,57 @@ public class MaterialTransformTest {
         testTransform("complete.p4");
     }
 
+
+    @Test
+    public void shouldInverseTransformMinimalGit() throws IOException {
+        testInverseTransform("minimal.git");
+    }
+
+    @Test
+    public void shouldInverseTransformGitWhenAutoUpdateIsFalse() throws IOException {
+        testInverseTransform("auto_update.git");
+    }
+
+    @Test
+    public void shouldInverseTransformCompleteCr() throws IOException {
+        testInverseTransform("complete.cr");
+    }
+
+    @Test
+    public void shouldInverseTransformCompleteSvn() throws IOException {
+        testInverseTransform("complete.svn");
+    }
+
+    @Test
+    public void shouldInverseTransformCompleteGit() throws IOException {
+        testInverseTransform("complete.git");
+    }
+
+    @Test
+    public void shouldInverseTransformCompleteHg() throws IOException {
+        testInverseTransform("complete.hg");
+    }
+
+    @Test
+    public void shouldInverseTransformSimpleDependency() throws IOException {
+        testInverseTransform("simple.dependency");
+    }
+
+    @Test
+    public void shouldInverseTransformCompleteP4() throws IOException {
+       testInverseTransform("complete.p4");
+    }
+
+    @Test
+    public void shouldInverseTransformPackage() throws IOException {
+        testInverseTransform("package");
+    }
+
+    @Test
+    public void shouldInverseTRansformCompletePluggable() throws IOException {
+        testInverseTransform("complete.pluggable");
+    }
+
     private void testTransform(String caseFile) throws IOException {
         testTransform(caseFile, caseFile);
     }
@@ -93,4 +149,13 @@ public class MaterialTransformTest {
         assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
     }
 
+    private void testInverseTransform(String caseFile) throws IOException {
+        testInverseTransform(caseFile, caseFile);
+    }
+
+    private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
+        LinkedTreeMap<String, Object> actual = parser.inverseTransform(readJsonGson("parts/materials/" + caseFile + ".json"));
+        JsonObject transform = parser.transform(actual);
+        assertEquals((readJsonObject("parts/materials/" + expectedFile + ".json")), transform);
+    }
 }

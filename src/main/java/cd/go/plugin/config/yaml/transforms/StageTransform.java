@@ -3,6 +3,7 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.Map;
 
@@ -61,6 +62,22 @@ public class StageTransform {
 
         addJobs(stage, stageMap);
 
+        return stage;
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransform(LinkedTreeMap<String, Object> stage) {
+        if (stage == null) {
+            return stage;
+        }
+        String stageName = (String) stage.get(JSON_STAGE_NAME_FIELD);
+        LinkedTreeMap<String, Object> inverseStage = new LinkedTreeMap<>();
+        LinkedTreeMap<String, Object> stageData = new LinkedTreeMap<>();
+
+        stageData.put(YAML_STAGE_FETCH_FIELD, stage.get(JSON_STAGE_FETCH_FIELD));
+        stageData.put(YAML_STAGE_KEEP_ARTIFACTS_FIELD, stage.get(JSON_STAGE_NEVER_CLEAN_FIELD));
+        stageData.put(YAML_STAGE_CLEAN_WORK_FIELD, stage.get(JSON_STAGE_CLEAN_WORK_FIELD));
+
+        inverseStage.put(stageName, stageData);
         return stage;
     }
 

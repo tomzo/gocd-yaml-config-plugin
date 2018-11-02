@@ -1,12 +1,14 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.YamlConfigException;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
 import static cd.go.plugin.config.yaml.transforms.ParameterTransform.YAML_PIPELINE_PARAMETERS_FIELD;
@@ -39,6 +41,7 @@ public class PipelineTransform {
     private final StageTransform stageTransform;
     private final EnvironmentVariablesTransform variablesTransform;
     private ParameterTransform parameterTransform;
+    private Gson gson = new Gson();
 
     public PipelineTransform(MaterialTransform materialTransform, StageTransform stageTransform, EnvironmentVariablesTransform variablesTransform, ParameterTransform parameterTransform) {
         this.materialTransform = materialTransform;
@@ -86,6 +89,67 @@ public class PipelineTransform {
         }
 
         return pipeline;
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransform(Object pipeline) {
+        return inverseTransform((LinkedTreeMap<String, Object>) pipeline);
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransform(LinkedTreeMap<String, Object> pipeline) {
+        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
+        LinkedTreeMap<String, Object> pipelineMap = new LinkedTreeMap<>();
+        String name = (String) pipeline.get(JSON_PIPELINE_NAME_FIELD);
+
+        pipelineMap.put(YAML_PIPELINE_GROUP_FIELD, pipeline.get(JSON_PIPELINE_GROUP_FIELD));
+        addOptionalValue(pipelineMap, pipeline, JSON_PIPELINE_LABEL_TEMPLATE_FIELD, YAML_PIPELINE_LABEL_TEMPLATE_FIELD);
+        addOptionalValue(pipelineMap, pipeline, JSON_PIPELINE_PIPE_LOCKING_FIELD, YAML_PIPELINE_PIPE_LOCKING_FIELD);
+        addOptionalValue(pipelineMap, pipeline, JSON_PIPELINE_LOCK_BEHAVIOR_FIELD, YAML_PIPELINE_LOCK_BEHAVIOR_FIELD);
+        addOptionalValue(pipelineMap, pipeline, JSON_PIPELINE_TRACKING_TOOL_FIELD, YAML_PIPELINE_TRACKING_TOOL_FIELD);
+
+        addInverseTimer(pipelineMap, pipeline);
+
+        LinkedTreeMap<String, Object> yamlEnvVariables = variablesTransform.inverseTransform((List<LinkedTreeMap<String, Object>>) pipeline.get(JSON_ENV_VAR_FIELD));
+        if (yamlEnvVariables != null && yamlEnvVariables.size() > 0)
+            pipelineMap.putAll(yamlEnvVariables);
+
+        addInverseMaterials(pipelineMap, (List<LinkedTreeMap<String, Object>>) pipeline.get(JSON_PIPELINE_MATERIALS_FIELD));
+        if (!pipelineMap.containsKey(YAML_PIPELINE_TEMPLATE_FIELD)) {
+            addInverseStages(pipelineMap, (List<LinkedTreeMap<String, Object>>) pipeline.get(JSON_PIPELINE_STAGES_FIELD));
+        }
+
+//        JsonArray params = parameterTransform.transform(pipeline);
+//        if (params != null && params.size() > 0) {
+//            pipeline.put(YAML_PIPELINE_PARAMETERS_FIELD, params);
+//        }
+
+
+        result.put(name, pipelineMap);
+        return result;
+
+    }
+
+    private void addInverseMaterials(LinkedTreeMap<String, Object> pipelineMap, List<LinkedTreeMap<String, Object>> materials) {
+        LinkedTreeMap<String, Object> inverseMaterials = new LinkedTreeMap<>();
+        for (LinkedTreeMap<String, Object> material : materials) {
+            inverseMaterials.putAll(materialTransform.inverseTransform(material));
+        }
+        pipelineMap.put(YAML_PIPELINE_MATERIALS_FIELD, inverseMaterials);
+    }
+
+    private void addInverseStages(LinkedTreeMap<String, Object> pipelineMap, List<LinkedTreeMap<String, Object>> stages) {
+        List<LinkedTreeMap<String, Object>> inverseStages = new ArrayList<>();
+        for (LinkedTreeMap<String, Object> stage : stages) {
+           inverseStages.add(stageTransform.inverseTransform(stage));
+        }
+        pipelineMap.put(YAML_PIPELINE_STAGES_FIELD, inverseStages);
+    }
+
+    private void addInverseTimer(LinkedTreeMap<String, Object> pipelineMap, LinkedTreeMap<String, Object> pipeline) {
+        Object timer = pipeline.get(JSON_PIPELINE_TIMER_FIELD);
+        if (timer == null)
+            return;
+        LinkedTreeMap<String, Object> timerMap = (LinkedTreeMap<String, Object>) timer;
+        pipelineMap.put(YAML_PIPELINE_TIMER_FIELD, timerMap);
     }
 
     private void addTimer(JsonObject pipeline, Map<String, Object> pipeMap) {

@@ -12,11 +12,13 @@
     "only_on_changes": true
   },
   "materials": [
-    null,
-    null
+    {
+      "name": "foo"
+    }
   ],
   "stages": [
     null,
     null
   ]
 }
+

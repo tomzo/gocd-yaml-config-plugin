@@ -1,15 +1,17 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
+import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
-import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
+import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -61,6 +63,26 @@ public class JobTransformTest {
         JsonObject job = testTransform("list_of_lists_tasks");
     }
 
+    @Test
+    public void shouldInverseTransformMinimalJob() throws IOException {
+        testInverseTransform("minimal");
+    }
+
+    @Test
+    public void shouldInverseTransformRunAllJob() throws IOException {
+        testInverseTransform("runall");
+    }
+
+    @Test
+    public void shouldInverseTransformCompleteJob() throws IOException {
+        testInverseTransform("complete");
+    }
+
+    @Test
+    public void shouldInverseTransformElasticProfileJob() throws IOException {
+        testInverseTransform("elastic_profile");
+    }
+
     private JsonObject testTransform(String caseFile) throws IOException {
         return testTransform(caseFile, caseFile);
     }
@@ -70,5 +92,14 @@ public class JobTransformTest {
         JsonObject jsonObject = parser.transform(readYamlObject("parts/jobs/" + caseFile + ".yaml"));
         assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
         return jsonObject;
+    }
+
+    private void testInverseTransform(String caseFile) throws IOException {
+        testInverseTransform(caseFile, caseFile);
+    }
+
+    private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
+        LinkedTreeMap<String, Object> inverse = parser.inverseTransform(readJsonGson("parts/jobs/" + caseFile + ".json"));
+        assertYamlEquivalent(loadString("parts/jobs/" + expectedFile + ".yaml"), YamlUtils.dump(inverse));
     }
 }

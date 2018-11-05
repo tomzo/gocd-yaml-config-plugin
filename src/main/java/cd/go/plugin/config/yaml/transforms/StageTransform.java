@@ -5,8 +5,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
+import static cd.go.plugin.config.yaml.JSONUtils.addRequiredValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
 
@@ -73,12 +77,45 @@ public class StageTransform {
         LinkedTreeMap<String, Object> inverseStage = new LinkedTreeMap<>();
         LinkedTreeMap<String, Object> stageData = new LinkedTreeMap<>();
 
-        stageData.put(YAML_STAGE_FETCH_FIELD, stage.get(JSON_STAGE_FETCH_FIELD));
-        stageData.put(YAML_STAGE_KEEP_ARTIFACTS_FIELD, stage.get(JSON_STAGE_NEVER_CLEAN_FIELD));
-        stageData.put(YAML_STAGE_CLEAN_WORK_FIELD, stage.get(JSON_STAGE_CLEAN_WORK_FIELD));
+        addOptionalValue(stageData, stage, JSON_STAGE_FETCH_FIELD, YAML_STAGE_FETCH_FIELD);
+        addOptionalValue(stageData, stage, JSON_STAGE_NEVER_CLEAN_FIELD, YAML_STAGE_KEEP_ARTIFACTS_FIELD);
+        addOptionalValue(stageData, stage, JSON_STAGE_CLEAN_WORK_FIELD, YAML_STAGE_CLEAN_WORK_FIELD);
+
+        addInverseApproval(stageData, stage);
+
+
+        LinkedTreeMap<String, Object> yamlEnvVariables = environmentTransform.inverseTransform((List<LinkedTreeMap<String, Object>>) stage.get(JSON_ENV_VAR_FIELD));
+        if (yamlEnvVariables != null && yamlEnvVariables.size() > 0)
+            stageData.putAll(yamlEnvVariables);
+
+        addInverseJobs(stageData, (List<LinkedTreeMap<String, Object>>) stage.get(JSON_STAGE_JOBS_FIELD));
 
         inverseStage.put(stageName, stageData);
-        return stage;
+        return inverseStage;
+    }
+
+    private void addInverseJobs(LinkedTreeMap<String, Object> stageData, List<LinkedTreeMap<String, Object>> jobs) {
+        LinkedTreeMap<String, Object> inverseJobs = new LinkedTreeMap<>();
+        for (LinkedTreeMap<String, Object> job: jobs) {
+            LinkedTreeMap<String, Object> inverseJob = jobTransform.inverseTransform(job);
+            if (inverseJob != null)
+                inverseJobs.putAll(inverseJob);
+        }
+
+       stageData.put("jobs", inverseJobs);
+    }
+
+    private void addInverseApproval(LinkedTreeMap<String, Object> stageData, LinkedTreeMap<String, Object> stage) {
+        LinkedTreeMap<String, Object> approval = (LinkedTreeMap<String, Object>) stage.get(JSON_STAGE_APPROVAL_FIELD);
+        LinkedTreeMap<String, Object> inverseApproval = new LinkedTreeMap<>();
+        if (approval == null)
+            return;
+
+        addRequiredValue(inverseApproval, approval, JSON_STAGE_APPROVAL_TYPE_FIELD, YAML_STAGE_APPROVAL_TYPE_FIELD);
+        addOptionalValue(inverseApproval, approval, JSON_STAGE_APPROVAL_ROLES_FIELD, YAML_STAGE_APPROVAL_ROLES_FIELD);
+        addOptionalValue(inverseApproval, approval, JSON_STAGE_APPROVAL_USERS_FIELD, YAML_STAGE_APPROVAL_USERS_FIELD);
+
+        stageData.put(YAML_STAGE_APPROVAL_FIELD, inverseApproval);
     }
 
     private void addApproval(JsonObject stage, Map<String, Object> stageMap) {

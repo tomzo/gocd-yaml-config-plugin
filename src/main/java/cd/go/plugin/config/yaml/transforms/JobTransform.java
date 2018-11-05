@@ -3,12 +3,16 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalInt;
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
 
@@ -84,6 +88,86 @@ public class JobTransform extends ConfigurationTransform {
         return jobJson;
     }
 
+    public LinkedTreeMap<String, Object> inverseTransform(LinkedTreeMap<String, Object> job) {
+        if (job == null)
+            return null;
+        String jobName = (String) job.get(JSON_JOB_NAME_FIELD);
+        LinkedTreeMap<String, Object> inverseJob = new LinkedTreeMap<>();
+        LinkedTreeMap<String, Object> jobData = new LinkedTreeMap<>();
+
+        addOptionalInt(jobData, job, JSON_JOB_TIMEOUT_FIELD, YAML_JOB_TIMEOUT_FIELD);
+
+        addInverseRunInstances(jobData, job);
+
+        LinkedTreeMap<String, Object> yamlEnvVariables = environmentTransform.inverseTransform((List<LinkedTreeMap<String, Object>>) job.get(JSON_ENV_VAR_FIELD));
+        if (yamlEnvVariables != null && yamlEnvVariables.size() > 0)
+            jobData.putAll(yamlEnvVariables);
+
+        addInverseTabs(jobData, job);
+
+        addOptionalValue(jobData, job, JSON_JOB_RESOURCES_FIELD, YAML_JOB_RESOURCES_FIELD);
+        addOptionalValue(jobData, job, JSON_JOB_ELASTIC_PROFILE_FIELD, YAML_JOB_ELASTIC_PROFILE_FIELD);
+
+        addInverseArtifacts(jobData, job);
+        addInverseProperties(jobData, job);
+        addInverseTasks(jobData, job);
+        inverseJob.put(jobName, jobData);
+        return inverseJob;
+    }
+
+    private void addInverseRunInstances(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
+        Object run = job.get(JSON_JOB_RUN_INSTANCES_FIELD);
+        if (run == null)
+            return;
+        if (run instanceof String) {
+            addOptionalValue(jobData, job, JSON_JOB_RUN_INSTANCES_FIELD, YAML_JOB_RUN_INSTANCES_FIELD);
+        } else {
+            addOptionalInt(jobData, job, JSON_JOB_RUN_INSTANCES_FIELD, YAML_JOB_RUN_INSTANCES_FIELD);
+        }
+    }
+
+    private void addInverseTabs(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
+        List<LinkedTreeMap<String, Object>> tabs = (List<LinkedTreeMap<String, Object>>) job.get(JSON_JOB_TABS_FIELD);
+        if (tabs == null)
+            return;
+
+        LinkedTreeMap<String, Object> inverseTabs = new LinkedTreeMap<>();
+        for (LinkedTreeMap<String, Object> tab : tabs) {
+           inverseTabs.put((String) tab.get(JSON_JOB_TAB_NAME_FIELD), tab.get(JSON_JOB_TAB_PATH_FIELD)) ;
+        }
+
+        jobData.put(YAML_JOB_TABS_FIELD, inverseTabs);
+    }
+
+    private void addInverseTasks(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
+        List<LinkedTreeMap<String, Object>> tasks = (List<LinkedTreeMap<String, Object>>) job.get(JSON_JOB_TASKS_FIELD);
+        if (tasks == null)
+            return;
+
+        List<LinkedTreeMap<String, Object>> inverseTasks = new ArrayList<>();
+
+        for (LinkedTreeMap<String, Object> task : tasks) {
+           inverseTasks.add(taskTransform.inverseTransform(task));
+        }
+
+        jobData.put(YAML_JOB_TASKS_FIELD, inverseTasks);
+    }
+
+    private void addInverseProperties(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
+        List<LinkedTreeMap<String, Object>> properties = (List<LinkedTreeMap<String, Object>>) job.get(JSON_JOB_PROPS_FIELD);
+        if(properties == null)
+            return;
+
+        LinkedTreeMap<String, Object> inverseProperties = new LinkedTreeMap<>();
+
+        for (LinkedTreeMap<String, Object> prop : properties) {
+            String name = (String) prop.remove(JSON_JOB_PROP_NAME_FIELD);
+            inverseProperties.put(name, prop);
+        }
+
+        jobData.put(YAML_JOB_PROPS_FIELD, inverseProperties);
+    }
+
     private void addProperties(JsonObject jobJson, Map<String, Object> jobMap) {
         Object props = jobMap.get(YAML_JOB_PROPS_FIELD);
         if (props == null)
@@ -105,6 +189,23 @@ public class JobTransform extends ConfigurationTransform {
             propsJson.add(propJson);
         }
         jobJson.add(JSON_JOB_PROPS_FIELD, propsJson);
+    }
+
+    private void addInverseArtifacts(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
+        List<LinkedTreeMap<String, Object>> artifacts = (List<LinkedTreeMap<String, Object>>) job.get(JSON_JOB_ARTIFACTS_FIELD);
+        if (artifacts == null)
+            return;
+
+        List<LinkedTreeMap<String, Object>> inverseArtifacts = new ArrayList<>();
+        for (LinkedTreeMap<String, Object> artifact : artifacts) {
+            LinkedTreeMap<String, Object> inverseArtifact = new LinkedTreeMap<>();
+
+            String type = (String) artifact.remove("type");
+            inverseArtifact.put(type, artifact);
+            inverseArtifacts.add(inverseArtifact);
+        }
+
+        jobData.put(YAML_JOB_ARTIFACTS_FIELD, inverseArtifacts);
     }
 
     private void addArtifacts(JsonObject jobJson, Map<String, Object> jobMap) {

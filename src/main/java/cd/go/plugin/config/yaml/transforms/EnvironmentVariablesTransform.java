@@ -25,23 +25,7 @@ public class EnvironmentVariablesTransform extends ConfigurationTransform {
     public LinkedTreeMap<String, Object> inverseTransform(List<LinkedTreeMap<String, Object>> vars) {
         if (vars == null)
             return null;
-        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
-        LinkedTreeMap<String, Object> variables = new LinkedTreeMap<>();
-        LinkedTreeMap<String, Object> secureVariables = new LinkedTreeMap<>();
-        for (LinkedTreeMap<String, Object> var: vars) {
-            if(var.containsKey(JSON_ENV_ENCRYPTED_FIELD)) {
-                secureVariables.put((String) var.get(JSON_ENV_NAME_FIELD), var.get(JSON_ENV_ENCRYPTED_FIELD));
-            } else {
-                variables.put((String) var.get(JSON_ENV_NAME_FIELD), var.get(JSON_ENV_VALUE_FIELD));
-            }
-
-        }
-
-        if (variables.size() > 0)
-            result.put(YAML_ENV_VAR_FIELD, variables);
-        if (secureVariables.size() > 0)
-            result.put(YAML_SEC_VAR_FIELD, secureVariables);
-        return result;
+        return inverseTransformPlainAndSecureOptions(vars, YAML_ENV_VAR_FIELD, YAML_SEC_VAR_FIELD);
     }
 
     public JsonArray transform(Object all) {

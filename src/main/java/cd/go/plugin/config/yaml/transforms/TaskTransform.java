@@ -3,10 +3,14 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 
 public class TaskTransform extends ConfigurationTransform {
@@ -91,6 +95,39 @@ public class TaskTransform extends ConfigurationTransform {
                 taskJson.addProperty(taskProp.getKey(), (String) taskProp.getValue());
         }
         return taskJson;
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransform(LinkedTreeMap<String, Object> task) {
+        String type = (String) task.get(JSON_TASK_TYPE_FIELD);
+        LinkedTreeMap<String, Object> inverseTask = new LinkedTreeMap<>();
+        LinkedTreeMap<String, Object> taskData = new LinkedTreeMap<>();
+
+        addInverseOnCancel(taskData, task);
+
+        addOptionalValue(taskData, task, JSON_TASK_PLUGIN_CONFIGURATION_FIELD, YAML_PLUGIN_CONFIGURATION_FIELD);
+        addInverseConfiguration(taskData, task);
+
+        addOptionalValue(taskData, task, JSON_TASK_IS_FILE_FIELD, YAML_TASK_IS_FILE_FIELD);
+        addOptionalValue(taskData, task, JSON_TASK_EXEC_ARGS_FIELD, YAML_TASK_EXEC_ARGS_FIELD);
+
+        for (Map.Entry<String, Object> taskProp : task.entrySet()) {
+            if (yamlSpecialKeywords.contains(taskProp.getKey()))
+                continue;
+            if (taskProp.getValue() instanceof String)
+                taskData.put(taskProp.getKey(), taskProp.getValue());
+        }
+
+        inverseTask.put(type, taskData);
+        return inverseTask;
+    }
+
+    private void addInverseOnCancel(LinkedTreeMap<String, Object> taskData, LinkedTreeMap<String, Object> task) {
+        Object on_cancel = task.get(JSON_TASK_CANCEL_FIELD);
+        if (on_cancel != null) {
+            if (!(on_cancel instanceof LinkedTreeMap))
+                throw new YamlConfigException("expected on_cancel task to be a hash");
+            taskData.put(YAML_TASK_CANCEL_FIELD, inverseTransform((LinkedTreeMap<String, Object>) on_cancel));
+        }
     }
 
     private void addOnCancel(JsonObject taskJson, Map<String, Object> taskMap) {

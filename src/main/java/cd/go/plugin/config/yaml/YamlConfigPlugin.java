@@ -81,8 +81,8 @@ public class YamlConfigPlugin implements GoPlugin {
 
     private GoPluginApiResponse handlePipelineExportRequest(GoPluginApiRequest request) {
         Map<String, String> response = new HashMap<>();
-        HashMap<String, LinkedTreeMap<String, Object>> d = gson.fromJson(request.requestBody(), TYPE);
-        LinkedTreeMap<String, Object> pipeline = d.get("pipeline");
+        HashMap<String, LinkedTreeMap<String, Object>> parsedBody = gson.fromJson(request.requestBody(), TYPE);
+        LinkedTreeMap<String, Object> pipeline = parsedBody.get("pipeline");
         response.put("pipeline", new RootTransform().inverseTransformPipeline(pipeline));
         return DefaultGoPluginApiResponse.success(gson.toJson(response));
     }

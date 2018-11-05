@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.List;
 import java.util.Map;
 
 public class ParameterTransform {
@@ -27,6 +28,23 @@ public class ParameterTransform {
 
         }
         return paramArray;
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransform(List<LinkedTreeMap<String, Object>> params) {
+        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
+        LinkedTreeMap<String, Object> inverseParams = new LinkedTreeMap<>();
+        for (LinkedTreeMap<String, Object> param : params) {
+            inverseParams.putAll(inverseTransformParam(param));
+        }
+        result.put(YAML_PIPELINE_PARAMETERS_FIELD, inverseParams);
+       return result;
+    }
+
+    public LinkedTreeMap<String, Object> inverseTransformParam(LinkedTreeMap<String, Object> param) {
+        String name = (String) param.get(JSON_PARAM_NAME_FIELD);
+        LinkedTreeMap<String, Object> inverseParam = new LinkedTreeMap<>();
+        inverseParam.put(name, param.get(JSON_PARAM_VALUE_FIELD));
+        return inverseParam;
     }
 }
 

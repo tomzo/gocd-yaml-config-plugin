@@ -117,11 +117,10 @@ public class PipelineTransform {
             addInverseStages(pipelineMap, (List<LinkedTreeMap<String, Object>>) pipeline.get(JSON_PIPELINE_STAGES_FIELD));
         }
 
-//        JsonArray params = parameterTransform.transform(pipeline);
-//        if (params != null && params.size() > 0) {
-//            pipeline.put(YAML_PIPELINE_PARAMETERS_FIELD, params);
-//        }
-
+        LinkedTreeMap<String, Object> params = parameterTransform.inverseTransform((List<LinkedTreeMap<String, Object>>) pipeline.get("parameters"));
+        if (params != null && params.size() > 0) {
+            pipelineMap.putAll(params);
+        }
 
         result.put(name, pipelineMap);
         return result;

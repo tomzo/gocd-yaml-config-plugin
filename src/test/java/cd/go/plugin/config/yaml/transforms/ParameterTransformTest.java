@@ -1,12 +1,17 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
-import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
+import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -28,6 +33,11 @@ public class ParameterTransformTest {
         testTransform("param");
     }
 
+    @Test
+    public void shouldInverseTransformAParameter() throws IOException {
+        testInverseTransform("param");
+    }
+
     private void testTransform(String caseFile) throws IOException {
         testTransform(caseFile, caseFile);
     }
@@ -37,4 +47,15 @@ public class ParameterTransformTest {
         JsonArray actual = paramterTransform.transform(readYamlObject("parts/parameters/" + caseFile + ".yaml"));
         assertThat(actual, is(expected));
     }
+
+    private void testInverseTransform(String caseFile) throws IOException {
+        testInverseTransform(caseFile, caseFile);
+    }
+
+    private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
+        LinkedTreeMap<String, Object> inverse = paramterTransform.inverseTransform(readJsonArrayGson("parts/parameters/" + caseFile + ".json"));
+        JsonArray actual = paramterTransform.transform(inverse);
+        assertEquals((readJsonObject("parts/parameters/" + expectedFile + ".json")), actual);
+    }
+
 }

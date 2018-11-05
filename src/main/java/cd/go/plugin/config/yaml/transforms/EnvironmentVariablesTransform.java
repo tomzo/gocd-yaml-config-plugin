@@ -26,14 +26,21 @@ public class EnvironmentVariablesTransform extends ConfigurationTransform {
         if (vars == null)
             return null;
         LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
-        List<LinkedTreeMap<String, Object>> variables = new ArrayList<>();
-        List<LinkedTreeMap<String, Object>> secureVariables = new ArrayList<>();
+        LinkedTreeMap<String, Object> variables = new LinkedTreeMap<>();
+        LinkedTreeMap<String, Object> secureVariables = new LinkedTreeMap<>();
         for (LinkedTreeMap<String, Object> var: vars) {
+            if(var.containsKey(JSON_ENV_ENCRYPTED_FIELD)) {
+                secureVariables.put((String) var.get(JSON_ENV_NAME_FIELD), var.get(JSON_ENV_ENCRYPTED_FIELD));
+            } else {
+                variables.put((String) var.get(JSON_ENV_NAME_FIELD), var.get(JSON_ENV_VALUE_FIELD));
+            }
 
         }
 
-        result.put(YAML_ENV_VAR_FIELD, variables);
-        result.put(YAML_SEC_VAR_FIELD, secureVariables);
+        if (variables.size() > 0)
+            result.put(YAML_ENV_VAR_FIELD, variables);
+        if (secureVariables.size() > 0)
+            result.put(YAML_SEC_VAR_FIELD, secureVariables);
         return result;
     }
 

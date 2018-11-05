@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -21,10 +22,16 @@ import static org.hamcrest.core.Is.is;
 public class TestUtils {
 
     public static final Type jsonType = new TypeToken<LinkedTreeMap<String, Object>>() {}.getType();
+    public static final Type jsonArrayType = new TypeToken<List<LinkedTreeMap<String, Object>>>() {}.getType();
 
     public static JsonElement readJsonObject(String path) throws IOException {
         JsonParser parser = new JsonParser();
         return parser.parse(TestUtils.createReader(path));
+    }
+
+    public static List<LinkedTreeMap<String, Object>> readJsonArrayGson(String path) throws IOException {
+        Gson gson = new Gson();
+        return gson.fromJson(TestUtils.createReader(path), jsonArrayType);
     }
 
     public static LinkedTreeMap<String, Object> readJsonGson(String path) throws IOException {

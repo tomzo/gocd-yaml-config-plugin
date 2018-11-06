@@ -76,25 +76,25 @@ public class MaterialTransform {
 
         switch (materialType) {
             case "p4":
-                materialdata.put(YAML_SHORT_KEYWORD_PERFORCE, material.get("port"));
+                materialdata.put(YAML_SHORT_KEYWORD_PERFORCE, material.remove("port"));
                 break;
             case "package":
-                materialdata.put(YAML_SHORT_KEYWORD_PACKAGE_ID, material.get("package_id"));
+                materialdata.put(YAML_SHORT_KEYWORD_PACKAGE_ID, material.remove("package_id"));
                 break;
             case "plugin":
-                materialdata.put(YAML_SHORT_KEYWORD_SCM_ID, material.get("scm_id"));
+                materialdata.put(YAML_SHORT_KEYWORD_SCM_ID, material.remove("scm_id"));
                 break;
             case "hg":
-                materialdata.put(YAML_SHORT_KEYWORD_HG, material.get("url"));
+                materialdata.put(YAML_SHORT_KEYWORD_HG, material.remove("url"));
                 break;
             case "git":
-                materialdata.put(YAML_SHORT_KEYWORD_GIT, material.get("url"));
+                materialdata.put(YAML_SHORT_KEYWORD_GIT, material.remove("url"));
                 break;
             case "svn":
-                materialdata.put(YAML_SHORT_KEYWORD_SVN, material.get("url"));
+                materialdata.put(YAML_SHORT_KEYWORD_SVN, material.remove("url"));
                 break;
             case "configrepo":
-                materialdata.put(YAML_MATERIAL_TYPE_FIELD, material.get(JSON_MATERIAL_TYPE_FIELD));
+                materialdata.put(YAML_MATERIAL_TYPE_FIELD, material.remove(JSON_MATERIAL_TYPE_FIELD));
                 break;
         }
 
@@ -119,7 +119,11 @@ public class MaterialTransform {
                 materialdata.put(materialProp.getKey(), (String) materialProp.getValue());
         }
 
-        inverseMaterial.put(materialName, materialdata);
+        if (materialName == null) {
+            inverseMaterial.put(materialType, materialdata);
+        } else {
+            inverseMaterial.put(materialName, materialdata);
+        }
         return inverseMaterial;
     }
 

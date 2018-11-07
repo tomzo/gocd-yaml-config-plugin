@@ -190,11 +190,11 @@ public class MaterialTransform {
 
     private void addInverseFilter(LinkedTreeMap<String, Object> material, LinkedTreeMap<String, Object> filterList) {
         List<String> filter = (List<String>) filterList.get("ignore");
-        if (filter != null) {
+        if (filter != null && !filter.isEmpty()) {
             material.put("blacklist", filter);
         }
         filter = (List<String>) material.get("whitelist");
-        if (filter != null) {
+        if (filter != null && !filter.isEmpty()) {
             material.put("whitelist", filter);
         }
     }

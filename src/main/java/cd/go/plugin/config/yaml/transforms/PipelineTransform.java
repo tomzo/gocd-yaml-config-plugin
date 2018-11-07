@@ -118,7 +118,7 @@ public class PipelineTransform {
         }
 
         LinkedTreeMap<String, Object> params = parameterTransform.inverseTransform((List<LinkedTreeMap<String, Object>>) pipeline.get("parameters"));
-        if (params != null && params.size() > 0) {
+        if (params != null && !params.isEmpty()) {
             pipelineMap.putAll(params);
         }
 

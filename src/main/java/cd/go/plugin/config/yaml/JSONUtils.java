@@ -3,6 +3,8 @@ package cd.go.plugin.config.yaml;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.List;
+
 public class JSONUtils {
     public static Object fromJSON(String json) {
         return new GsonBuilder().create().fromJson(json, Object.class);
@@ -15,6 +17,13 @@ public class JSONUtils {
     public static void addOptionalValue(LinkedTreeMap<String, Object> dest, LinkedTreeMap<String, Object> src, String jsonField, String yamlFieldName) {
         if (src.containsKey(jsonField)) {
             dest.put(yamlFieldName, src.get(jsonField));
+        }
+    }
+
+    public static void addOptionalList(LinkedTreeMap<String, Object> dest, LinkedTreeMap<String, Object> src, String jsonField, String yamlFieldName) {
+        List<Object> value = (List<Object>) src.get(jsonField);
+        if (value != null && !value.isEmpty()) {
+            dest.put(yamlFieldName, value);
         }
     }
 

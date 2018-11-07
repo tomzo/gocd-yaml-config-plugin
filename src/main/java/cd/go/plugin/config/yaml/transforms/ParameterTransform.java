@@ -31,6 +31,8 @@ public class ParameterTransform {
     }
 
     public LinkedTreeMap<String, Object> inverseTransform(List<LinkedTreeMap<String, Object>> params) {
+        if (params == null || params.isEmpty())
+            return null;
         LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
         LinkedTreeMap<String, Object> inverseParams = new LinkedTreeMap<>();
         for (LinkedTreeMap<String, Object> param : params) {

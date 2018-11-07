@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalList;
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 
@@ -108,7 +109,7 @@ public class TaskTransform extends ConfigurationTransform {
         addInverseConfiguration(taskData, task);
 
         addOptionalValue(taskData, task, JSON_TASK_IS_FILE_FIELD, YAML_TASK_IS_FILE_FIELD);
-        addOptionalValue(taskData, task, JSON_TASK_EXEC_ARGS_FIELD, YAML_TASK_EXEC_ARGS_FIELD);
+        addOptionalList(taskData, task, JSON_TASK_EXEC_ARGS_FIELD, YAML_TASK_EXEC_ARGS_FIELD);
 
         for (Map.Entry<String, Object> taskProp : task.entrySet()) {
             if (yamlSpecialKeywords.contains(taskProp.getKey()))

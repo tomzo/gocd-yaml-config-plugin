@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalInt;
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalList;
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
@@ -105,7 +106,7 @@ public class JobTransform extends ConfigurationTransform {
 
         addInverseTabs(jobData, job);
 
-        addOptionalValue(jobData, job, JSON_JOB_RESOURCES_FIELD, YAML_JOB_RESOURCES_FIELD);
+        addOptionalList(jobData, job, JSON_JOB_RESOURCES_FIELD, YAML_JOB_RESOURCES_FIELD);
         addOptionalValue(jobData, job, JSON_JOB_ELASTIC_PROFILE_FIELD, YAML_JOB_ELASTIC_PROFILE_FIELD);
 
         addInverseArtifacts(jobData, job);
@@ -128,7 +129,7 @@ public class JobTransform extends ConfigurationTransform {
 
     private void addInverseTabs(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
         List<LinkedTreeMap<String, Object>> tabs = (List<LinkedTreeMap<String, Object>>) job.get(JSON_JOB_TABS_FIELD);
-        if (tabs == null)
+        if (tabs == null || tabs.isEmpty())
             return;
 
         LinkedTreeMap<String, Object> inverseTabs = new LinkedTreeMap<>();
@@ -155,7 +156,7 @@ public class JobTransform extends ConfigurationTransform {
 
     private void addInverseProperties(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
         List<LinkedTreeMap<String, Object>> properties = (List<LinkedTreeMap<String, Object>>) job.get(JSON_JOB_PROPS_FIELD);
-        if(properties == null)
+        if(properties == null || properties.isEmpty())
             return;
 
         LinkedTreeMap<String, Object> inverseProperties = new LinkedTreeMap<>();
@@ -193,7 +194,7 @@ public class JobTransform extends ConfigurationTransform {
 
     private void addInverseArtifacts(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
         List<LinkedTreeMap<String, Object>> artifacts = (List<LinkedTreeMap<String, Object>>) job.get(JSON_JOB_ARTIFACTS_FIELD);
-        if (artifacts == null)
+        if (artifacts == null || artifacts.isEmpty())
             return;
 
         List<LinkedTreeMap<String, Object>> inverseArtifacts = new ArrayList<>();

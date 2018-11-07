@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalList;
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.JSONUtils.addRequiredValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
@@ -112,8 +113,8 @@ public class StageTransform {
             return;
 
         addRequiredValue(inverseApproval, approval, JSON_STAGE_APPROVAL_TYPE_FIELD, YAML_STAGE_APPROVAL_TYPE_FIELD);
-        addOptionalValue(inverseApproval, approval, JSON_STAGE_APPROVAL_ROLES_FIELD, YAML_STAGE_APPROVAL_ROLES_FIELD);
-        addOptionalValue(inverseApproval, approval, JSON_STAGE_APPROVAL_USERS_FIELD, YAML_STAGE_APPROVAL_USERS_FIELD);
+        addOptionalList(inverseApproval, approval, JSON_STAGE_APPROVAL_ROLES_FIELD, YAML_STAGE_APPROVAL_ROLES_FIELD);
+        addOptionalList(inverseApproval, approval, JSON_STAGE_APPROVAL_USERS_FIELD, YAML_STAGE_APPROVAL_USERS_FIELD);
 
         stageData.put(YAML_STAGE_APPROVAL_FIELD, inverseApproval);
     }

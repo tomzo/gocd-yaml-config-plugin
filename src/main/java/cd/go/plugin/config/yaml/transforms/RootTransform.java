@@ -29,7 +29,10 @@ public class RootTransform {
     }
 
     public String inverseTransformPipeline(LinkedTreeMap<String, Object> pipeline) {
-       return YamlUtils.dump(pipelineTransform.inverseTransform(pipeline));
+        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
+        result.put("format_version", 3);
+        result.put("pipelines", pipelineTransform.inverseTransform(pipeline));
+       return YamlUtils.dump(result);
     }
 
     public JsonConfigCollection transform(Object rootObj, String location) {

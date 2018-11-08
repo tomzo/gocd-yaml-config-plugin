@@ -118,7 +118,7 @@ public class JobTransform extends ConfigurationTransform {
 
     private void addInverseRunInstances(LinkedTreeMap<String, Object> jobData, LinkedTreeMap<String, Object> job) {
         Object run = job.get(JSON_JOB_RUN_INSTANCES_FIELD);
-        if (run == null)
+        if (run == null || run.equals(0) || run.equals(0.0) || run.equals("0"))
             return;
         if (run instanceof String) {
             addOptionalValue(jobData, job, JSON_JOB_RUN_INSTANCES_FIELD, YAML_JOB_RUN_INSTANCES_FIELD);

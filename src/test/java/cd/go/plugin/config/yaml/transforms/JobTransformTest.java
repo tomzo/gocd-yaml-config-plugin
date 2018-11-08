@@ -69,6 +69,11 @@ public class JobTransformTest {
     }
 
     @Test
+    public void shouldInverseTransformMinimalWithDefaultsJob() throws IOException {
+        testInverseTransform("minimal_defaults");
+    }
+
+    @Test
     public void shouldInverseTransformRunAllJob() throws IOException {
         testInverseTransform("runall");
     }

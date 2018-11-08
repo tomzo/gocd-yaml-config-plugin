@@ -1,3 +1,8 @@
+# 0.8.0 (9 Nov 2018)
+
+ * added inverse transforms and config-repo 2.0 API support
+ * updated to gradle 4.10.2
+
 # 0.7.0 (9 Jul 2018)
 
  * introduces `format_version: 3` and external fetch task

@@ -71,7 +71,7 @@ pipelines:
         # keyword git says about type of material and url at once
         git: http://my.example.org/mygit.git
         branch: ci
-      myupstream:
+      myupstream: # this name does not matter, but there should be no 2 materials with the same name
         # type is optional here, material type is implied based on presence of pipeline and stage fields
         # type: dependency
         pipeline: pipe2
@@ -762,7 +762,7 @@ rake:
 fetch:
   run_if: any
   artifact_origin: gocd
-  pipeline: myupstream
+  pipeline: pipe2
   stage: upstream_stage
   job: upstream_job
   is_file: yes
@@ -776,7 +776,7 @@ fetch:
 fetch:
   run_if: any
   artifact_origin: external
-  pipeline: myupstream
+  pipeline: pipe2
   stage: upstream_stage
   job: upstream_job
   artifact_id: upstream_artifact_id

@@ -1,5 +1,7 @@
 <div class="form_item_block">
     <label>Go YAML files global pattern:</label>
     <input type="text" ng-model="file_pattern" ng-required="false" placeholder="**/*.gocd.yaml,**/*.gocd.yml" />
+    <label>Go YAML generator config files pattern:</label>
+    <input type="text" ng-model="generator_config_pattern" ng-required="false" placeholder="**/gocd-yaml-generator-config.yaml,**/gocd-yaml-generator-config.yml" />
     <span class="form_error" ng-show="GOINPUTNAME[file_pattern].$error.server">{{ GOINPUTNAME[file_pattern].$error.server }}</span>
 </div>

@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static cd.go.plugin.config.yaml.JSONUtils.addOptionalInt;
-import static cd.go.plugin.config.yaml.JSONUtils.addOptionalList;
-import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
+import static cd.go.plugin.config.yaml.JSONUtils.*;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
 

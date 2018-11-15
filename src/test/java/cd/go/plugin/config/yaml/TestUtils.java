@@ -16,14 +16,14 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 
 public class TestUtils {
 
-    public static final Type jsonType = new TypeToken<LinkedTreeMap<String, Object>>() {}.getType();
-    public static final Type jsonArrayType = new TypeToken<List<LinkedTreeMap<String, Object>>>() {}.getType();
+    public static final Type jsonType = new TypeToken<LinkedTreeMap<String, Object>>() {
+    }.getType();
+    public static final Type jsonArrayType = new TypeToken<List<LinkedTreeMap<String, Object>>>() {
+    }.getType();
 
     public static JsonElement readJsonObject(String path) throws IOException {
         JsonParser parser = new JsonParser();
@@ -66,7 +66,9 @@ public class TestUtils {
 
     public static void assertYamlEquivalent(String expected, String actual) {
         Yaml yaml = new Yaml();
-        assertThat(yaml.load(actual), is(yaml.load(expected)));
+        Object expectedParse = yaml.load(expected);
+        Object actualParse = yaml.load(actual);
+        assertEquals(expectedParse, actualParse);
     }
 
     private static ClassLoader getContextClassLoader() {

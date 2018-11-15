@@ -19,7 +19,8 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 
-import static cd.go.plugin.config.yaml.TestUtils.*;
+import static cd.go.plugin.config.yaml.TestUtils.getResourceAsStream;
+import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -171,8 +172,8 @@ public class YamlConfigPluginIntegrationTest {
                 "    \"directory\":\"" + simpleCaseDir + "\",\n" +
                 "    \"configurations\":[" +
                 "{" +
-                    "\"key\" : \"file_pattern\"," +
-                    "\"value\" : \"simple.go.yml\" " +
+                "\"key\" : \"file_pattern\"," +
+                "\"value\" : \"simple.go.yml\" " +
                 "}" +
                 "]\n" +
                 "}";
@@ -299,7 +300,7 @@ public class YamlConfigPluginIntegrationTest {
     @Test
     public void shouldRespondWithCapabilities() throws UnhandledRequestTypeException {
         String expected = new Gson().toJson(new Capabilities());
-        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo","2.0","get-capabilities");
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "2.0", "get-capabilities");
 
         GoPluginApiResponse response = plugin.handle(request);
 

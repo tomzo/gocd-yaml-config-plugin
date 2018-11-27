@@ -10,6 +10,7 @@ import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.IOUtils;
@@ -100,9 +101,14 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             ParsedRequest parsed = ParsedRequest.parse(request);
 
             Map<String, Object> pipeline = parsed.getParam("pipeline");
+            String name = (String) pipeline.get("name");
 
             Map<String, String> responseMap = Collections.singletonMap("pipeline", new RootTransform().inverseTransformPipeline(pipeline));
-            return success(gson.toJson(responseMap));
+            DefaultGoPluginApiResponse response = success(gson.toJson(responseMap));
+
+            response.addResponseHeader("Content-Type", "application/x-yaml; charset=utf-8");
+            response.addResponseHeader("X-Export-Filename", name + ".gocd.yaml");
+            return response;
         });
     }
 

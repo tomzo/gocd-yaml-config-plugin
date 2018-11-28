@@ -67,10 +67,10 @@ public class MaterialTransform {
         throw new RuntimeException("expected material hash to have 1 item");
     }
 
-    public LinkedTreeMap<String, Object> inverseTransform(LinkedTreeMap<String, Object> material) {
+    public Map<String, Object> inverseTransform(Map<String, Object> material) {
         String materialName = (String) material.get(JSON_MATERIAL_NAME_FIELD);
-        LinkedTreeMap<String, Object> inverseMaterial = new LinkedTreeMap<>();
-        LinkedTreeMap<String, Object> materialdata = new LinkedTreeMap<>();
+        Map<String, Object> inverseMaterial = new LinkedTreeMap<>();
+        Map<String, Object> materialdata = new LinkedTreeMap<>();
 
         String materialType = (String) material.get(JSON_MATERIAL_TYPE_FIELD);
 
@@ -100,11 +100,11 @@ public class MaterialTransform {
 
         addOptionalValue(materialdata, material, "username", "username");
         addOptionalValue(materialdata, material, "password", "password");
-        addOptionalValue(materialdata, material, JSON_MATERIAL_USE_TICKETS_FIELD, YAML_MATERIAL_USE_TICKETS_FIELD );
-        addOptionalValue(materialdata, material, "view", "view" );
+        addOptionalValue(materialdata, material, JSON_MATERIAL_USE_TICKETS_FIELD, YAML_MATERIAL_USE_TICKETS_FIELD);
+        addOptionalValue(materialdata, material, "view", "view");
 
         if (material.containsKey("filter"))
-            addInverseFilter(materialdata, (LinkedTreeMap<String, Object>) material.get("filter"));
+            addInverseFilter(materialdata, (Map<String, Object>) material.get("filter"));
 
         addOptionalValue(materialdata, material, JSON_MATERIAL_SHALLOW_CLONE_FIELD, YAML_MATERIAL_SHALLOW_CLONE_FIELD);
         addOptionalValue(materialdata, material, JSON_MATERIAL_CHECK_EXTERNALS_FIELD, YAML_MATERIAL_CHECK_EXTERNALS_FIELD);
@@ -188,7 +188,7 @@ public class MaterialTransform {
         return material;
     }
 
-    private void addInverseFilter(LinkedTreeMap<String, Object> material, LinkedTreeMap<String, Object> filterList) {
+    private void addInverseFilter(Map<String, Object> material, Map<String, Object> filterList) {
         List<String> filter = (List<String>) filterList.get("ignore");
         if (filter != null && !filter.isEmpty()) {
             material.put("blacklist", filter);

@@ -9,13 +9,12 @@ import java.util.Map;
 
 public class ConfigurationTransform {
 
+    public static final String YAML_PLUGIN_STD_CONFIG_FIELD = "options";
+    public static final String YAML_PLUGIN_SEC_CONFIG_FIELD = "secure_options";
     private static final String JSON_PLUGIN_CONFIG_KEY_FIELD = "key";
     private static final String JSON_PLUGIN_CONFIG_VALUE_FIELD = "value";
     private static final String JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD = "encrypted_value";
     private static final String JSON_PLUGIN_CONFIGURATION_FIELD = "configuration";
-    public static final String YAML_PLUGIN_STD_CONFIG_FIELD = "options";
-    public static final String YAML_PLUGIN_SEC_CONFIG_FIELD = "secure_options";
-
 
     void addConfiguration(JsonObject json, Map<String, Object> configurationMap) {
         if (configurationMap == null) {
@@ -28,15 +27,16 @@ public class ConfigurationTransform {
         if (configuration.size() > 0)
             json.add(JSON_PLUGIN_CONFIGURATION_FIELD, configuration);
     }
-    void addInverseConfiguration(LinkedTreeMap<String, Object> taskData, LinkedTreeMap<String, Object> task) {
-        List<LinkedTreeMap<String, Object>> jsonOptions = (List<LinkedTreeMap<String, Object>>) task.get(JSON_PLUGIN_CONFIGURATION_FIELD);
+
+    void addInverseConfiguration(Map<String, Object> taskData, Map<String, Object> task) {
+        List<Map<String, Object>> jsonOptions = (List<Map<String, Object>>) task.get(JSON_PLUGIN_CONFIGURATION_FIELD);
         if (jsonOptions == null)
             return;
 
-        LinkedTreeMap<String, Object> options = new LinkedTreeMap<>();
-        LinkedTreeMap<String, Object> secureOptions = new LinkedTreeMap<>();
+        Map<String, Object> options = new LinkedTreeMap<>();
+        Map<String, Object> secureOptions = new LinkedTreeMap<>();
 
-        for(LinkedTreeMap<String, Object> option : jsonOptions) {
+        for (Map<String, Object> option : jsonOptions) {
             if (option.containsKey(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD)) {
                 secureOptions.put((String) option.get(JSON_PLUGIN_CONFIG_KEY_FIELD), option.get(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD));
             } else {
@@ -52,21 +52,21 @@ public class ConfigurationTransform {
 
     void transformPlainAndSecureOptions(JsonArray configuration, Object options, Object secureOptions, String keyField) {
         if (options != null && options != "") {
-            transformValues(configuration, (Map<String,String>) options, JSON_PLUGIN_CONFIG_VALUE_FIELD, keyField);
+            transformValues(configuration, (Map<String, String>) options, JSON_PLUGIN_CONFIG_VALUE_FIELD, keyField);
         }
         if (secureOptions != null && secureOptions != "") {
             transformValues(configuration, (Map<String, String>) secureOptions, JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD, keyField);
         }
     }
 
-    public LinkedTreeMap<String, Object> inverseTransformPlainAndSecureOptions(List<LinkedTreeMap<String, Object>> vars, String plainField, String secureField) {
+    public Map<String, Object> inverseTransformPlainAndSecureOptions(List<Map<String, Object>> vars, String plainField, String secureField) {
         if (vars == null)
             return null;
-        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
-        LinkedTreeMap<String, Object> variables = new LinkedTreeMap<>();
-        LinkedTreeMap<String, Object> secureVariables = new LinkedTreeMap<>();
-        for (LinkedTreeMap<String, Object> var: vars) {
-            if(var.containsKey(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD)) {
+        Map<String, Object> result = new LinkedTreeMap<>();
+        Map<String, Object> variables = new LinkedTreeMap<>();
+        Map<String, Object> secureVariables = new LinkedTreeMap<>();
+        for (Map<String, Object> var : vars) {
+            if (var.containsKey(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD)) {
                 secureVariables.put((String) var.get("name"), var.get(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD));
             } else {
                 variables.put((String) var.get("name"), var.get(JSON_PLUGIN_CONFIG_VALUE_FIELD));

@@ -1,7 +1,6 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.YamlConfigException;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
@@ -43,7 +42,6 @@ public class PipelineTransform {
     private final StageTransform stageTransform;
     private final EnvironmentVariablesTransform variablesTransform;
     private ParameterTransform parameterTransform;
-    private Gson gson = new Gson();
 
     public PipelineTransform(MaterialTransform materialTransform, StageTransform stageTransform, EnvironmentVariablesTransform variablesTransform, ParameterTransform parameterTransform) {
         this.materialTransform = materialTransform;
@@ -93,13 +91,13 @@ public class PipelineTransform {
         return pipeline;
     }
 
-    public LinkedTreeMap<String, Object> inverseTransform(Object pipeline) {
-        return inverseTransform((LinkedTreeMap<String, Object>) pipeline);
+    public Map<String, Object> inverseTransform(Object pipeline) {
+        return inverseTransform((Map<String, Object>) pipeline);
     }
 
-    public LinkedTreeMap<String, Object> inverseTransform(LinkedTreeMap<String, Object> pipeline) {
-        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
-        LinkedTreeMap<String, Object> pipelineMap = new LinkedTreeMap<>();
+    public Map<String, Object> inverseTransform(Map<String, Object> pipeline) {
+        Map<String, Object> result = new LinkedTreeMap<>();
+        Map<String, Object> pipelineMap = new LinkedTreeMap<>();
         String name = (String) pipeline.get(JSON_PIPELINE_NAME_FIELD);
 
         pipelineMap.put(YAML_PIPELINE_GROUP_FIELD, pipeline.get(JSON_PIPELINE_GROUP_FIELD));
@@ -111,16 +109,16 @@ public class PipelineTransform {
 
         addInverseTimer(pipelineMap, pipeline);
 
-        LinkedTreeMap<String, Object> yamlEnvVariables = variablesTransform.inverseTransform((List<LinkedTreeMap<String, Object>>) pipeline.get(JSON_ENV_VAR_FIELD));
+        Map<String, Object> yamlEnvVariables = variablesTransform.inverseTransform((List<Map<String, Object>>) pipeline.get(JSON_ENV_VAR_FIELD));
         if (yamlEnvVariables != null && yamlEnvVariables.size() > 0)
             pipelineMap.putAll(yamlEnvVariables);
 
-        addInverseMaterials(pipelineMap, (List<LinkedTreeMap<String, Object>>) pipeline.get(JSON_PIPELINE_MATERIALS_FIELD));
+        addInverseMaterials(pipelineMap, (List<Map<String, Object>>) pipeline.get(JSON_PIPELINE_MATERIALS_FIELD));
         if (!pipelineMap.containsKey(YAML_PIPELINE_TEMPLATE_FIELD)) {
-            addInverseStages(pipelineMap, (List<LinkedTreeMap<String, Object>>) pipeline.get(JSON_PIPELINE_STAGES_FIELD));
+            addInverseStages(pipelineMap, (List<Map<String, Object>>) pipeline.get(JSON_PIPELINE_STAGES_FIELD));
         }
 
-        LinkedTreeMap<String, Object> params = parameterTransform.inverseTransform((List<LinkedTreeMap<String, Object>>) pipeline.get("parameters"));
+        Map<String, Object> params = parameterTransform.inverseTransform((List<Map<String, Object>>) pipeline.get("parameters"));
         if (params != null && !params.isEmpty()) {
             pipelineMap.putAll(params);
         }
@@ -130,27 +128,27 @@ public class PipelineTransform {
 
     }
 
-    private void addInverseMaterials(LinkedTreeMap<String, Object> pipelineMap, List<LinkedTreeMap<String, Object>> materials) {
-        LinkedTreeMap<String, Object> inverseMaterials = new LinkedTreeMap<>();
-        for (LinkedTreeMap<String, Object> material : materials) {
+    private void addInverseMaterials(Map<String, Object> pipelineMap, List<Map<String, Object>> materials) {
+        Map<String, Object> inverseMaterials = new LinkedTreeMap<>();
+        for (Map<String, Object> material : materials) {
             inverseMaterials.putAll(materialTransform.inverseTransform(material));
         }
         pipelineMap.put(YAML_PIPELINE_MATERIALS_FIELD, inverseMaterials);
     }
 
-    private void addInverseStages(LinkedTreeMap<String, Object> pipelineMap, List<LinkedTreeMap<String, Object>> stages) {
-        List<LinkedTreeMap<String, Object>> inverseStages = new ArrayList<>();
-        for (LinkedTreeMap<String, Object> stage : stages) {
-           inverseStages.add(stageTransform.inverseTransform(stage));
+    private void addInverseStages(Map<String, Object> pipelineMap, List<Map<String, Object>> stages) {
+        List<Map<String, Object>> inverseStages = new ArrayList<>();
+        for (Map<String, Object> stage : stages) {
+            inverseStages.add(null == stage ? null : stageTransform.inverseTransform(stage));
         }
         pipelineMap.put(YAML_PIPELINE_STAGES_FIELD, inverseStages);
     }
 
-    private void addInverseTimer(LinkedTreeMap<String, Object> pipelineMap, LinkedTreeMap<String, Object> pipeline) {
+    private void addInverseTimer(Map<String, Object> pipelineMap, Map<String, Object> pipeline) {
         Object timer = pipeline.get(JSON_PIPELINE_TIMER_FIELD);
         if (timer == null)
             return;
-        LinkedTreeMap<String, Object> timerMap = (LinkedTreeMap<String, Object>) timer;
+        Map<String, Object> timerMap = (Map<String, Object>) timer;
         pipelineMap.put(YAML_PIPELINE_TIMER_FIELD, timerMap);
     }
 
@@ -167,7 +165,7 @@ public class PipelineTransform {
 
     private void addStages(JsonObject pipeline, Map<String, Object> pipeMap) {
         Object stages = pipeMap.get(YAML_PIPELINE_STAGES_FIELD);
-        if (stages == null || !(stages instanceof List))
+        if (!(stages instanceof List))
             throw new YamlConfigException("expected a list of pipeline stages or a template reference");
         List<Object> stagesList = (List<Object>) stages;
         JsonArray stagesArray = transformStages(stagesList);
@@ -184,7 +182,7 @@ public class PipelineTransform {
 
     private void addMaterials(JsonObject pipeline, Map<String, Object> pipeMap) {
         Object materials = pipeMap.get(YAML_PIPELINE_MATERIALS_FIELD);
-        if (materials == null || !(materials instanceof Map))
+        if (!(materials instanceof Map))
             throw new YamlConfigException("expected a hash of pipeline materials");
         Map<String, Object> materialsMap = (Map<String, Object>) materials;
         JsonArray materialsArray = transformMaterials(materialsMap);

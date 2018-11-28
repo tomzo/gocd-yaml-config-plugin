@@ -1,13 +1,13 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
-import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
@@ -47,7 +47,7 @@ public class StageTransformTest {
 
     @Test
     public void shouldInverseTransformCompleteStage() throws IOException {
-        LinkedTreeMap<String, Object> jobs = new LinkedTreeMap<>();
+        Map<String, Object> jobs = new LinkedTreeMap<>();
         jobs.put("one", null);
         jobs.put("two", null);
         when(jobTransform.inverseTransform(any(LinkedTreeMap.class))).thenReturn(jobs);
@@ -75,7 +75,7 @@ public class StageTransformTest {
     }
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
-        LinkedTreeMap<String, Object> inverse = parser.inverseTransform(readJsonGson("parts/stages/" + caseFile + ".json"));
+        Map<String, Object> inverse = parser.inverseTransform(readJsonGson("parts/stages/" + caseFile + ".json"));
         JsonObject actual = parser.transform(inverse);
         assertEquals((readJsonObject("parts/stages/" + expectedFile + ".json")), actual);
     }

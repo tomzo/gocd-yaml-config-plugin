@@ -3,15 +3,14 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
 import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -104,7 +103,7 @@ public class JobTransformTest {
     }
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
-        LinkedTreeMap<String, Object> inverse = parser.inverseTransform(readJsonGson("parts/jobs/" + caseFile + ".json"));
+        Map<String, Object> inverse = parser.inverseTransform(readJsonGson("parts/jobs/" + caseFile + ".json"));
         assertYamlEquivalent(loadString("parts/jobs/" + expectedFile + ".yaml"), YamlUtils.dump(inverse));
     }
 }

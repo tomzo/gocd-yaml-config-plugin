@@ -1,19 +1,15 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ParameterTransformTest {
 
@@ -53,7 +49,7 @@ public class ParameterTransformTest {
     }
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
-        LinkedTreeMap<String, Object> inverse = paramterTransform.inverseTransform(readJsonArrayGson("parts/parameters/" + caseFile + ".json"));
+        Map<String, Object> inverse = paramterTransform.inverseTransform(readJsonArrayGson("parts/parameters/" + caseFile + ".json"));
         JsonArray actual = paramterTransform.transform(inverse);
         assertEquals((readJsonObject("parts/parameters/" + expectedFile + ".json")), actual);
     }

@@ -2,14 +2,12 @@ package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Map;
 
-import static cd.go.plugin.config.yaml.TestUtils.readJsonGson;
-import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
-import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
+import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -134,7 +132,7 @@ public class TaskTransformTest {
     }
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
-        LinkedTreeMap<String, Object> inverse = parser.inverseTransform(readJsonGson("parts/tasks/" + caseFile + ".json"));
+        Map<String, Object> inverse = parser.inverseTransform(readJsonGson("parts/tasks/" + caseFile + ".json"));
         JsonObject actual = parser.transform(inverse);
         assertEquals((readJsonObject("parts/tasks/" + expectedFile + ".json")), actual);
     }

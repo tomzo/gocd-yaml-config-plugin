@@ -28,11 +28,11 @@ public class RootTransform {
         this.environmentsTransform = environmentsTransform;
     }
 
-    public String inverseTransformPipeline(LinkedTreeMap<String, Object> pipeline) {
-        LinkedTreeMap<String, Object> result = new LinkedTreeMap<>();
+    public String inverseTransformPipeline(Map<String, Object> pipeline) {
+        Map<String, Object> result = new LinkedTreeMap<>();
         result.put("format_version", 3);
         result.put("pipelines", pipelineTransform.inverseTransform(pipeline));
-       return YamlUtils.dump(result);
+        return YamlUtils.dump(result);
     }
 
     public JsonConfigCollection transform(Object rootObj, String location) {

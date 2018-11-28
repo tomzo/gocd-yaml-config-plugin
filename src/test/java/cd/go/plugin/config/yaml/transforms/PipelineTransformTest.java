@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
@@ -49,7 +50,7 @@ public class PipelineTransformTest {
     public void shouldTransformRichPipeline2() throws IOException {
         testTransform("lock_behavior.pipe");
     }
-    
+
     @Test
     public void shouldTransformAPipelineReferencingATemplate() throws IOException {
         testTransform("template_ref.pipe");
@@ -57,7 +58,7 @@ public class PipelineTransformTest {
 
     @Test
     public void shouldInverseTransformPipeline() throws IOException {
-        LinkedTreeMap<String, Object> mats = new LinkedTreeMap<>();
+        Map<String, Object> mats = new LinkedTreeMap<>();
         mats.put("foo", new LinkedTreeMap<>());
         when(materialTransform.inverseTransform(any(LinkedTreeMap.class))).thenReturn(mats);
         testInverseTransform("export.pipe");
@@ -79,7 +80,7 @@ public class PipelineTransformTest {
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
         String expectedObject = loadString("parts/" + expectedFile + ".yaml");
-        LinkedTreeMap<String, Object> actual = parser.inverseTransform(readJsonGson("parts/" + caseFile + ".json"));
+        Map<String, Object> actual = parser.inverseTransform(readJsonGson("parts/" + caseFile + ".json"));
         assertYamlEquivalent(expectedObject, YamlUtils.dump(actual));
     }
 }

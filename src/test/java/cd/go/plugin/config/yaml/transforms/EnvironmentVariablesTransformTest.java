@@ -2,10 +2,10 @@ package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonArray;
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
@@ -59,7 +59,7 @@ public class EnvironmentVariablesTransformTest {
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
         String expectedObject = loadString("parts/env_vars/" + expectedFile + ".yaml");
-        LinkedTreeMap<String, Object> actual = parser.inverseTransform(readJsonArrayGson("parts/env_vars/" + caseFile + ".json"));
+        Map<String, Object> actual = parser.inverseTransform(readJsonArrayGson("parts/env_vars/" + caseFile + ".json"));
         assertYamlEquivalent(expectedObject, YamlUtils.dump(actual));
     }
 }

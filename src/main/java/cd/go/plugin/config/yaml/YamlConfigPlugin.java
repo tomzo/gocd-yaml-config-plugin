@@ -2,8 +2,6 @@ package cd.go.plugin.config.yaml;
 
 import cd.go.plugin.config.yaml.transforms.RootTransform;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static cd.go.plugin.config.yaml.YamlUtils.TYPE;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.*;
 import static java.lang.String.format;
 
@@ -78,11 +75,14 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
     }
 
     private GoPluginApiResponse handlePipelineExportRequest(GoPluginApiRequest request) {
-        Map<String, String> response = new HashMap<>();
-        HashMap<String, LinkedTreeMap<String, Object>> parsedBody = gson.fromJson(request.requestBody(), TYPE);
-        LinkedTreeMap<String, Object> pipeline = parsedBody.get("pipeline");
-        response.put("pipeline", new RootTransform().inverseTransformPipeline(pipeline));
-        return success(gson.toJson(response));
+        return handlingErrors(() -> {
+            ParsedRequest parsed = ParsedRequest.parse(request);
+
+            Map<String, Object> pipeline = parsed.getParam("pipeline");
+
+            Map<String, String> responseMap = Collections.singletonMap("pipeline", new RootTransform().inverseTransformPipeline(pipeline));
+            return success(gson.toJson(responseMap));
+        });
     }
 
     private GoPluginApiResponse handleParseDirectoryRequest(GoPluginApiRequest request) {
@@ -100,7 +100,11 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             }
 
             String[] files = new AntDirectoryScanner().getFilesMatchingPattern(baseDir, pattern);
-            return parser.parseFiles(baseDir, files);
+
+            JsonConfigCollection config = parser.parseFiles(baseDir, files);
+            config.updateTargetVersionFromFiles();
+
+            return success(gson.toJson(config.getJsonObject()));
         });
     }
 
@@ -135,14 +139,9 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         return fieldProperties;
     }
 
-    private GoPluginApiResponse handlingErrors(Supplier<JsonConfigCollection> exec) {
+    private GoPluginApiResponse handlingErrors(Supplier<GoPluginApiResponse> exec) {
         try {
-            JsonConfigCollection config = exec.get();
-
-            config.updateTargetVersionFromFiles();
-            JsonObject responseJsonObject = config.getJsonObject();
-
-            return success(gson.toJson(responseJsonObject));
+            return exec.get();
         } catch (ParsedRequest.RequestParseException e) {
             return badRequest(e.getMessage());
         } catch (Exception e) {
@@ -153,14 +152,17 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         }
     }
 
-    public PluginSettings getPluginSettings() {
+    private PluginSettings getPluginSettings() {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         requestMap.put("plugin-id", PLUGIN_ID);
         GoApiResponse response = goApplicationAccessor.submit(createGoApiRequest(REQ_GET_PLUGIN_SETTINGS, JSONUtils.toJSON(requestMap)));
+
         if (response.responseBody() == null || response.responseBody().trim().isEmpty()) {
             return new PluginSettings();
         }
-        Map<String, String> responseBodyMap = (Map<String, String>) JSONUtils.fromJSON(response.responseBody());
+
+        Map<String, String> responseBodyMap = JSONUtils.fromJSON(response.responseBody());
+
         return new PluginSettings(
                 responseBodyMap.get(PLUGIN_SETTINGS_FILE_PATTERN));
     }

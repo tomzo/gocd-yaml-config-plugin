@@ -1,14 +1,10 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
-import cd.go.plugin.config.yaml.YamlUtils;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
@@ -126,7 +122,7 @@ public class MaterialTransformTest {
 
     @Test
     public void shouldInverseTransformCompleteP4() throws IOException {
-       testInverseTransform("complete.p4");
+        testInverseTransform("complete.p4");
     }
 
     @Test
@@ -154,7 +150,7 @@ public class MaterialTransformTest {
     }
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
-        LinkedTreeMap<String, Object> actual = parser.inverseTransform(readJsonGson("parts/materials/" + caseFile + ".json"));
+        Map<String, Object> actual = parser.inverseTransform(readJsonGson("parts/materials/" + caseFile + ".json"));
         JsonObject transform = parser.transform(actual);
         assertEquals((readJsonObject("parts/materials/" + expectedFile + ".json")), transform);
     }

@@ -5,7 +5,6 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 import org.yaml.snakeyaml.Yaml;
@@ -13,31 +12,26 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
+import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestUtils {
+    private static final Gson GSON = new Gson();
 
-    public static final Type jsonType = new TypeToken<LinkedTreeMap<String, Object>>() {
-    }.getType();
-    public static final Type jsonArrayType = new TypeToken<List<LinkedTreeMap<String, Object>>>() {
-    }.getType();
-
-    public static JsonElement readJsonObject(String path) throws IOException {
+    public static JsonElement readJsonObject(String path) {
         JsonParser parser = new JsonParser();
         return parser.parse(TestUtils.createReader(path));
     }
 
-    public static List<LinkedTreeMap<String, Object>> readJsonArrayGson(String path) throws IOException {
-        Gson gson = new Gson();
-        return gson.fromJson(TestUtils.createReader(path), jsonArrayType);
+    public static List<Map<String, Object>> readJsonArrayGson(String path) {
+        return fromJson(TestUtils.createReader(path));
     }
 
-    public static LinkedTreeMap<String, Object> readJsonGson(String path) throws IOException {
-        Gson gson = new Gson();
-        return gson.fromJson(TestUtils.createReader(path), jsonType);
+    public static Map<String, Object> readJsonGson(String path) {
+        return fromJson(TestUtils.createReader(path));
     }
 
     public static Object readYamlObject(String path) throws IOException {
@@ -47,7 +41,7 @@ public class TestUtils {
         return reader.read();
     }
 
-    public static InputStreamReader createReader(String path) throws IOException {
+    private static InputStreamReader createReader(String path) {
         final InputStream resourceAsStream = getResourceAsStream(path);
         return new InputStreamReader(resourceAsStream);
     }
@@ -57,7 +51,7 @@ public class TestUtils {
         return IOUtils.toString(resourceAsStream);
     }
 
-    public static InputStream getResourceAsStream(String resource) {
+    static InputStream getResourceAsStream(String resource) {
         final InputStream in
                 = getContextClassLoader().getResourceAsStream(resource);
 
@@ -69,6 +63,10 @@ public class TestUtils {
         Object expectedParse = yaml.load(expected);
         Object actualParse = yaml.load(actual);
         assertEquals(expectedParse, actualParse);
+    }
+
+    private static <T> T fromJson(Reader json) {
+        return GSON.fromJson(json, new TypeToken<T>() {}.getType());
     }
 
     private static ClassLoader getContextClassLoader() {

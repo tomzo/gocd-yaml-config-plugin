@@ -3,15 +3,12 @@ package cd.go.plugin.config.yaml;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
 public class JSONUtils {
     static <T> T fromJSON(String json) {
-        Type type = new TypeToken<T>() {
-        }.getType();
-        return new GsonBuilder().create().fromJson(json, type);
+        return new GsonBuilder().create().fromJson(json, new TypeToken<T>() {}.getType());
     }
 
     static String toJSON(Object object) {

@@ -62,7 +62,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
                     return error(gson.toJson(format("Failed to find template: %s", e.getMessage())));
                 }
             case REQ_PLUGIN_SETTINGS_VALIDATE_CONFIGURATION:
-                return handleValidatePluginSettingsConfiguration(request);
+                return handleValidatePluginSettingsConfiguration();
             case REQ_PARSE_DIRECTORY:
                 return handleParseDirectoryRequest(request);
             case REQ_PIPELINE_EXPORT:
@@ -118,7 +118,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         return success(gson.toJson(response));
     }
 
-    private GoPluginApiResponse handleValidatePluginSettingsConfiguration(GoPluginApiRequest goPluginApiRequest) {
+    private GoPluginApiResponse handleValidatePluginSettingsConfiguration() {
         List<Map<String, Object>> response = new ArrayList<>();
         return success(gson.toJson(response));
     }

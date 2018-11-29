@@ -4,17 +4,15 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 
-import java.lang.reflect.Type;
-
 import static java.lang.String.format;
 
 class ParsedRequest {
-    public static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
     private static final String EMPTY_REQUEST_BODY_MESSAGE = "Request body cannot be null or empty";
     private static final String INVALID_JSON = "Request body must be valid JSON string";
     private static final String MISSING_PARAM_MESSAGE = "`%s` property is missing in `%s` request";
     private static final String PARAM_NOT_A_STRING_MESSAGE = "Expected `%s` param in request type `%s` to be a string";
-    private static final String PARAM_NOT_EXPECTED_TYPE = "Expected `%s` param in request type `%s` to be a `%s`";
+    private static final String PARAM_FAILED_TO_PARSE_TO_TYPE = "Failed to parse parameter `%s` for request type `%s`: %s";
     private static final String PARAM_CONFIGURATIONS = "configurations";
     private static final String INVALID_REPO_CONFIGURATION_KEY = "Config repo configuration has invalid key `%s`";
     private final String requestName;
@@ -73,13 +71,16 @@ class ParsedRequest {
     }
 
     <T> T getParam(String paramName) {
-        Type type = new TypeToken<T>() {}.getType();
-
         try {
             JsonElement json = params.get(paramName);
-            return GSON.fromJson(json, type);
+
+            if (null == json || json.isJsonNull()) {
+                throw new RequestParseException(format(MISSING_PARAM_MESSAGE, paramName, requestName));
+            }
+
+            return GSON.fromJson(json, new TypeToken<T>() {}.getType());
         } catch (Exception e) {
-            throw new RequestParseException(format(PARAM_NOT_EXPECTED_TYPE, paramName, requestName, type));
+            throw new RequestParseException(format(PARAM_FAILED_TO_PARSE_TO_TYPE, paramName, requestName, e.getMessage()));
         }
     }
 

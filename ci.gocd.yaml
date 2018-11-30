@@ -18,7 +18,7 @@ pipelines:
            - exec:
                command: ide
                arguments:
-                - gradle test fatJar
+                - gradle test jar
       - release:
           approval: manual
           clean_workspace: true

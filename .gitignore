@@ -22,3 +22,8 @@ hs_err_pid*
 /out/
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
+
+docker/libs/
+/docker/imagerc*
+/Idefile.to_be_tested
+/test/integration/test_ide_work/yaml-example/

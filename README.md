@@ -143,6 +143,56 @@ And this is done by the GoCD server:
  * validation of pipelines/stages/jobs/tasks domain
  * any UI rendering
 
+# Syntax checking
+
+Since `0.8.1` plugin is an executable and supports basic syntax checking.
+
+## Usage with java installed
+
+You need to download the `jar` from releases page and place it somewhere convenient.
+For example `/usr/lib/gocd-yaml-plugin/yaml-config-plugin.jar`.
+Then to validate your `gocd.yaml` file run something like:
+```
+java -jar /usr/lib/gocd-yaml-plugin/yaml-config-plugin.jar syntax ci.gocd.yaml
+```
+
+## Usage with IDE and docker
+
+[IDE](https://github.com/ai-traders/ide) is a bash script, a cli wrapper around docker to help with running development tasks in docker.
+You can install the `ide` script so that it is available on the PATH with:
+```
+sudo bash -c "`curl -L https://raw.githubusercontent.com/ai-traders/ide/master/install.sh`"
+```
+
+Add `Idefile` in your project with following content
+```
+IDE_DOCKER_IMAGE=tomzo/gocd-yaml-ide:0.8.1
+```
+
+To validate files run:
+```
+ide gocd-yaml syntax ci.gocd.yaml
+```
+
+Personally, I recommend the following project structure:
+
+ * `gocd/` directory for all your GoCD configuration files.
+ * `gocd/Idefile` file pointing which docker image can be used to validate configuration.
+
+Then when working with gocd pipelines config, you can run from the root of your project
+```
+cd gocd
+ide      # will open interactive shell
+watch gocd-yaml syntax ci.gocd.yaml
+```
+
+## Usage with docker only
+
+```
+docker run -ti --rm --volume $(pwd):/ide/work tomzo/gocd-yaml-ide:0.8.1 bash
+```
+Then you have an interactive shell as above.
+
 # Specification
 
 See [official GoCD XML configuration reference](https://docs.gocd.org/current/configuration/configuration_reference.html)

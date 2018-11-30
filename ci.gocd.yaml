@@ -19,19 +19,63 @@ pipelines:
                command: ide
                arguments:
                 - gradle test jar
-      - release:
-          approval: manual
+      - docker:
           clean_workspace: true
-          elastic_profile_id: w.c2.m2048.e10
-          secure_variables:
-            GITHUB_TOKEN: pAecqdOB4Fqa/YMwIQsoZf59vDSZKMSTPkwmZuX5DjcXw/4xA5ZlFBza1ujZS8Ff
+          resources:
+            - docker_builder
+          artifacts:
+            - build:
+                source: "docker/imagerc*"
+                destination:
           tasks:
             - fetch:
                 stage: build
                 job: build
                 source: build/libs
-                destination: build
+                destination: docker
             - exec:
                 command: /bin/bash
                 arguments:
-                  - ./release.sh
+                  - ./tasks.sh
+                  - build_docker
+            - exec:
+                command: /bin/bash
+                arguments:
+                  - ./tasks.sh
+                  - test_docker
+      - release:
+          approval: manual
+          clean_workspace: true
+          jobs:
+            github:
+              elastic_profile_id: w.c2.m2048.e10
+              secure_variables:
+                GITHUB_TOKEN: pAecqdOB4Fqa/YMwIQsoZf59vDSZKMSTPkwmZuX5DjcXw/4xA5ZlFBza1ujZS8Ff
+              tasks:
+                - fetch:
+                    stage: build
+                    job: build
+                    source: build/libs
+                    destination: build
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - ./tasks.sh
+                      - github_release
+            dockerhub:
+              resources:
+                - docker_builder
+              secure_variables:
+                DOCKERHUB_PASSWORD: CioRNFm+WifCZPcqU+78+A==
+              tasks:
+                - fetch:
+                   stage: docker
+                   job: docker
+                   source: imagerc
+                   destination:
+                   is_file: true
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks.sh publish_docker_public

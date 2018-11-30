@@ -2,6 +2,8 @@
 
 # gocd-yaml-config-plugin
 
+[![Build Status](https://travis-ci.org/tomzo/gocd-yaml-config-plugin.svg?branch=master)](https://travis-ci.org/tomzo/gocd-yaml-config-plugin)
+
 [GoCD](https://www.gocd.org) server plugin to keep **pipelines** and **environments**
 configuration in source-control in [YAML](http://www.yaml.org/).
 See [this document](https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html)
@@ -218,7 +220,7 @@ environments:
 
 Format version 2 only changes the way [pipeline locking is configured](#pipeline-locking)
 
-Format version 3 introduces support for external artifact configs. 
+Format version 3 introduces support for external artifact configs.
 
 # Pipeline
 

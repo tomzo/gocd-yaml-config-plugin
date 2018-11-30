@@ -101,6 +101,7 @@ case "${command}" in
       --repo gocd-yaml-config-plugin \
       --tag $VERSION \
       --name $VERSION \
+      --description "$changelog_version\ndocker image tomzo/gocd-yaml-ide:$VERSION"
       --pre-release
 
     $GHRELEASE_BIN upload \

@@ -1,3 +1,8 @@
+# 0.8.1 (30 Nov 2018)
+
+ * adds CLI for syntax checking
+ * adds docker image with the CLI to releases
+
 # 0.8.0 (9 Nov 2018)
 
  * added inverse transforms and config-repo 2.0 API support

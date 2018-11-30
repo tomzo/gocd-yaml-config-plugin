@@ -7,7 +7,7 @@ source .build/releaser
 
 releaser_init
 
-image_name_no_registry="gocd-yaml"
+image_name_no_registry="gocd-yaml-ide"
 private_image_name="docker-registry.ai-traders.com/${image_name_no_registry}"
 public_image_name="tomzo/${image_name_no_registry}"
 image_dir="./docker"

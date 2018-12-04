@@ -813,7 +813,7 @@ rake:
 ```yaml
 fetch:
   run_if: any
-  artifact_origin: gocd
+  artifact_origin: gocd # default value
   pipeline: pipe2
   stage: upstream_stage
   job: upstream_job
@@ -821,6 +821,9 @@ fetch:
   source: result
   destination: test
 ```
+
+ * `artifact_origin` if not specified then, defaults to `gocd`, which is consistent with previous `format_version` 1 and 2.
+ * `pipeline` if not specified, then defaults to current pipeline.
 
 #### Fetch artifact from an external artifact store
 

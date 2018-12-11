@@ -1,12 +1,15 @@
 package cd.go.plugin.config.yaml.cli;
 
 import cd.go.plugin.config.yaml.JsonConfigCollection;
-import cd.go.plugin.config.yaml.YamlFileParser;
+import cd.go.plugin.config.yaml.YamlConfigParser;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import static java.lang.String.format;
 
@@ -40,19 +43,32 @@ public class YamlPluginCli {
             printUsageAndExit(1, cmd, cmd.getParsedCommand());
         }
 
-        String[] files = new String[]{syntax.file};
-
-        YamlFileParser parser = new YamlFileParser();
-        JsonConfigCollection collection = parser.parseFiles(new File("."), files);
+        YamlConfigParser parser = new YamlConfigParser();
+        JsonConfigCollection collection = new JsonConfigCollection();
+        parser.parseStream(collection, getFileAsStream(syntax.file), getLocation(syntax.file));
 
         if (collection.getErrors().size() > 0) {
             JsonObject result = collection.getJsonObject();
             result.remove("environments");
             result.remove("pipelines");
-            die(syntax.quiet, 1, result.toString());
+            die(1, result.toString());
         } else {
-            die(syntax.quiet, 0, "OK");
+            die(0, "OK");
         }
+    }
+
+    private static String getLocation(String file) {
+        return "-".equals(file) ? "<STDIN>" : file;
+    }
+
+    private static InputStream getFileAsStream(String file) {
+        InputStream s = null;
+        try {
+            s = "-".equals(file) ? System.in : new FileInputStream(new File(".", file));
+        } catch (FileNotFoundException e) {
+            die(1, e.getMessage());
+        }
+        return s;
     }
 
     private static void echo(String message, Object... items) {
@@ -70,13 +86,6 @@ public class YamlPluginCli {
             echo(message, items);
         }
         System.exit(exitCode);
-    }
-
-    private static void die(boolean quietly, int exitCode, String message, Object... items) {
-        if (quietly) {
-            System.exit(exitCode);
-        }
-        die(exitCode, message, items);
     }
 
     private static void printUsageAndExit(int exitCode, JCommander cmd, String command) {

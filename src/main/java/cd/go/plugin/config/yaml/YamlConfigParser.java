@@ -33,6 +33,11 @@ public class YamlConfigParser {
 
     public void parseStream(JsonConfigCollection result, InputStream input, String location) {
         try (InputStreamReader contentReader = new InputStreamReader(input)) {
+            if (input.available() < 1) {
+                result.addError("File is empty", location);
+                return;
+            }
+
             YamlConfig config = new YamlConfig();
             config.setAllowDuplicates(false);
             YamlReader reader = new YamlReader(contentReader, config);

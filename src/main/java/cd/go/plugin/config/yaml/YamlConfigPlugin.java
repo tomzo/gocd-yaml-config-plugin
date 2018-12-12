@@ -91,7 +91,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             File baseDir = new File(parsed.getStringParam("directory"));
             String pattern = parsed.getConfigurationKey(PLUGIN_SETTINGS_FILE_PATTERN);
 
-            YamlFileParser parser = new YamlFileParser();
+            YamlConfigParser parser = new YamlConfigParser();
             PluginSettings settings = getPluginSettings();
 
             if (null == pattern) {

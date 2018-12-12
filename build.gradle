@@ -1,5 +1,5 @@
 group 'cd.go.plugin.config.yaml'
-version '0.8.1'
+version '0.8.2'
 
 apply plugin: 'java'
 

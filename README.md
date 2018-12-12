@@ -145,7 +145,7 @@ And this is done by the GoCD server:
 
 # Syntax checking
 
-Since `0.8.1` plugin is an executable and supports basic syntax checking.
+Since `0.8.2` plugin is an executable and supports basic syntax checking.
 
 ## Usage with java installed
 
@@ -188,7 +188,7 @@ sudo bash -c "`curl -L https://raw.githubusercontent.com/ai-traders/ide/master/i
 
 Add `Idefile` in your project with following content
 ```
-IDE_DOCKER_IMAGE=tomzo/gocd-yaml-ide:0.8.1
+IDE_DOCKER_IMAGE=tomzo/gocd-yaml-ide:0.8.2
 ```
 
 To validate files run:
@@ -211,7 +211,7 @@ watch gocd-yaml syntax ci.gocd.yaml
 ## Usage with docker only
 
 ```
-docker run -ti --rm --volume $(pwd):/ide/work tomzo/gocd-yaml-ide:0.8.1 bash
+docker run -ti --rm --volume $(pwd):/ide/work tomzo/gocd-yaml-ide:0.8.2 bash
 ```
 Then you have an interactive shell as above.
 

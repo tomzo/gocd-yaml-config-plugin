@@ -7,5 +7,6 @@ public interface ConfigRepoMessages {
     String REQ_PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
     String REQ_PLUGIN_SETTINGS_VALIDATE_CONFIGURATION = "go.plugin-settings.validate-configuration";
     String REQ_PARSE_DIRECTORY = "parse-directory";
+    String REQ_PARSE_CONTENT = "parse-content";
     String REQ_PIPELINE_EXPORT = "pipeline-export";
 }

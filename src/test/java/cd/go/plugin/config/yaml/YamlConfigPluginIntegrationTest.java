@@ -10,6 +10,7 @@ import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,9 +19,12 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collections;
 
 import static cd.go.plugin.config.yaml.TestUtils.getResourceAsStream;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
+import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -34,7 +38,7 @@ public class YamlConfigPluginIntegrationTest {
     private JsonParser parser;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         plugin = new YamlConfigPlugin();
         goAccessor = mock(GoApplicationAccessor.class);
         plugin.initializeGoApplicationAccessor(goAccessor);
@@ -44,11 +48,32 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
+    public void respondsToParseContentRequest() throws Exception {
+        final Gson gson = new Gson();
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "2.0", ConfigRepoMessages.REQ_PARSE_CONTENT);
+
+        StringWriter w = new StringWriter();
+        IOUtils.copy(getResourceAsStream("examples/simple.gocd.yaml"), w);
+        request.setRequestBody(gson.toJson(Collections.singletonMap("content", w.toString())));
+
+        GoPluginApiResponse response = plugin.handle(request);
+        assertEquals(SUCCESS_RESPONSE_CODE, response.responseCode());
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertNoError(responseJsonObject);
+
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(1));
+        JsonObject expected = (JsonObject) readJsonObject("examples.out/simple.gocd.json");
+        expected.getAsJsonArray("pipelines").get(0).getAsJsonObject().addProperty("location", "content");
+        assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
+    }
+
+    @Test
     public void shouldRespondSuccessToGetConfigurationRequest() throws UnhandledRequestTypeException {
         DefaultGoPluginApiRequest getConfigRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "go.plugin-settings.get-configuration");
 
         GoPluginApiResponse response = plugin.handle(getConfigRequest);
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
     }
 
     @Test
@@ -56,7 +81,7 @@ public class YamlConfigPluginIntegrationTest {
         DefaultGoPluginApiRequest getConfigRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "go.plugin-settings.get-configuration");
 
         GoPluginApiResponse response = plugin.handle(getConfigRequest);
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         JsonElement pattern = responseJsonObject.get("file_pattern");
         assertNotNull(pattern);
@@ -73,7 +98,7 @@ public class YamlConfigPluginIntegrationTest {
         DefaultGoPluginApiRequest getConfigRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "go.plugin-settings.get-view");
 
         GoPluginApiResponse response = plugin.handle(getConfigRequest);
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
     }
 
     @Test
@@ -81,14 +106,14 @@ public class YamlConfigPluginIntegrationTest {
         DefaultGoPluginApiRequest validateRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "go.plugin-settings.validate-configuration");
 
         GoPluginApiResponse response = plugin.handle(validateRequest);
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
     }
 
     @Test
     public void shouldRespondSuccessToParseDirectoryRequestWhenEmpty() throws UnhandledRequestTypeException {
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         assertNoError(responseJsonObject);
     }
@@ -97,7 +122,7 @@ public class YamlConfigPluginIntegrationTest {
     public void shouldRespondSuccessToParseDirectoryRequestWhenSimpleCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("simple"));
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
@@ -110,7 +135,7 @@ public class YamlConfigPluginIntegrationTest {
     public void shouldRespondSuccessToParseDirectoryRequestWhenRichCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("rich"));
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
@@ -123,7 +148,7 @@ public class YamlConfigPluginIntegrationTest {
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenSimpleInvalidCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("simple-invalid"));
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(0));
@@ -134,7 +159,7 @@ public class YamlConfigPluginIntegrationTest {
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenDuplicateKeysCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("duplicate-materials"));
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(0));
@@ -145,7 +170,7 @@ public class YamlConfigPluginIntegrationTest {
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenParsingErrorCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("invalid-materials"));
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(0));
@@ -180,7 +205,7 @@ public class YamlConfigPluginIntegrationTest {
         parseDirectoryRequest.setRequestBody(requestBody);
 
         GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
@@ -220,7 +245,7 @@ public class YamlConfigPluginIntegrationTest {
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
         verify(goAccessor, times(1)).submit(any(GoApiRequest.class));
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
     }
 
     @Test
@@ -231,7 +256,7 @@ public class YamlConfigPluginIntegrationTest {
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
         verify(goAccessor, times(1)).submit(any(GoApiRequest.class));
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
     }
 
     @Test
@@ -241,7 +266,7 @@ public class YamlConfigPluginIntegrationTest {
 
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         final JsonParser parser = new JsonParser();
         JsonElement responseObj = parser.parse(response.responseBody());
         assertTrue(responseObj.isJsonObject());
@@ -257,7 +282,7 @@ public class YamlConfigPluginIntegrationTest {
             IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("aliases"));
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
@@ -304,7 +329,7 @@ public class YamlConfigPluginIntegrationTest {
 
         GoPluginApiResponse response = plugin.handle(request);
 
-        assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE));
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         assertThat(response.responseBody(), is(expected));
     }
 

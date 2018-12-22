@@ -9,7 +9,7 @@ public class JsonConfigCollection {
     private static final int DEFAULT_VERSION = 1;
     private final Gson gson;
 
-    private Set<Integer> uniqueVersions = new HashSet<Integer>();
+    private Set<Integer> uniqueVersions = new HashSet<>();
     private JsonObject mainObject = new JsonObject();
     private JsonArray environments = new JsonArray();
     private JsonArray pipelines = new JsonArray();

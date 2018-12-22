@@ -54,7 +54,11 @@ public class YamlConfigPluginIntegrationTest {
 
         StringWriter w = new StringWriter();
         IOUtils.copy(getResourceAsStream("examples/simple.gocd.yaml"), w);
-        request.setRequestBody(gson.toJson(Collections.singletonMap("content", w.toString())));
+        request.setRequestBody(gson.toJson(
+                Collections.singletonMap("contents",
+                        Collections.singletonList(Collections.singletonMap("simple.gocd.yaml", w.toString()))
+                )
+        ));
 
         GoPluginApiResponse response = plugin.handle(request);
         assertEquals(SUCCESS_RESPONSE_CODE, response.responseCode());
@@ -64,7 +68,6 @@ public class YamlConfigPluginIntegrationTest {
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
         assertThat(pipelines.size(), is(1));
         JsonObject expected = (JsonObject) readJsonObject("examples.out/simple.gocd.json");
-        expected.getAsJsonArray("pipelines").get(0).getAsJsonObject().addProperty("location", "content");
         assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
     }
 

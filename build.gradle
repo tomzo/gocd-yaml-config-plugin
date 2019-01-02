@@ -1,11 +1,11 @@
 group 'cd.go.plugin.config.yaml'
-version '0.8.2'
+version '0.8.3'
 
 apply plugin: 'java'
 
 project.ext.pluginDesc = [
         version    : project.version,
-        goCdVersion: '18.11.0'
+        goCdVersion: '18.12.0'
 ]
 
 sourceCompatibility = 1.8

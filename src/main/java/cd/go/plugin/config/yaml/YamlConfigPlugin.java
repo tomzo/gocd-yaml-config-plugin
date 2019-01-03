@@ -14,6 +14,7 @@ import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -63,6 +64,8 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
                 }
             case REQ_PLUGIN_SETTINGS_VALIDATE_CONFIGURATION:
                 return handleValidatePluginSettingsConfiguration();
+            case REQ_PARSE_CONTENT:
+                return handleParseContentRequest(request);
             case REQ_PARSE_DIRECTORY:
                 return handleParseDirectoryRequest(request);
             case REQ_PIPELINE_EXPORT:
@@ -72,6 +75,24 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             default:
                 throw new UnhandledRequestTypeException(requestName);
         }
+    }
+
+    private GoPluginApiResponse handleParseContentRequest(GoPluginApiRequest request) {
+        return handlingErrors(() -> {
+            ParsedRequest parsed = ParsedRequest.parse(request);
+
+            YamlConfigParser parser = new YamlConfigParser();
+            List<Map<String, String>> contents = parsed.getParam("contents");
+            JsonConfigCollection result = new JsonConfigCollection();
+            contents.forEach(file -> {
+                String filename = file.keySet().iterator().next();
+                String content = file.get(filename);
+                parser.parseStream(result, new ByteArrayInputStream(content.getBytes()), filename);
+            });
+            result.updateTargetVersionFromFiles();
+
+            return success(gson.toJson(result.getJsonObject()));
+        });
     }
 
     private GoPluginApiResponse handlePipelineExportRequest(GoPluginApiRequest request) {

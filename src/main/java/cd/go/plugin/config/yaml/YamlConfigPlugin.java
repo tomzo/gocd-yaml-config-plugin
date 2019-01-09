@@ -148,7 +148,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         });
     }
 
-    private boolean isBlank(String pattern) {
+    private static boolean isBlank(String pattern) {
         return pattern == null || pattern.isEmpty();
     }
 

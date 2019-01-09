@@ -1,3 +1,8 @@
+# 0.8.4 (09 Jan 2019)
+
+ * Add export content metadata
+ * Fix plugin settings request and implement handler for plugin config change notification
+
 # 0.8.3 (03 Jan 2019)
 
  * Added support for `parse-content`.

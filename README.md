@@ -188,7 +188,7 @@ sudo bash -c "`curl -L https://raw.githubusercontent.com/ai-traders/ide/master/i
 
 Add `Idefile` in your project with following content
 ```
-IDE_DOCKER_IMAGE=tomzo/gocd-yaml-ide:0.8.3
+IDE_DOCKER_IMAGE=tomzo/gocd-yaml-ide:0.8.4
 ```
 
 To validate files run:
@@ -211,7 +211,7 @@ watch gocd-yaml syntax ci.gocd.yaml
 ## Usage with docker only
 
 ```
-docker run -ti --rm --volume $(pwd):/ide/work tomzo/gocd-yaml-ide:0.8.3 bash
+docker run -ti --rm --volume $(pwd):/ide/work tomzo/gocd-yaml-ide:0.8.4 bash
 ```
 Then you have an interactive shell as above.
 

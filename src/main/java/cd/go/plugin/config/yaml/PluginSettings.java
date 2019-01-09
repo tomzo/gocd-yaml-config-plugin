@@ -1,16 +1,26 @@
 package cd.go.plugin.config.yaml;
 
-public class PluginSettings {
+import java.util.Map;
+
+class PluginSettings {
+    static final String PLUGIN_SETTINGS_FILE_PATTERN = "file_pattern";
+    static final String DEFAULT_FILE_PATTERN = "**/*.gocd.yaml,**/*.gocd.yml";
+
     private String filePattern;
 
-    public PluginSettings() {
+    PluginSettings() {
     }
 
-    public PluginSettings(String filePattern) {
+    PluginSettings(String filePattern) {
         this.filePattern = filePattern;
     }
 
-    public String getFilePattern() {
+    static PluginSettings fromJson(String json) {
+        Map<String, String> raw = JSONUtils.fromJSON(json);
+        return new PluginSettings(raw.get(PLUGIN_SETTINGS_FILE_PATTERN));
+    }
+
+    String getFilePattern() {
         return filePattern;
     }
 }

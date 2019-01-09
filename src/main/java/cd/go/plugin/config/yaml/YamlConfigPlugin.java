@@ -10,6 +10,7 @@ import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.IOUtils;
@@ -20,20 +21,20 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 
+import static cd.go.plugin.config.yaml.PluginSettings.DEFAULT_FILE_PATTERN;
+import static cd.go.plugin.config.yaml.PluginSettings.PLUGIN_SETTINGS_FILE_PATTERN;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.*;
 import static java.lang.String.format;
 
 @Extension
 public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
     private static final String DISPLAY_NAME_FILE_PATTERN = "Go YAML files pattern";
-    private static final String PLUGIN_SETTINGS_FILE_PATTERN = "file_pattern";
     private static final String PLUGIN_ID = "yaml.config.plugin";
-    private static final String DEFAULT_FILE_PATTERN = "**/*.gocd.yaml,**/*.gocd.yml";
-
     private static Logger LOGGER = Logger.getLoggerFor(YamlConfigPlugin.class);
 
     private final Gson gson = new Gson();
     private GoApplicationAccessor goApplicationAccessor;
+    private PluginSettings settings;
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
@@ -67,13 +68,33 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             case REQ_PARSE_CONTENT:
                 return handleParseContentRequest(request);
             case REQ_PARSE_DIRECTORY:
+                ensureConfigured();
                 return handleParseDirectoryRequest(request);
             case REQ_PIPELINE_EXPORT:
                 return handlePipelineExportRequest(request);
             case REQ_GET_CAPABILITIES:
                 return success(gson.toJson(new Capabilities()));
+            case REQ_PLUGIN_SETTINGS_CHANGED:
+                configurePlugin(PluginSettings.fromJson(request.requestBody()));
+                return new DefaultGoPluginApiResponse(SUCCESS_RESPONSE_CODE, "");
             default:
                 throw new UnhandledRequestTypeException(requestName);
+        }
+    }
+
+    String getFilePattern() {
+        if (null != settings && !isBlank(settings.getFilePattern())) {
+            return settings.getFilePattern();
+        }
+        return DEFAULT_FILE_PATTERN;
+    }
+
+    /**
+     * fetches plugin settings if we haven't yet
+     */
+    private void ensureConfigured() {
+        if (null == settings) {
+            settings = fetchPluginSettings();
         }
     }
 
@@ -112,13 +133,11 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             File baseDir = new File(parsed.getStringParam("directory"));
             String pattern = parsed.getConfigurationKey(PLUGIN_SETTINGS_FILE_PATTERN);
 
-            YamlConfigParser parser = new YamlConfigParser();
-            PluginSettings settings = getPluginSettings();
-
-            if (null == pattern) {
-                pattern = isBlank(settings.getFilePattern()) ?
-                        DEFAULT_FILE_PATTERN : settings.getFilePattern();
+            if (isBlank(pattern)) {
+                pattern = getFilePattern();
             }
+
+            YamlConfigParser parser = new YamlConfigParser();
 
             String[] files = new AntDirectoryScanner().getFilesMatchingPattern(baseDir, pattern);
 
@@ -173,7 +192,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         }
     }
 
-    private PluginSettings getPluginSettings() {
+    private PluginSettings fetchPluginSettings() {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         requestMap.put("plugin-id", PLUGIN_ID);
         GoApiResponse response = goApplicationAccessor.submit(createGoApiRequest(REQ_GET_PLUGIN_SETTINGS, JSONUtils.toJSON(requestMap)));
@@ -182,10 +201,11 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             return new PluginSettings();
         }
 
-        Map<String, String> responseBodyMap = JSONUtils.fromJSON(response.responseBody());
+        return PluginSettings.fromJson(response.responseBody());
+    }
 
-        return new PluginSettings(
-                responseBodyMap.get(PLUGIN_SETTINGS_FILE_PATTERN));
+    private void configurePlugin(PluginSettings settings) {
+        this.settings = settings;
     }
 
     private GoApiRequest createGoApiRequest(final String api, final String responseBody) {
@@ -197,7 +217,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
 
             @Override
             public String apiVersion() {
-                return "2.0";
+                return "1.0";
             }
 
             @Override

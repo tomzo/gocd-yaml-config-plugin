@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
 
+import static cd.go.plugin.config.yaml.ConfigRepoMessages.REQ_PLUGIN_SETTINGS_CHANGED;
+import static cd.go.plugin.config.yaml.PluginSettings.DEFAULT_FILE_PATTERN;
 import static cd.go.plugin.config.yaml.TestUtils.getResourceAsStream;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
@@ -244,12 +246,17 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
-    public void shouldTalkToGoApplicationAccessorToGetPluginSettings() throws UnhandledRequestTypeException {
-        GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.getRoot());
+    public void shouldConsumePluginSettingsOnConfigChangeRequest() throws UnhandledRequestTypeException {
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "2.0", REQ_PLUGIN_SETTINGS_CHANGED);
+        request.setRequestBody("{\"file_pattern\": \"*.foo.gocd.yaml\"}");
 
-        verify(goAccessor, times(1)).submit(any(GoApiRequest.class));
+        assertEquals(DEFAULT_FILE_PATTERN, plugin.getFilePattern());
+        GoPluginApiResponse response = plugin.handle(request);
+
+        assertEquals("*.foo.gocd.yaml", plugin.getFilePattern());
         assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
     }
+
 
     @Test
     public void shouldRespondSuccessToParseDirectoryRequestWhenPluginHasConfiguration() throws UnhandledRequestTypeException {

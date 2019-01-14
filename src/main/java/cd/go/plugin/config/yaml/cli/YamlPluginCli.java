@@ -51,9 +51,10 @@ public class YamlPluginCli {
             JsonObject result = collection.getJsonObject();
             result.remove("environments");
             result.remove("pipelines");
+            result.addProperty("valid", false);
             die(1, result.toString());
         } else {
-            die(0, "OK");
+            die(0, "{\"valid\":true}");
         }
     }
 

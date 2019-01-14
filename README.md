@@ -175,7 +175,7 @@ Follow the steps on [https://github.com/gocd-contrib/gocd-cli](https://github.co
 Then:
 
 ```bash
-./gocd configrepo check -i yaml.config.plugin /path/to/your-pipeline.gocd.yaml
+./gocd configrepo syntax -i yaml.config.plugin /path/to/your-pipeline.gocd.yaml
 ```
 
 ## Usage with IDE and docker

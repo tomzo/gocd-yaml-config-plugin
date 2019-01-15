@@ -1,3 +1,7 @@
+# 0.8.5 (15 Jan 2019)
+
+ * return json from CLI command
+
 # 0.8.4 (09 Jan 2019)
 
  * Add export content metadata

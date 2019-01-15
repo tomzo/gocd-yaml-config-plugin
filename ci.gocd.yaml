@@ -50,7 +50,7 @@ pipelines:
             github:
               elastic_profile_id: w.c2.m2048.e10
               secure_variables:
-                GITHUB_TOKEN: pAecqdOB4Fqa/YMwIQsoZf59vDSZKMSTPkwmZuX5DjcXw/4xA5ZlFBza1ujZS8Ff
+                GITHUB_TOKEN: "AES:+QBztHVft9PmbwLLgpXvhA==:QHWQ+Ya2aJF2HoYo2G6LGlb2thWekhXiO626YKcEfeCw0IH7ornkOf7F91+RetOY"
               tasks:
                 - fetch:
                     stage: build
@@ -66,7 +66,7 @@ pipelines:
               resources:
                 - docker_builder
               secure_variables:
-                DOCKERHUB_PASSWORD: CioRNFm+WifCZPcqU+78+A==
+                DOCKERHUB_PASSWORD: "AES:Q/TQoBrYjWDf43TbbUzSUQ==:2w9UDmYJPgEU2bmuzuehjw=="
               tasks:
                 - fetch:
                    stage: docker

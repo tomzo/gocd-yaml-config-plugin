@@ -58,7 +58,7 @@ public class YamlConfigPluginIntegrationTest {
         IOUtils.copy(getResourceAsStream("examples/simple.gocd.yaml"), w);
         request.setRequestBody(gson.toJson(
                 Collections.singletonMap("contents",
-                        Collections.singletonList(Collections.singletonMap("simple.gocd.yaml", w.toString()))
+                        Collections.singletonMap("simple.gocd.yaml", w.toString())
                 )
         ));
 

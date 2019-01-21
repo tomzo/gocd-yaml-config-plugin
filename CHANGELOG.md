@@ -1,4 +1,4 @@
-# unreleased
+# 0.8.6 (21 Jan 2019)
 
 * Changed JSON keys returned by `get-capabilities` call
 * Changed JSON structure returned by `parse-content` call

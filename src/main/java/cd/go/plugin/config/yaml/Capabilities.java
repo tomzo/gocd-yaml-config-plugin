@@ -1,7 +1,14 @@
 package cd.go.plugin.config.yaml;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Capabilities {
+    @Expose
+    @SerializedName("supports_pipeline_export")
     private boolean supportsPipelineExport;
+    @Expose
+    @SerializedName("supports_parse_content")
     private boolean supportsParseContent;
 
     public Capabilities() {

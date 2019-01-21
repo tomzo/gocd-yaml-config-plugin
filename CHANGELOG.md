@@ -1,3 +1,7 @@
+# unreleased
+
+* Changed JSON keys returned by `get-capabilities` call
+
 # 0.8.5 (15 Jan 2019)
 
  * return json from CLI command

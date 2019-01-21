@@ -2,6 +2,7 @@ package cd.go.plugin.config.yaml;
 
 import cd.go.plugin.config.yaml.transforms.RootTransform;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
@@ -77,8 +78,23 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             case REQ_PLUGIN_SETTINGS_CHANGED:
                 configurePlugin(PluginSettings.fromJson(request.requestBody()));
                 return new DefaultGoPluginApiResponse(SUCCESS_RESPONSE_CODE, "");
+            case REQ_GET_ICON:
+                return handleGetIconRequest();
             default:
                 throw new UnhandledRequestTypeException(requestName);
+        }
+    }
+
+    private GoPluginApiResponse handleGetIconRequest() {
+        try {
+            JsonObject jsonObject = new JsonObject();
+            byte[] contents = IOUtils.toByteArray(getClass().getResourceAsStream("/yaml.svg"));
+
+            jsonObject.addProperty("content_type", "image/svg+xml");
+            jsonObject.addProperty("data", Base64.getEncoder().encodeToString(contents));
+            return success(gson.toJson(jsonObject));
+        } catch (IOException e) {
+            return error(e.getMessage());
         }
     }
 

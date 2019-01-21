@@ -20,6 +20,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Base64;
 import java.util.Collections;
 
 import static cd.go.plugin.config.yaml.ConfigRepoMessages.REQ_PLUGIN_SETTINGS_CHANGED;
@@ -341,6 +342,20 @@ public class YamlConfigPluginIntegrationTest {
 
         assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
         assertThat(response.responseBody(), is(expected));
+    }
+
+    @Test
+    public void shouldRespondWithGetIcon() throws UnhandledRequestTypeException, IOException {
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "2.0", "get-icon");
+
+        GoPluginApiResponse response = plugin.handle(request);
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
+        JsonObject jsonObject = getJsonObjectFromResponse(response);
+        assertEquals(jsonObject.entrySet().size(), 2);
+        assertEquals(jsonObject.get("content_type").getAsString(), "image/svg+xml");
+        byte[] actualData = Base64.getDecoder().decode(jsonObject.get("data").getAsString());
+        byte[] expectedData = IOUtils.toByteArray(getClass().getResourceAsStream("/yaml.svg"));
+        assertArrayEquals(expectedData, actualData);
     }
 
     private File setupCase(String caseName) throws IOException {

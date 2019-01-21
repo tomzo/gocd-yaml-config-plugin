@@ -2,6 +2,7 @@
 
 * Changed JSON keys returned by `get-capabilities` call
 * Changed JSON structure returned by `parse-content` call
+* Implemented a new `get-icon` call that will return the icon for this plugin
 
 # 0.8.5 (15 Jan 2019)
 

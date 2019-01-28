@@ -9,10 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -72,4 +69,18 @@ public class TestUtils {
     private static ClassLoader getContextClassLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
+
+    public static String normalizePath(File directory) {
+            return normalizePath(directory.getAbsolutePath());
+    }
+
+    public static String normalizePath(String directory) {
+        String directoryString = directory;
+
+        if (System.getProperty("os.name").contains("Windows")) {
+            directoryString = directoryString.replaceAll("\\\\", "/");
+        }
+        return directoryString;
+    }
+
 }

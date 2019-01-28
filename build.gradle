@@ -2,6 +2,7 @@ group 'cd.go.plugin.config.yaml'
 version '0.8.6'
 
 apply plugin: 'java'
+apply plugin: 'idea'
 
 project.ext.pluginDesc = [
         version    : project.version,
@@ -22,6 +23,7 @@ dependencies {
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
     compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.23'
+    compile group: 'com.hubspot.jinjava', name: 'jinjava', version: '2.4.14'
 
     compileOnly group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginDesc.goCdVersion
     testCompile group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginDesc.goCdVersion

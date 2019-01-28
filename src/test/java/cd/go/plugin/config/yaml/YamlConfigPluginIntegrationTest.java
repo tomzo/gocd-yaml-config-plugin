@@ -151,6 +151,19 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
+    public void shouldRespondSuccessToParseDirectoryRequestWhenRichJinjaCaseFile() throws UnhandledRequestTypeException, IOException {
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("rich-jinja"));
+
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertNoError(responseJsonObject);
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(3);
+        JsonObject expected = (JsonObject) readJsonObject("examples.out/rich-jinja.gocd.json");
+        assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
+    }
+
+    @Test
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenSimpleInvalidCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("simple-invalid"));
 
@@ -369,14 +382,24 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     private GoPluginApiResponse parseAndGetResponseForDir(File directory) throws UnhandledRequestTypeException {
+        String normalizedDir = normalizePath(directory);
         DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
         String requestBody = "{\n" +
-                "    \"directory\":\"" + directory + "\",\n" +
+                "    \"directory\":\"" + normalizedDir + "\",\n" +
                 "    \"configurations\":[]\n" +
                 "}";
         parseDirectoryRequest.setRequestBody(requestBody);
 
         return plugin.handle(parseDirectoryRequest);
+    }
+
+    private String normalizePath(File directory) {
+        String directoryString = directory.getAbsolutePath();
+
+        if (System.getProperty("os.name").contains("Windows")) {
+            directoryString = directoryString.replaceAll("\\\\", "/");
+        }
+        return directoryString;
     }
 
     private void assertNoError(JsonObject responseJsonObject) {

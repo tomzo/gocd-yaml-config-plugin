@@ -5,6 +5,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,22 +41,34 @@ public class AntDirectoryScannerTest {
 
     @Test
     public void shouldMatchPatternInDirectory() throws Exception {
+        List<String> expectedItems = Arrays.asList(
+                "1/a/abc.xml",
+                "2/d/def.xml",
+                "3/ghi.xml",
+                "pqr.xml"
+        );
+
         tempDir.newFolder("1", "a");
         tempDir.newFolder("2", "d");
         tempDir.newFolder("3");
         tempDir.newFolder("4");
 
-        tempDir.newFile("1/a/abc.xml");
-        tempDir.newFile("2/d/def.xml");
-        tempDir.newFile("3/ghi.xml");
+        expectedItems.forEach(item -> {
+            try {
+                tempDir.newFile(item);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         tempDir.newFile("4/jkl.txt");
         tempDir.newFile("mno.txt");
-        tempDir.newFile("pqr.xml");
 
-        String[] xmlFilesOnly = scanner.getFilesMatchingPattern(tempDir.getRoot(), "**/*.xml");
+        List<String> xmlFilesOnly = Arrays.asList(scanner.getFilesMatchingPattern(tempDir.getRoot(), "**/*.xml"));
 
-        assertThat(xmlFilesOnly.length, is(4));
-        assertThat(asList(xmlFilesOnly), hasItems("1/a/abc.xml", "2/d/def.xml", "3/ghi.xml", "pqr.xml"));
+        assertThat(xmlFilesOnly.size(), is(4));
+        assertThat(
+                asList(xmlFilesOnly.stream().map(s -> TestUtils.normalizePath(s)).collect(Collectors.toList()))
+                , hasItems(expectedItems.stream().map(s -> TestUtils.normalizePath(s)).collect(Collectors.toList())));
     }
 
     @Test
@@ -66,22 +84,34 @@ public class AntDirectoryScannerTest {
 
     @Test
     public void shouldAcceptMultiplePatternsSeparatedByComma() throws Exception {
+        List<String> expectedItems = Arrays.asList(
+                "1/a/abc.xml",
+                "2/d/def.gif",
+                "3/ghi.xml",
+                "mno.jpg",
+                "stu.xml"
+        );
+
         tempDir.newFolder("1", "a");
         tempDir.newFolder("2", "d");
         tempDir.newFolder("3");
         tempDir.newFolder("4");
 
-        tempDir.newFile("1/a/abc.xml");
-        tempDir.newFile("2/d/def.gif");
-        tempDir.newFile("3/ghi.xml");
+        expectedItems.forEach(item -> {
+            try {
+                tempDir.newFile(item);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         tempDir.newFile("4/jkl.txt");
-        tempDir.newFile("mno.jpg");
-        tempDir.newFile("4/pqr.jpg");
-        tempDir.newFile("stu.xml");
 
-        String[] xmlFilesOnly = scanner.getFilesMatchingPattern(tempDir.getRoot(), "**/*.xml, **/*.gif, *.jpg");
+        List<String> xmlFilesOnly = Arrays.asList(scanner.getFilesMatchingPattern(tempDir.getRoot(), "**/*.xml, **/*.gif, *.jpg"));
 
-        assertThat(xmlFilesOnly.length, is(5));
-        assertThat(asList(xmlFilesOnly), hasItems("1/a/abc.xml", "2/d/def.gif", "3/ghi.xml", "mno.jpg", "stu.xml"));
+        assertThat(xmlFilesOnly.size(), is(5));
+//        assertThat(asList(xmlFilesOnly), hasItems("1/a/abc.xml", "2/d/def.gif", "3/ghi.xml", "mno.jpg", "stu.xml"));
+        assertThat(
+                asList(xmlFilesOnly.stream().map(s -> TestUtils.normalizePath(s)).collect(Collectors.toList()))
+                , hasItems(expectedItems.stream().map(s -> TestUtils.normalizePath(s)).collect(Collectors.toList())));
     }
 }

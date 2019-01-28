@@ -1,0 +1,352 @@
+{
+  "target_version": 1,
+  "environments": [],
+  "pipelines": [
+    {
+      "name": "pipe1",
+      "group": "rich-jinja",
+      "label_template": "${mygit[:8]}",
+      "enable_pipeline_locking": true,
+      "tracking_tool": {
+        "link": "http://your-trackingtool/yourproject/${ID}",
+        "regex": "evo-(\\d+)"
+      },
+      "timer": {
+        "spec": "0 0 22 ? * MON-FRI",
+        "only_on_changes": true
+      },
+      "materials": [
+        {
+          "name": "mygit",
+          "type": "git",
+          "url": "http://my.example.org/mygit.git",
+          "branch": "ci"
+        },
+        {
+          "name": "upstream",
+          "type": "dependency",
+          "pipeline": "pipe1",
+          "stage": "test"
+        }
+      ],
+      "stages": [
+        {
+          "name": "build",
+          "clean_working_directory": true,
+          "approval": {
+            "type": "manual",
+            "roles": [
+              "manager"
+            ]
+          },
+          "jobs": [
+            {
+              "name": "csharp",
+              "run_instance_count": 3,
+              "environment_variables": [
+                {
+                  "name": "MONO_PATH",
+                  "value": "/usr/bin/local/mono"
+                },
+                {
+                  "name": "PASSWORD",
+                  "encrypted_value": "s&Du#@$xsSa"
+                }
+              ],
+              "tabs": [
+                {
+                  "name": "report",
+                  "path": "test-reports/index.html"
+                }
+              ],
+              "resources": [
+                "net45"
+              ],
+              "artifacts": [
+                {
+                  "type": "build",
+                  "source": "bin/",
+                  "destination": "build"
+                },
+                {
+                  "type": "test",
+                  "source": "tests/",
+                  "destination": "test-reports/"
+                }
+              ],
+              "properties": [
+                {
+                  "name": "perf",
+                  "source": "test.xml",
+                  "xpath": "substring-before(//report/data/all/coverage[starts-with(@type,'class')]/@value, '%')"
+                }
+              ],
+              "tasks": [
+                {
+                  "type": "fetch",
+                  "pipeline": "pipe1",
+                  "stage": "build",
+                  "job": "test",
+                  "source": "test-bin/",
+                  "destination": "bin/"
+                },
+                {
+                  "type": "exec",
+                  "arguments": [
+                    "VERBOSE=true"
+                  ],
+                  "command": "make"
+                },
+                {
+                  "type": "plugin",
+                  "configuration": [
+                    {
+                      "key": "script",
+                      "value": "./build.sh ci"
+                    }
+                  ],
+                  "plugin_configuration": {
+                    "id": "script-executor",
+                    "version": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "location": "rich-jinja.gocd.yaml"
+    },
+    {
+      "name": "pipe2",
+      "group": "rich-jinja",
+      "label_template": "${mygit[:8]}",
+      "enable_pipeline_locking": true,
+      "tracking_tool": {
+        "link": "http://your-trackingtool/yourproject/${ID}",
+        "regex": "evo-(\\d+)"
+      },
+      "timer": {
+        "spec": "0 0 22 ? * MON-FRI",
+        "only_on_changes": true
+      },
+      "materials": [
+        {
+          "name": "mygit",
+          "type": "git",
+          "url": "http://my.example.org/mygit.git",
+          "branch": "ci"
+        },
+        {
+          "name": "upstream",
+          "type": "dependency",
+          "pipeline": "pipe2",
+          "stage": "test"
+        }
+      ],
+      "stages": [
+        {
+          "name": "build",
+          "clean_working_directory": true,
+          "approval": {
+            "type": "manual",
+            "roles": [
+              "manager"
+            ]
+          },
+          "jobs": [
+            {
+              "name": "csharp",
+              "run_instance_count": 3,
+              "environment_variables": [
+                {
+                  "name": "MONO_PATH",
+                  "value": "/usr/bin/local/mono"
+                },
+                {
+                  "name": "PASSWORD",
+                  "encrypted_value": "s&Du#@$xsSa"
+                }
+              ],
+              "tabs": [
+                {
+                  "name": "report",
+                  "path": "test-reports/index.html"
+                }
+              ],
+              "resources": [
+                "net45"
+              ],
+              "artifacts": [
+                {
+                  "type": "build",
+                  "source": "bin/",
+                  "destination": "build"
+                },
+                {
+                  "type": "test",
+                  "source": "tests/",
+                  "destination": "test-reports/"
+                }
+              ],
+              "properties": [
+                {
+                  "name": "perf",
+                  "source": "test.xml",
+                  "xpath": "substring-before(//report/data/all/coverage[starts-with(@type,'class')]/@value, '%')"
+                }
+              ],
+              "tasks": [
+                {
+                  "type": "fetch",
+                  "pipeline": "pipe2",
+                  "stage": "build",
+                  "job": "test",
+                  "source": "test-bin/",
+                  "destination": "bin/"
+                },
+                {
+                  "type": "exec",
+                  "arguments": [
+                    "VERBOSE=true"
+                  ],
+                  "command": "make"
+                },
+                {
+                  "type": "plugin",
+                  "configuration": [
+                    {
+                      "key": "script",
+                      "value": "./build.sh ci"
+                    }
+                  ],
+                  "plugin_configuration": {
+                    "id": "script-executor",
+                    "version": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "location": "rich-jinja.gocd.yaml"
+    },
+    {
+      "name": "pipe3",
+      "group": "rich-jinja",
+      "label_template": "${mygit[:8]}",
+      "enable_pipeline_locking": true,
+      "tracking_tool": {
+        "link": "http://your-trackingtool/yourproject/${ID}",
+        "regex": "evo-(\\d+)"
+      },
+      "timer": {
+        "spec": "0 0 22 ? * MON-FRI",
+        "only_on_changes": true
+      },
+      "materials": [
+        {
+          "name": "mygit",
+          "type": "git",
+          "url": "http://my.example.org/mygit.git",
+          "branch": "ci"
+        },
+        {
+          "name": "upstream",
+          "type": "dependency",
+          "pipeline": "pipe3",
+          "stage": "test"
+        }
+      ],
+      "stages": [
+        {
+          "name": "build",
+          "clean_working_directory": true,
+          "approval": {
+            "type": "manual",
+            "roles": [
+              "manager"
+            ]
+          },
+          "jobs": [
+            {
+              "name": "csharp",
+              "run_instance_count": 3,
+              "environment_variables": [
+                {
+                  "name": "MONO_PATH",
+                  "value": "/usr/bin/local/mono"
+                },
+                {
+                  "name": "PASSWORD",
+                  "encrypted_value": "s&Du#@$xsSa"
+                }
+              ],
+              "tabs": [
+                {
+                  "name": "report",
+                  "path": "test-reports/index.html"
+                }
+              ],
+              "resources": [
+                "net45"
+              ],
+              "artifacts": [
+                {
+                  "type": "build",
+                  "source": "bin/",
+                  "destination": "build"
+                },
+                {
+                  "type": "test",
+                  "source": "tests/",
+                  "destination": "test-reports/"
+                }
+              ],
+              "properties": [
+                {
+                  "name": "perf",
+                  "source": "test.xml",
+                  "xpath": "substring-before(//report/data/all/coverage[starts-with(@type,'class')]/@value, '%')"
+                }
+              ],
+              "tasks": [
+                {
+                  "type": "fetch",
+                  "pipeline": "pipe3",
+                  "stage": "build",
+                  "job": "test",
+                  "source": "test-bin/",
+                  "destination": "bin/"
+                },
+                {
+                  "type": "exec",
+                  "arguments": [
+                    "VERBOSE=true"
+                  ],
+                  "command": "make"
+                },
+                {
+                  "type": "plugin",
+                  "configuration": [
+                    {
+                      "key": "script",
+                      "value": "./build.sh ci"
+                    }
+                  ],
+                  "plugin_configuration": {
+                    "id": "script-executor",
+                    "version": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "location": "rich-jinja.gocd.yaml"
+    }
+  ],
+  "errors": []
+}

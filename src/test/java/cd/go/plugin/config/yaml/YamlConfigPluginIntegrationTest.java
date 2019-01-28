@@ -158,7 +158,7 @@ public class YamlConfigPluginIntegrationTest {
         JsonObject responseJsonObject = getJsonObjectFromResponse(response);
         assertNoError(responseJsonObject);
         JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
-        assertThat(pipelines.size(), is(3);
+        assertThat(pipelines.size(), is(3));
         JsonObject expected = (JsonObject) readJsonObject("examples.out/rich-jinja.gocd.json");
         assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
     }
@@ -212,8 +212,9 @@ public class YamlConfigPluginIntegrationTest {
     public void shouldParseDirectoryWithCustomPatternWhenInConfigurations() throws UnhandledRequestTypeException, IOException {
         File simpleCaseDir = setupCase("simple", "go.yml");
         DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
+        String normalizedPath = TestUtils.normalizePath(simpleCaseDir);
         String requestBody = "{\n" +
-                "    \"directory\":\"" + simpleCaseDir + "\",\n" +
+                "    \"directory\":\"" + normalizedPath + "\",\n" +
                 "    \"configurations\":[" +
                 "{" +
                 "\"key\" : \"file_pattern\"," +
@@ -382,7 +383,7 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     private GoPluginApiResponse parseAndGetResponseForDir(File directory) throws UnhandledRequestTypeException {
-        String normalizedDir = normalizePath(directory);
+        String normalizedDir = TestUtils.normalizePath(directory);
         DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
         String requestBody = "{\n" +
                 "    \"directory\":\"" + normalizedDir + "\",\n" +
@@ -391,15 +392,6 @@ public class YamlConfigPluginIntegrationTest {
         parseDirectoryRequest.setRequestBody(requestBody);
 
         return plugin.handle(parseDirectoryRequest);
-    }
-
-    private String normalizePath(File directory) {
-        String directoryString = directory.getAbsolutePath();
-
-        if (System.getProperty("os.name").contains("Windows")) {
-            directoryString = directoryString.replaceAll("\\\\", "/");
-        }
-        return directoryString;
     }
 
     private void assertNoError(JsonObject responseJsonObject) {

@@ -1,0 +1,10 @@
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    compile group: 'com.github.jk1.dependency-license-report', name: 'com.github.jk1.dependency-license-report.gradle.plugin', version: '1.3'
+}

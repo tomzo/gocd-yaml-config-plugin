@@ -86,6 +86,8 @@ test {
 // create a fat jar with all dependencies
 jar {
     baseName = project.name
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
 
     manifest {
         attributes 'Main-Class': 'cd.go.plugin.config.yaml.cli.YamlPluginCli'

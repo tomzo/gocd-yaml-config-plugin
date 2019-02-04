@@ -75,6 +75,16 @@ public class MaterialTransformTest {
     }
 
     @Test
+    public void shouldTransformCompleteSCM() throws IOException {
+        testTransform("complete.scm");
+    }
+
+    @Test
+    public void shouldInverseTransformCompleteSCM() throws IOException {
+        testInverseTransform("complete.scm");
+    }
+
+    @Test
     public void shouldTransformPackage() throws IOException {
         testTransform("package");
     }

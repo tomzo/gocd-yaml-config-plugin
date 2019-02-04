@@ -11,12 +11,13 @@ import java.util.Map;
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 
-public class MaterialTransform {
+public class MaterialTransform extends ConfigurationTransform {
 
     public static final String JSON_MATERIAL_TYPE_FIELD = "type";
     public static final String JSON_MATERIAL_NAME_FIELD = "name";
     public static final String JSON_MATERIAL_AUTO_UPDATE_FIELD = "auto_update";
     public static final String JSON_MATERIAL_SHALLOW_CLONE_FIELD = "shallow_clone";
+    public static final String JSON_MATERIAL_SCM_PLUGIN_CONFIG_FIELD = "plugin_configuration";
 
     public static final String YAML_MATERIAL_TYPE_FIELD = "type";
     public static final String YAML_MATERIAL_AUTO_UPDATE_FIELD = "auto_update";
@@ -37,6 +38,7 @@ public class MaterialTransform {
     private static final String YAML_SHORT_KEYWORD_PERFORCE = "p4";
     private static final String JSON_MATERIAL_USE_TICKETS_FIELD = "use_tickets";
     private static final String YAML_MATERIAL_USE_TICKETS_FIELD = "use_tickets";
+    private static final String YAML_MATERIAL_SCM_PLUGIN_CONFIG_FIELD = "plugin_configuration";
 
     private final HashSet<String> yamlSpecialKeywords = new HashSet<String>();
 
@@ -102,6 +104,8 @@ public class MaterialTransform {
         addOptionalValue(materialdata, material, "password", "password");
         addOptionalValue(materialdata, material, JSON_MATERIAL_USE_TICKETS_FIELD, YAML_MATERIAL_USE_TICKETS_FIELD);
         addOptionalValue(materialdata, material, "view", "view");
+        addOptionalValue(materialdata, material, JSON_MATERIAL_SCM_PLUGIN_CONFIG_FIELD, YAML_MATERIAL_SCM_PLUGIN_CONFIG_FIELD);
+        this.addInverseConfiguration(materialdata, material);
 
         if (material.containsKey("filter"))
             addInverseFilter(materialdata, (Map<String, Object>) material.get("filter"));
@@ -162,9 +166,11 @@ public class MaterialTransform {
             material.addProperty(JSON_MATERIAL_TYPE_FIELD, "dependency");
         }
         String scm_id = getOptionalString(materialMap, YAML_SHORT_KEYWORD_SCM_ID);
-        if (scm_id != null) {
+        if (scm_id != null || materialMap.containsKey(YAML_MATERIAL_SCM_PLUGIN_CONFIG_FIELD)) {
             material.addProperty(JSON_MATERIAL_TYPE_FIELD, "plugin");
-            material.addProperty("scm_id", scm_id);
+            addOptionalString(material, materialMap, "scm_id", YAML_SHORT_KEYWORD_SCM_ID);
+            addOptionalObject(material, materialMap, JSON_MATERIAL_SCM_PLUGIN_CONFIG_FIELD, YAML_MATERIAL_SCM_PLUGIN_CONFIG_FIELD);
+            super.addConfiguration(material,  materialMap);
         }
         String package_id = getOptionalString(materialMap, YAML_SHORT_KEYWORD_PACKAGE_ID);
         if (package_id != null) {

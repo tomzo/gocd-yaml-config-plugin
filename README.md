@@ -701,6 +701,22 @@ myPluggableGit:
     - dir2
 ```
 
+Since GoCD `>= 19.2.0` defining new pluggable materials that are not defined
+in the GoCD server is supported.
+
+```
+myPluggableGit:
+  plugin_configuration:
+    id: plugin_Id
+    version: 1 #plugin version
+  options:
+    url: git@github.com:tomzo/gocd-yaml-config-plugin.git
+  destination: destinationDir
+  blacklist:
+    - dir1
+    - dir2
+```
+
 ### Configrepo
 
 This is a convenience for shorter and more consistent material declaration.

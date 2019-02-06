@@ -1,0 +1,19 @@
+{
+  "plugin_configuration": {
+    "id": "plugin_id",
+    "version": "1"
+  },
+  "configuration": [{
+    "key": "url",
+    "value": "url"
+  }],
+  "destination": "destinationDir",
+  "filter": {
+    "ignore": [
+      "dir1",
+      "dir2"
+    ]
+  },
+  "name": "myPluggableGit",
+  "type": "plugin"
+}

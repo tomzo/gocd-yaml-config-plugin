@@ -1,0 +1,10 @@
+myPluggableGit:
+  plugin_configuration:
+    id: plugin_id
+    version: 1
+  destination: destinationDir
+  options:
+    url: url
+  blacklist:
+    - dir1
+    - dir2

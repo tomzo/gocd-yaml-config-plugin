@@ -997,7 +997,7 @@ using any of the keywords below (as in [yaml specs](http://yaml.org/type/bool.ht
  * **true** - `y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON`
  * **false** - `n|N|no|No|NO|false|False|FALSE|off|Off|OFF`
 
- ## YAML Aliases
+## YAML Aliases
 
 YAML Aliases ([specification](http://www.yaml.org/spec/1.2/spec.html#id2786196)) are supported and provide a way to avoid duplication.
 
@@ -1045,6 +1045,30 @@ pipelines:
                    command: make
                    arguments:
                     - test
+```
+
+Similarly stages can be re-used:
+```yaml
+format_version: 3
+common:
+  build_stages: &build_stages
+    - stage1:
+        jobs:
+          # ...
+    - stage2:
+        jobs:
+          # ...
+
+pipelines:
+  pipeline_one:
+    stages: *build_stages
+
+  pipeline_two:
+    stages:
+      - *build_stages
+      - stage3:
+        jobs:
+          # ...
 ```
 
 # Development

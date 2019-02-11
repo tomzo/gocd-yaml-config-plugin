@@ -40,6 +40,10 @@ public class PipelineTransformTest {
     public void shouldTransformSimplePipeline() throws IOException {
         testTransform("simple.pipe");
     }
+    @Test
+    public void shouldTransformPipelineWithNestedStagesList() throws IOException {
+        testTransform("stage_nested_list.pipe");
+    }
 
     @Test
     public void shouldTransformRichPipeline() throws IOException {

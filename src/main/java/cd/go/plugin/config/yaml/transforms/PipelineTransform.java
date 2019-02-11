@@ -175,7 +175,14 @@ public class PipelineTransform {
     private JsonArray transformStages(List<Object> stagesList) {
         JsonArray stagesArray = new JsonArray();
         for (Object stage : stagesList) {
-            stagesArray.add(stageTransform.transform(stage));
+            if (stage instanceof List) {
+                List<Object> stageNestedList = (List<Object>) stage;
+                for(Object s : stageNestedList) {
+                    stagesArray.add(stageTransform.transform(s));
+                }
+            }
+            else
+                stagesArray.add(stageTransform.transform(stage));
         }
         return stagesArray;
     }

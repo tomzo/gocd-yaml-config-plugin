@@ -188,7 +188,7 @@ sudo bash -c "`curl -L https://raw.githubusercontent.com/ai-traders/ide/master/i
 
 Add `Idefile` in your project with following content
 ```
-IDE_DOCKER_IMAGE=tomzo/gocd-yaml-ide:0.8.6
+IDE_DOCKER_IMAGE=tomzo/gocd-yaml-ide:<plugin-version>
 ```
 
 To validate files run:
@@ -211,7 +211,7 @@ watch gocd-yaml syntax ci.gocd.yaml
 ## Usage with docker only
 
 ```
-docker run -ti --rm --volume $(pwd):/ide/work tomzo/gocd-yaml-ide:0.8.6 bash
+docker run -ti --rm --volume $(pwd):/ide/work tomzo/gocd-yaml-ide:<plugin-version> bash
 ```
 Then you have an interactive shell as above.
 
@@ -1075,8 +1075,19 @@ pipelines:
 
 Run all tests and create a ready to use jar
 ```bash
-./gradlew test fatJar
+./gradlew test jar
 ```
+
+## Versioning
+
+We use semantic versioning.
+
+If you are submitting a new feature then please run a major version bump by
+```
+./tasks.sh set_version 0.X.0
+```
+
+If you are submitting a fix, then do not change any versions as patch bump is made right after each release.
 
 ## Tests structure
 

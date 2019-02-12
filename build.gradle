@@ -7,13 +7,13 @@ plugins {
 }
 
 group 'cd.go.plugin.config.yaml'
-version '0.8.6'
+version "0.9.0"
 
 apply plugin: 'java'
 apply plugin: "com.github.jk1.dependency-license-report"
 
 project.ext.pluginDesc = [
-        version    : project.version,
+        version: project.version,
         goCdVersion: '18.12.0'
 ]
 
@@ -108,4 +108,3 @@ jar {
 licenseReport {
     renderers = [new NoticeFileGenerator(new TeeRenderer(new SimpleHtmlReportRenderer()), "${project.buildDir}/reports/dependency-license/")]
 }
-

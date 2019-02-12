@@ -190,6 +190,29 @@ function set_version_in_changelog {
   fi
 }
 
+# Given the old_version in a SemVer format, e.g. 0.1.2, returns new version
+# with patch fragment increased by 1, e.g. 0.1.3.
+# Arguments:
+#   old_version
+function bump_patch_version {
+  local old_version="${1?old_version not set}"
+  log_debug "Validating old_version"
+  validate_version_is_semver "${old_version}"
+  exit_status="$?"
+  if [[ "${exit_status}" != 0 ]]; then
+    return "${exit_status}"
+  fi
+
+  #replace . with space so can split into an array
+  version_bits=(${old_version//./\ })
+  major=${version_bits[0]}
+  minor=${version_bits[1]}
+  patch=${version_bits[2]}
+
+  patch=$((patch+1))
+  echo "${major}.${minor}.${patch}"
+}
+
 # You should invoke that function before running any end user functions.
 function releaser_init {
   default_changelog_file="$(pwd)/CHANGELOG.md"

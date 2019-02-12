@@ -79,3 +79,20 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks.sh publish_docker_public
+      - bump:
+          clean_workspace: true
+          jobs:
+            patch:
+              elastic_profile_id: w.c2.m2048.e10
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - ./tasks.sh
+                      - set_version
+                - exec:
+                    command: git
+                    arguments:
+                      - push
+                      - origin
+                      - master

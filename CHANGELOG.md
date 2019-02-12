@@ -1,3 +1,9 @@
+### 0.9.0 (2019-Feb-12)
+
+ * automate releases and version bump
+ * support nested lists of stages \#95
+ * added syntax to configure new scms \#109
+
 # 0.8.6 (21 Jan 2019)
 
 * Changed JSON keys returned by `get-capabilities` call

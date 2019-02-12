@@ -27,6 +27,16 @@ function get_version_tag {
 
 command="$1"
 case "${command}" in
+  set_version)
+    if [[ -n "$2" ]]; then
+        next_version="$2"
+    else
+        changelog_version=$(get_last_version_from_changelog "${changelog_file}")
+        next_version=$(bump_patch_version $changelog_version)
+    fi
+    set_version_in_changelog "${changelog_file}" "${next_version}"
+    set_version_in_file "version " "build.gradle" "${next_version}"
+    ;;
   build_docker)
     changelog_version=$(get_last_version_from_changelog "${changelog_file}")
     docker_build_options="--build-arg this_image_tag_arg=${changelog_version}"

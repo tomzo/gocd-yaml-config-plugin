@@ -142,9 +142,11 @@ function set_version_in_file {
 # Arguments:
 #   new_version
 #   changelog_file
+#   unreleased?
 function set_version_in_changelog {
   changelog_file="$1"
   new_version="$2"
+  unreleased="$3"
 
   if [[ -z "${new_version}" ]];then
     log_error "new_version not set"
@@ -175,8 +177,12 @@ function set_version_in_changelog {
     return 0
   else
     log_debug "Will add new line to changelog:"
-    release_date=$(LANG=en_US date +%Y-%b-%d)
-    new_line="### ${new_version} (${release_date})"
+    if [[ "$unreleased" == "true" ]]; then
+      new_line="### ${new_version} - Unreleased"
+    else
+      release_date=$(LANG=en_US date +%Y-%b-%d)
+      new_line="### ${new_version} (${release_date})"
+    fi
     log_debug "${new_line}"
     if [[ "${dryrun}" != "true" ]];then
       old_changelog=$(cat "${changelog_file}")

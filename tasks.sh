@@ -34,7 +34,12 @@ case "${command}" in
         changelog_version=$(get_last_version_from_changelog "${changelog_file}")
         next_version=$(bump_patch_version $changelog_version)
     fi
-    set_version_in_changelog "${changelog_file}" "${next_version}"
+    set_version_in_changelog "${changelog_file}" "${next_version}" "true"
+    set_version_in_file "version " "build.gradle" "${next_version}"
+    ;;
+  prepare_release)
+    next_version=$(get_last_version_from_changelog "${changelog_file}")
+    set_version_in_changelog "${changelog_file}" "${next_version}" "false"
     set_version_in_file "version " "build.gradle" "${next_version}"
     ;;
   build_docker)

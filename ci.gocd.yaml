@@ -91,6 +91,10 @@ pipelines:
                       - ./tasks.sh
                       - set_version
                 - exec:
+                    command: /bin/bash
+                      - ./tasks.sh
+                      - commit
+                - exec:
                     command: git
                     arguments:
                       - push

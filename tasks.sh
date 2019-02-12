@@ -37,6 +37,11 @@ case "${command}" in
     set_version_in_changelog "${changelog_file}" "${next_version}" "true"
     set_version_in_file "version " "build.gradle" "${next_version}"
     ;;
+  commit)
+    git add "${changelog_file}"
+    git add "build.gradle"
+    git commit --author "Tomasz Setkowski <tom@ai-traders.com>" -m "Version bump"
+    ;;
   prepare_release)
     next_version=$(get_last_version_from_changelog "${changelog_file}")
     set_version_in_changelog "${changelog_file}" "${next_version}" "false"

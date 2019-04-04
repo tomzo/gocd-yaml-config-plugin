@@ -26,5 +26,11 @@
         }
       ]
     }
+  ],
+  "tasks": [
+    {
+      "type": "exec",
+      "command": "make"
+    }
   ]
 }

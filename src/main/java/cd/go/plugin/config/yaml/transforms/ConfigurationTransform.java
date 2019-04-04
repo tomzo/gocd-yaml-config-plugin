@@ -9,12 +9,12 @@ import java.util.Map;
 
 public class ConfigurationTransform {
 
-    public static final String YAML_PLUGIN_STD_CONFIG_FIELD = "options";
-    public static final String YAML_PLUGIN_SEC_CONFIG_FIELD = "secure_options";
-    private static final String JSON_PLUGIN_CONFIG_KEY_FIELD = "key";
-    private static final String JSON_PLUGIN_CONFIG_VALUE_FIELD = "value";
-    private static final String JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD = "encrypted_value";
-    private static final String JSON_PLUGIN_CONFIGURATION_FIELD = "configuration";
+    static final String YAML_PLUGIN_STD_CONFIG_FIELD = "options";
+    static final String YAML_PLUGIN_SEC_CONFIG_FIELD = "secure_options";
+    static final String JSON_PLUGIN_CONFIG_KEY_FIELD = "key";
+    static final String JSON_PLUGIN_CONFIG_VALUE_FIELD = "value";
+    static final String JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD = "encrypted_value";
+    static final String JSON_PLUGIN_CONFIGURATION_FIELD = "configuration";
 
     void addConfiguration(JsonObject json, Map<String, Object> configurationMap) {
         if (configurationMap == null) {

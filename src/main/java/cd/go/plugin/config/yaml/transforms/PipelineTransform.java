@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static cd.go.plugin.config.yaml.JSONUtils.addOptionalInt;
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
@@ -26,6 +27,7 @@ public class PipelineTransform {
     private static final String JSON_PIPELINE_TIMER_FIELD = "timer";
     private static final String JSON_PIPELINE_MATERIALS_FIELD = "materials";
     private static final String JSON_PIPELINE_STAGES_FIELD = "stages";
+    private static final String JSON_PIPELINE_DISPLAY_ORDER_FIELD = "display_order_weight";
 
     private static final String YAML_PIPELINE_GROUP_FIELD = "group";
     private static final String YAML_PIPELINE_TEMPLATE_FIELD = "template";
@@ -37,6 +39,7 @@ public class PipelineTransform {
     private static final String YAML_PIPELINE_TIMER_FIELD = "timer";
     private static final String YAML_PIPELINE_MATERIALS_FIELD = "materials";
     private static final String YAML_PIPELINE_STAGES_FIELD = "stages";
+    private static final String YAML_PIPELINE_DISPLAY_ORDER_FIELD = "display_order";
 
     private final MaterialTransform materialTransform;
     private final StageTransform stageTransform;
@@ -65,6 +68,7 @@ public class PipelineTransform {
         Map<String, Object> pipeMap = (Map<String, Object>) entry.getValue();
 
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_GROUP_FIELD, YAML_PIPELINE_GROUP_FIELD);
+        addOptionalInteger(pipeline, pipeMap, JSON_PIPELINE_DISPLAY_ORDER_FIELD, YAML_PIPELINE_DISPLAY_ORDER_FIELD);
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_TEMPLATE_FIELD, YAML_PIPELINE_TEMPLATE_FIELD);
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_LABEL_TEMPLATE_FIELD, YAML_PIPELINE_LABEL_TEMPLATE_FIELD);
         addOptionalBoolean(pipeline, pipeMap, JSON_PIPELINE_PIPE_LOCKING_FIELD, YAML_PIPELINE_PIPE_LOCKING_FIELD);
@@ -106,6 +110,7 @@ public class PipelineTransform {
         addOptionalValue(pipelineMap, pipeline, JSON_PIPELINE_PIPE_LOCKING_FIELD, YAML_PIPELINE_PIPE_LOCKING_FIELD);
         addOptionalValue(pipelineMap, pipeline, JSON_PIPELINE_LOCK_BEHAVIOR_FIELD, YAML_PIPELINE_LOCK_BEHAVIOR_FIELD);
         addOptionalValue(pipelineMap, pipeline, JSON_PIPELINE_TRACKING_TOOL_FIELD, YAML_PIPELINE_TRACKING_TOOL_FIELD);
+        addOptionalInt(pipelineMap, pipeline, JSON_PIPELINE_DISPLAY_ORDER_FIELD, YAML_PIPELINE_DISPLAY_ORDER_FIELD);
 
         addInverseTimer(pipelineMap, pipeline);
 

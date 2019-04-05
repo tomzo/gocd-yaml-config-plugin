@@ -1,4 +1,6 @@
-### 0.9.2 - Unreleased
+### 0.10.0 (2019-Apr-05)
+
+ * Add support for `display_order` at pipeline level \#114
 
 ### 0.9.1 (2019-Apr-05)
 
@@ -10,76 +12,76 @@
  * support nested lists of stages \#95
  * added syntax to configure new scms \#109
 
-# 0.8.6 (21 Jan 2019)
+### 0.8.6 (2019-Jan-21)
 
-* Changed JSON keys returned by `get-capabilities` call
-* Changed JSON structure returned by `parse-content` call
-* Implemented a new `get-icon` call that will return the icon for this plugin
+ * Changed JSON keys returned by `get-capabilities` call
+ * Changed JSON structure returned by `parse-content` call
+ * Implemented a new `get-icon` call that will return the icon for this plugin
 
-# 0.8.5 (15 Jan 2019)
+### 0.8.5 (2019-Jan-15)
 
  * return json from CLI command
 
-# 0.8.4 (09 Jan 2019)
+### 0.8.4 (2019-Jan-09)
 
  * Add export content metadata
  * Fix plugin settings request and implement handler for plugin config change notification
 
-# 0.8.3 (03 Jan 2019)
+### 0.8.3 (2019-Jan-03)
 
  * Added support for `parse-content`.
 
-# 0.8.2 (12 Dec 2018)
+### 0.8.2 (2018-Dec-12)
 
  * accept stdin input in cli tool
 
-# 0.8.1 (30 Nov 2018)
+### 0.8.1 (2018-Nov-30)
 
  * adds CLI for syntax checking
  * adds docker image with the CLI to releases
 
-# 0.8.0 (9 Nov 2018)
+### 0.8.0 (2018-Nov-09)
 
  * added inverse transforms and config-repo 2.0 API support
  * updated to gradle 4.10.2
 
-# 0.7.0 (9 Jul 2018)
+### 0.7.0 (2018-Jul-09)
 
  * introduces `format_version: 3` and external fetch task
 
-# 0.6.2 (13 Mar 2018)
+### 0.6.2 (2018-Mar-13)
 
  * fix ability to set custom file pattern per configuration repository
 
-# 0.6.1 (23 Feb 2018)
+### 0.6.1 (2018-Feb-23)
 
  * switch to EsotericSoftware's yamlbeans
 
-# 0.6.0 (26 Oct 2017)
+### 0.6.0 (2017-Oct-26)
 
  * adds support for referencing templates and specifying parameters
  * adds better support for YAML aliases
  * introduces format_version field, with future work for v2 format
 
-# 0.5.0 (15 Sep 2017)
+### 0.5.0 (2017-Sep-15)
 
  * new release build tasks
  * added configrepo material type
  * added p4 material type support
 
-# 0.4.0 (16 Dec 2016)
+### 0.4.0 (2016-Dec-16)
 
  * fixed IO error reporting
  * added elastic_profile_id in job
 
-# 0.3.0 (07 Nov 2016)
+### 0.3.0 (2016-Nov-07)
 
  * added validation of duplicate keys
 
-# 0.2.0 (21 Oct 2016)
+### 0.2.0 (2016-Oct-21)
 
 * added optional `timeout` field to job
 
-# 0.1.0 (16 Jul 2016)
+### 0.1.0 (2016-Jul-16)
 
 Initial release.

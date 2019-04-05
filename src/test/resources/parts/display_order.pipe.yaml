@@ -1,0 +1,8 @@
+pipe1:
+  group: group1
+  display_order: 10
+  materials:
+    foo: {}
+  stages:
+    - null
+    - null

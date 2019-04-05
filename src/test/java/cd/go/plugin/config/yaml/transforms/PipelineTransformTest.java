@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Before;
 import org.junit.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.util.Map;
@@ -22,18 +21,15 @@ public class PipelineTransformTest {
 
     private PipelineTransform parser;
     private MaterialTransform materialTransform;
-    private StageTransform stageTransform;
-    private EnvironmentVariablesTransform environmentTransform;
-    private Yaml yaml;
 
     @Before
     public void SetUp() {
         materialTransform = mock(MaterialTransform.class);
-        stageTransform = mock(StageTransform.class);
-        environmentTransform = mock(EnvironmentVariablesTransform.class);
+        StageTransform stageTransform = mock(StageTransform.class);
+        EnvironmentVariablesTransform environmentTransform = mock(EnvironmentVariablesTransform.class);
         ParameterTransform parameterTransform = mock(ParameterTransform.class);
+
         parser = new PipelineTransform(materialTransform, stageTransform, environmentTransform, parameterTransform);
-        yaml = new Yaml();
     }
 
     @Test
@@ -61,11 +57,26 @@ public class PipelineTransformTest {
     }
 
     @Test
+    public void shouldTransformAPipelineWhichHasADisplayOrderWeight() throws IOException {
+        testTransform("display_order.pipe");
+    }
+
+    @Test
     public void shouldInverseTransformPipeline() throws IOException {
-        Map<String, Object> mats = new LinkedTreeMap<>();
-        mats.put("foo", new LinkedTreeMap<>());
-        when(materialTransform.inverseTransform(any(LinkedTreeMap.class))).thenReturn(mats);
+        Map<String, Object> materials = new LinkedTreeMap<>();
+        materials.put("foo", new LinkedTreeMap<>());
+        when(materialTransform.inverseTransform(any(LinkedTreeMap.class))).thenReturn(materials);
+
         testInverseTransform("export.pipe");
+    }
+
+    @Test
+    public void shouldInverseTransformAPipelineWhichHasADisplayOrderWeight() throws IOException {
+        Map<String, Object> materials = new LinkedTreeMap<>();
+        materials.put("foo", new LinkedTreeMap<>());
+        when(materialTransform.inverseTransform(any(LinkedTreeMap.class))).thenReturn(materials);
+
+        testInverseTransform("display_order.pipe");
     }
 
     private void testTransform(String caseFile) throws IOException {

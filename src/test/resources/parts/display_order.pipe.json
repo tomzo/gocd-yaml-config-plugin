@@ -1,0 +1,12 @@
+{
+  "name": "pipe1",
+  "group": "group1",
+  "display_order_weight": 10,
+  "materials": [
+    null
+  ],
+  "stages": [
+    null,
+    null
+  ]
+}

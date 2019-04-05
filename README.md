@@ -25,25 +25,19 @@ so you can explain why pipeline/environment it is configured like this.
 
 ## Setup
 
+**Step 1**: GoCD versions newer than `17.8.0` already have the plugin bundled. You don't need to install anything.
+
 If you're using GoCD version *older than 17.8.0*, you need to install the plugin in the GoCD server. Download it from
 [the releases page](https://github.com/tomzo/gocd-yaml-config-plugin/releases) and place it on the GoCD server in
 `plugins/external` [directory](https://docs.gocd.org/current/extension_points/plugin_user_guide.html).
 
-Add `config-repos` element right above first `<pipelines /> and <artifactStores /> if present`. Then you can
-add any number of YAML configuration repositories as such:
 
-```xml
-<config-repos>
-  <config-repo pluginId="yaml.config.plugin" id="repo1">
-    <git url="https://github.com/tomzo/gocd-yaml-config-example.git" />
-  </config-repo>
-</config-repos>
-...
-<artifactStores />
-<pipelines />
-```
 
-In your config repo (tomzo/gocd-yaml-config-example.git in this case), ensure that your gocd yaml config is suffixed with ".gocd.yaml". Any file ending in ".gocd.yaml" is picked up by the plugin. Give it a minute or so for the polling to happen. Once that happens, you should see your pipeline(s) on your dashboard.
+**Step 2**: Follow [the GoCD documentation](https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html#storing-pipeline-configuration-in-json) to add a new configuration repository.
+
+You can use the example repository at: `https://github.com/tomzo/gocd-yaml-config-example.git`.
+
+In your config repo (`tomzo/gocd-yaml-config-example.git` in this case), ensure that your GoCD yaml config is suffixed with `.gocd.yaml`. Any file ending in `.gocd.yaml` is picked up by the plugin. Give it a minute or so for the polling to happen. Once that happens, you should see your pipeline(s) on your dashboard.
 
 ### Example
 
@@ -51,7 +45,7 @@ More examples are in [test resources](src/test/resources/examples/).
 
 ```yaml
 #ci.gocd.yaml
-format_version: 3
+format_version: 4
 environments:
   testing:
     environment_variables:
@@ -64,6 +58,7 @@ environments:
 pipelines:
   mypipe1: # definition of mypipe1 pipeline
     group: mygroup # note that the group name can contain only of alphanumeric & underscore characters
+    display_order: 10
     label_template: "${mygit[:8]}"
     lock_behavior: none
     parameters: # list of parameters that can be configured for a pipeline
@@ -115,7 +110,7 @@ pipelines:
 
 By default GoCD configuration files should end with `.gocd.yaml` or `.gocd.yml`.
 
-You can set custom file pattern per configuration repository like this:
+You can set a custom file pattern per configuration repository using the GoCD configuration UI or in the config XML like this:
 
 ```xml
 <config-repos>
@@ -133,7 +128,7 @@ You can set custom file pattern per configuration repository like this:
 
 ## Issues and questions
 
- * If you have **questions on usage**, please ask them on the [gitter chat root dedicated for configrepo-plugins](https://gitter.im/gocd/configrepo-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ * If you have **questions on usage**, please ask them on the [gitter chat room dedicated for configrepo-plugins](https://gitter.im/gocd/configrepo-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
  * If you think there is a bug, or you have an idea for a feature and *you are not sure if it's plugin's or [GoCD](https://github.com/gocd/gocd/issues) fault/responsibity*, please ask on the chat first too.
 
 Please note this brief overview of what is done by the plugin:
@@ -227,6 +222,7 @@ Feel free to improve it!
 1. [Parameters](#parameters)
 1. [Pipeline](#pipeline)
     * [Tabs](#tabs)
+    * [Controlling the display order](#display-order-of-pipelines)
     * [Tracking tool](#tracking-tool)
     * [Timer](#timer)
     * [Locking](#pipeline-locking)
@@ -259,29 +255,26 @@ Feel free to improve it!
 
 # Format version
 
-Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file.
-Version `3` was introduced in GoCD v18.7.0
-Currently it is recommended to declare consistent version in all your files:
+Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file, consistent across all your files.
 
-For **GoCD < 17.12**:
+#### GoCD server version from 19.3.0 and beyond
+
+Supports `format_version` value of `4`. In this version, support has been added to control the [display order of pipelines](#display-order-of-pipelines).
+
+This server version also supports `format_version` of `3` and `2`. Using a newer `format_version` includes all the behavior of the previous versions too.
 
 ```yaml
-format_version: 1
+format_version: 4
 pipelines:
   ...
 environments:
 ```
 
-For **GoCD >= 17.12 && GoCD < 18.7.0**:
+#### GoCD server version from 18.7.0 to 19.2.0
 
-```yaml
-format_version: 2
-pipelines:
-  ...
-environments:
-```
+Supports `format_version` value of `3`. In this version [fetch artifact](#fetch) format was changed to include `artifact_origin`.
 
-For **GoCD >= 18.7.0**:
+This server version also supports `format_version` of `2`. Using a newer `format_version` includes all the behavior of the previous versions too.
 
 ```yaml
 format_version: 3
@@ -290,9 +283,27 @@ pipelines:
 environments:
 ```
 
-Format version 2 only changes the way [pipeline locking is configured](#pipeline-locking)
+#### GoCD server version from 17.12.0 to 18.6.0
 
-Format version 3 introduces support for external artifact configs.
+Supports `format_version` value of `2`. In this version [pipeline locking](#pipeline-locking) behavior was changed.
+
+```yaml
+format_version: 2
+pipelines:
+  ...
+environments:
+```
+
+#### GoCD server version up to 17.11.0
+
+Supports `format_version` value of `1`. This is the initial version.
+
+```yaml
+format_version: 1
+pipelines:
+  ...
+environments:
+```
 
 # Pipeline
 
@@ -366,6 +377,29 @@ mypipe:
 Please note:
  * Pipeline declares a group to which it belongs
 
+<a name="display-order-of-pipelines"/>
+
+### Controlling the display order
+
+When `format_version` is `4` (see [above](#format-version)), the order of display of pipelines on the GoCD dashboard can be influenced by setting the `display_order` property.
+
+- This is an integer property and the pipelines in a pipeline group will be ordered by this value.
+- The default value for this property is `-1`.
+- Pipelines defined in GoCD's config XML will also default to -1.
+- If multiple pipelines have the same `display_order` value, their order relative to each other will be indeterminate.
+
+```json
+mypipeline1:
+  group: group1
+  display_order: 10
+
+mypipeline2:
+  group: group1
+  display_order: -10
+```
+
+In the above example, since both pipelines are in the same group, `pipeline2` will be shown ahead of `pipeline1`. If any pipelines are defined in the GoCD config XML, then they will appear in between these two pipelines.
+
 ### Tracking tool
 
 ```yaml
@@ -386,7 +420,7 @@ See [XML reference](https://docs.gocd.org/current/configuration/configuration_re
 
 ### Pipeline locking
 
-For **GoCD >= 17.12 and `format_version: 2`**:
+For **GoCD >= 17.12 and `format_version: 2` and above**:
 
 ```yaml
 lock_behavior: none
@@ -1022,7 +1056,7 @@ Aliases can be defined anywhere in the configuration as long as they are valid c
 There is also a dedicated top-level `common` section which allows you to have all aliases in one place and where you don't need to worry about correct placement within the configuration.
 
 ```yaml
-format_version: 3
+format_version: 4
 common:
   verbose_arg: &verbose_arg "VERBOSE=true"
   build_tasks: &build_tasks
@@ -1052,7 +1086,7 @@ pipelines:
 
 Similarly stages can be re-used:
 ```yaml
-format_version: 3
+format_version: 4
 common:
   build_stages: &build_stages
     - stage1:

@@ -1,4 +1,6 @@
-### 0.9.1 - Unreleased
+### 0.9.1 (2019-Apr-05)
+
+ * fixes export of external artifacts
 
 ### 0.9.0 (2019-Feb-12)
 

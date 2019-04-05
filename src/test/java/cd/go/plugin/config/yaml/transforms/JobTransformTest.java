@@ -8,11 +8,13 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.function.Function;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class JobTransformTest {
     private EnvironmentVariablesTransform environmentTransform;
@@ -50,16 +52,16 @@ public class JobTransformTest {
 
     @Test
     public void shouldTransformExternalArtifactConfig() throws IOException {
+        useParserWithoutMocks();
+
         testTransform("external_artifacts");
     }
 
     @Test
     public void shouldTransformJobWithListOfListsTasks() throws IOException {
-        environmentTransform = new EnvironmentVariablesTransform();
-        taskTransform = new TaskTransform();
-        parser = new JobTransform(environmentTransform, taskTransform);
+        useParserWithoutMocks();
 
-        JsonObject job = testTransform("list_of_lists_tasks");
+        testTransform("list_of_lists_tasks");
     }
 
     @Test
@@ -85,6 +87,19 @@ public class JobTransformTest {
     @Test
     public void shouldInverseTransformElasticProfileJob() throws IOException {
         testInverseTransform("elastic_profile");
+    }
+
+    @Test
+    public void shouldInverseTransformExternalArtifactConfig() throws IOException {
+        useParserWithoutMocks();
+
+        testInverseTransform("external_artifacts");
+    }
+
+    private void useParserWithoutMocks() {
+        environmentTransform = new EnvironmentVariablesTransform();
+        taskTransform = new TaskTransform();
+        parser = new JobTransform(environmentTransform, taskTransform);
     }
 
     private JsonObject testTransform(String caseFile) throws IOException {

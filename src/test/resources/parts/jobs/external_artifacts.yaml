@@ -1,6 +1,4 @@
 test:
-  tasks:
-    - null
   artifacts:
     - build:
         source: src1
@@ -16,3 +14,6 @@ test:
             white_russian: "cocktail"
           secure_options:
             fermented_coffee: "sfsggge124#"
+  tasks:
+    - exec:
+        command: make

@@ -8,6 +8,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +17,12 @@ import static cd.go.plugin.config.yaml.YamlUtils.*;
 import static cd.go.plugin.config.yaml.transforms.EnvironmentVariablesTransform.JSON_ENV_VAR_FIELD;
 
 public class JobTransform extends ConfigurationTransform {
-    public static final String YAML_JOB_TIMEOUT_FIELD = "timeout";
-    public static final String JSON_JOB_TIMEOUT_FIELD = "timeout";
-    public static final String YAML_JOB_TASKS_FIELD = "tasks";
-    public static final String JSON_JOB_TASKS_FIELD = "tasks";
-    public static final String YAML_JOB_RUN_INSTANCES_FIELD = "run_instances";
-    public static final String JSON_JOB_RUN_INSTANCES_FIELD = "run_instance_count";
+    private static final String YAML_JOB_TIMEOUT_FIELD = "timeout";
+    private static final String JSON_JOB_TIMEOUT_FIELD = "timeout";
+    private static final String YAML_JOB_TASKS_FIELD = "tasks";
+    private static final String JSON_JOB_TASKS_FIELD = "tasks";
+    private static final String YAML_JOB_RUN_INSTANCES_FIELD = "run_instances";
+    private static final String JSON_JOB_RUN_INSTANCES_FIELD = "run_instance_count";
     private static final String JSON_JOB_NAME_FIELD = "name";
     private static final String YAML_JOB_TABS_FIELD = "tabs";
     private static final String JSON_JOB_TAB_NAME_FIELD = "name";
@@ -49,6 +50,7 @@ public class JobTransform extends ConfigurationTransform {
     private static final String YAML_JOB_PROP_SOURCE_FIELD = "source";
     private static final String JSON_JOB_PROP_XPATH_FIELD = "xpath";
     private static final String YAML_JOB_PROP_XPATH_FIELD = "xpath";
+    private static final String EXTERNAL_ARTIFACT_TYPE_FIELD = "external";
 
     private EnvironmentVariablesTransform environmentTransform;
     private TaskTransform taskTransform;
@@ -202,9 +204,30 @@ public class JobTransform extends ConfigurationTransform {
             String type = (String) artifact.remove("type");
             inverseArtifact.put(type, artifact);
             inverseArtifacts.add(inverseArtifact);
+            handleExternalArtifactConfiguration(type, inverseArtifact);
         }
 
         jobData.put(YAML_JOB_ARTIFACTS_FIELD, inverseArtifacts);
+    }
+
+    private void handleExternalArtifactConfiguration(String type, Map<String, Object> inverseArtifact) {
+        if (!EXTERNAL_ARTIFACT_TYPE_FIELD.equals(type)) {
+            return;
+        }
+        final Map<String, Object> artifactMap = (Map<String, Object>) inverseArtifact.get(EXTERNAL_ARTIFACT_TYPE_FIELD);
+        final List<Map<String, String>> configuration = (List<Map<String, String>>) artifactMap.get(JSON_PLUGIN_CONFIGURATION_FIELD);
+
+        final Map<String, Map<String, String>> result = new HashMap<>();
+        for (Map<String, String> configProperty : configuration) {
+            final boolean isEncryptedProperty = configProperty.containsKey(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD);
+            String sourceFieldToUse = isEncryptedProperty ? JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD : JSON_PLUGIN_CONFIG_VALUE_FIELD;
+            String mapToPutIntoInResult = isEncryptedProperty ? YAML_PLUGIN_SEC_CONFIG_FIELD : YAML_PLUGIN_STD_CONFIG_FIELD;
+
+            result.putIfAbsent(mapToPutIntoInResult, new HashMap<>());
+            result.get(mapToPutIntoInResult).put(configProperty.get(JSON_PLUGIN_CONFIG_KEY_FIELD), configProperty.get(sourceFieldToUse));
+        }
+
+        artifactMap.put(JSON_PLUGIN_CONFIGURATION_FIELD, result);
     }
 
     private void addArtifacts(JsonObject jobJson, Map<String, Object> jobMap) {
@@ -226,13 +249,13 @@ public class JobTransform extends ConfigurationTransform {
                     artifactJson.addProperty("type", "build");
                 else if ("test".equalsIgnoreCase(artMap.getKey()))
                     artifactJson.addProperty("type", "test");
-                else if ("external".equalsIgnoreCase(artMap.getKey())) {
-                    artifactJson.addProperty("type", "external");
+                else if (EXTERNAL_ARTIFACT_TYPE_FIELD.equalsIgnoreCase(artMap.getKey())) {
+                    artifactJson.addProperty("type", EXTERNAL_ARTIFACT_TYPE_FIELD);
                 } else
                     throw new YamlConfigException("expected build:, test:, or external: in artifact, got " + artMap.getKey());
 
                 Map<String, Object> artMapValue = (Map<String, Object>) artMap.getValue();
-                if ("external".equalsIgnoreCase(artMap.getKey())) {
+                if (EXTERNAL_ARTIFACT_TYPE_FIELD.equalsIgnoreCase(artMap.getKey())) {
                     addRequiredString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_ARTIFACT_ID_FIELD, YAML_JOB_ARTIFACT_ARTIFACT_ID_FIELD);
                     addRequiredString(artifactJson, artMapValue, JSON_JOB_ARTIFACT_STORE_ID_FIELD, YAML_JOB_ARTIFACT_STORE_ID_FIELD);
                     super.addConfiguration(artifactJson, (Map<String, Object>) artMapValue.get("configuration"));

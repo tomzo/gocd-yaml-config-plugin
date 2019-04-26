@@ -173,6 +173,15 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
+    public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenEmptyFile() throws UnhandledRequestTypeException, IOException {
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("empty"));
+
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertFirstError(responseJsonObject, "File is empty", "empty.gocd.yaml");
+    }
+
+    @Test
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenParsingErrorCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("invalid-materials"));
 

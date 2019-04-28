@@ -1156,3 +1156,20 @@ There are [examples of yaml partials](src/test/resources/parts) and
  their resulting json to be sent to GoCD server. If something is not working right
  we can always add a new case covering exact yaml that user has and json that we
  expect on server side.
+
+
+# License
+
+Copyright 2019 Tomasz Sętkowski
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

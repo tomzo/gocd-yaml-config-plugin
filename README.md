@@ -1110,9 +1110,33 @@ pipelines:
 
 # Development
 
-Run all tests and create a ready to use jar
+## Environment setup
+
+To build and test this plugin, you'll need java jdk >= 8.
+
+If you have local java environment, then you may run all tests and create a ready to use jar with:
 ```bash
 ./gradlew test jar
+```
+
+## Building with docker and dojo
+
+You don't need to setup java on your host, if you are fine with using docker and [Dojo](https://github.com/ai-traders/dojo).
+This is actually how our GoCD builds the plugin:
+```
+dojo "gradle test jar"
+```
+
+Assuming you already have a working docker, you can install dojo with:
+```
+DOJO_VERSION=0.4.0
+wget -O dojo https://github.com/ai-traders/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
+sudo mv dojo /usr/local/bin
+sudo chmod +x /usr/local/bin/dojo
+```
+Then enter a docker container with java and gradle pre-installed, by running following command at the root of the project:
+```
+dojo
 ```
 
 ## Versioning
@@ -1132,3 +1156,20 @@ There are [examples of yaml partials](src/test/resources/parts) and
  their resulting json to be sent to GoCD server. If something is not working right
  we can always add a new case covering exact yaml that user has and json that we
  expect on server side.
+
+
+# License
+
+Copyright 2019 Tomasz Sętkowski
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

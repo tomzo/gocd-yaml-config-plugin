@@ -1110,9 +1110,33 @@ pipelines:
 
 # Development
 
-Run all tests and create a ready to use jar
+## Environment setup
+
+To build and test this plugin, you'll need java jdk >= 8.
+
+If you have local java environment, then you may run all tests and create a ready to use jar with:
 ```bash
 ./gradlew test jar
+```
+
+## Building with docker and dojo
+
+You don't need to setup java on your host, if you are fine with using docker and [Dojo](https://github.com/ai-traders/dojo).
+This is actually how our GoCD builds the plugin:
+```
+dojo "gradle test jar"
+```
+
+Assuming you already have a working docker, you can install dojo with:
+```
+DOJO_VERSION=0.4.0
+wget -O dojo https://github.com/ai-traders/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
+sudo mv dojo /usr/local/bin
+sudo chmod +x /usr/local/bin/dojo
+```
+Then enter a docker container with java and gradle pre-installed, by running following command at the root of the project:
+```
+dojo
 ```
 
 ## Versioning

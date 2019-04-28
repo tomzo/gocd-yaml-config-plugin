@@ -1,1 +1,16 @@
-language: java
+sudo: required
+language: minimal
+services:
+  - docker
+
+env:
+  - DOJO_VERSION=0.4.0
+
+before_install:
+  - sudo rm -f /usr/bin/dojo
+  - wget -O dojo https://github.com/ai-traders/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
+  - sudo mv dojo /usr/local/bin
+  - sudo chmod +x /usr/local/bin/dojo
+
+script:
+ - ./tasks.sh build

@@ -1,4 +1,6 @@
-### 0.10.1 - Unreleased
+### 0.10.1 (2019-Apr-28)
+
+ * switch build system to use open source openjdk-dojo image \#17574
 
 ### 0.10.0 (2019-Apr-05)
 

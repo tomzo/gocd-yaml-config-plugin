@@ -1,3 +1,4 @@
+format_version: 3
 pipelines:
   "gocd-yaml-plugin":
     group: gocd
@@ -16,9 +17,10 @@ pipelines:
                destination: build/libs
           tasks:
            - exec:
-               command: ide
+               command: bash
                arguments:
-                - gradle test jar
+                - -c
+                - ./tasks.sh build
       - docker:
           clean_workspace: true
           resources:

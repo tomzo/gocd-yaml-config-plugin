@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'cd.go.plugin.config.yaml'
-version "0.10.1"
+version "0.10.2"
 
 apply plugin: 'java'
 apply plugin: "com.github.jk1.dependency-license-report"

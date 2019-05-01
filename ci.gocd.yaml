@@ -21,30 +21,6 @@ pipelines:
                arguments:
                 - -c
                 - ./tasks.sh build
-      - docker:
-          clean_workspace: true
-          resources:
-            - docker_builder
-          artifacts:
-            - build:
-                source: "docker/imagerc*"
-                destination:
-          tasks:
-            - fetch:
-                stage: build
-                job: build
-                source: build/libs
-                destination: docker
-            - exec:
-                command: /bin/bash
-                arguments:
-                  - ./tasks.sh
-                  - build_docker
-            - exec:
-                command: /bin/bash
-                arguments:
-                  - -c
-                  - "ops_docker_push=true ./tasks.sh build_docker"
       - release:
           approval: manual
           clean_workspace: true
@@ -64,23 +40,6 @@ pipelines:
                     arguments:
                       - ./tasks.sh
                       - github_release
-            dockerhub:
-              resources:
-                - docker_builder
-              secure_variables:
-                DOCKERHUB_PASSWORD: "AES:Q/TQoBrYjWDf43TbbUzSUQ==:2w9UDmYJPgEU2bmuzuehjw=="
-              tasks:
-                - fetch:
-                   stage: docker
-                   job: docker
-                   source: imagerc
-                   destination: docker/
-                   is_file: true
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks.sh publish_docker_public
       - bump:
           clean_workspace: true
           jobs:

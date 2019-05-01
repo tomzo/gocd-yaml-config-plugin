@@ -4,12 +4,12 @@
 
 [![Build Status](https://travis-ci.org/tomzo/gocd-yaml-config-plugin.svg?branch=master)](https://travis-ci.org/tomzo/gocd-yaml-config-plugin)
 
-[GoCD](https://www.gocd.org) server plugin to keep **pipelines** and **environments**
+[GoCD](https://www.gocd.org) plugin to keep **pipelines** and **environments**
 configuration in source-control in [YAML](http://www.yaml.org/).
 See [this document](https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html)
 to find out what are GoCD configuration repositories.
 
-This is second GoCD configuration plugin, which enhances some of shortcomings of
+This is the second GoCD configuration plugin, which enhances some of shortcomings of
 [JSON configuration plugin](https://github.com/tomzo/gocd-json-config-plugin)
 
 * Format is **concise**. Unlike JSON, there are no unnecessary quotations `"`, brackets `{}` and commas `,`
@@ -18,12 +18,19 @@ This is second GoCD configuration plugin, which enhances some of shortcomings of
 * **Comments in configuration files** - YAML supports comments,
 so you can explain why pipeline/environment it is configured like this.
 
-## Some highlights
+# Table of contents
 
- * Shorter syntax for declaring [single-job stages](#single-job-stage)
- * Very short syntax for [declaring tasks with script executor plugin](#script)
+1. [Setup](#setup)
+1. [Example configuration](#example)
+1. [File pattern](#file-pattern)
+1. [Validation](#Validation)
+1. **[Format reference](#Format-reference)**
+1. [Format version](#Format-version)
+1. [Issues and questions](#Issues-and-questions)
+1. [Development](#Development)
+1. [License](#License)
 
-## Setup
+# Setup
 
 **Step 1**: GoCD versions newer than `17.8.0` already have the plugin bundled. You don't need to install anything.
 
@@ -39,7 +46,7 @@ You can use the example repository at: `https://github.com/tomzo/gocd-yaml-confi
 
 In your config repo (`tomzo/gocd-yaml-config-example.git` in this case), ensure that your GoCD yaml config is suffixed with `.gocd.yaml`. Any file ending in `.gocd.yaml` is picked up by the plugin. Give it a minute or so for the polling to happen. Once that happens, you should see your pipeline(s) on your dashboard.
 
-### Example
+## Example
 
 More examples are in [test resources](src/test/resources/examples/).
 
@@ -108,9 +115,12 @@ pipelines:
 
 ## File pattern
 
-By default GoCD configuration files should end with `.gocd.yaml` or `.gocd.yml`.
+The default pattern is `**/*.gocd.yaml` and `**/*.gocd.yml`, which will recursively search the entire repository for all files ending with `.gocd.yaml` or `.gocd.yml`.
 
-You can set a custom file pattern per configuration repository using the GoCD configuration UI or in the config XML like this:
+You can set a custom file pattern per configuration repository using the GoCD configuration UI:
+![yaml pattern config](yaml_file_pattern.png)
+
+Or in the config XML using `<configuration>`:
 
 ```xml
 <config-repos>
@@ -126,21 +136,9 @@ You can set a custom file pattern per configuration repository using the GoCD co
 </config-repos>
 ```
 
-## Issues and questions
-
- * If you have **questions on usage**, please ask them on the [gitter chat room dedicated for configrepo-plugins](https://gitter.im/gocd/configrepo-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
- * If you think there is a bug, or you have an idea for a feature and *you are not sure if it's plugin's or [GoCD](https://github.com/gocd/gocd/issues) fault/responsibity*, please ask on the chat first too.
-
-Please note this brief overview of what is done by the plugin:
- * parsing yaml into json when GoCD server asks for it.
-And this is done by the GoCD server:
- * complex logic merging multiple config repo sources and XML
- * validation of pipelines/stages/jobs/tasks domain
- * any UI rendering
-
 # Validation
 
-There is an ongoing effort to allow in-depth validation of configuration **before pushing configuration to the source control**. This is provided by [GoCD's preflight API](https://api.gocd.org/current/#preflight-check-of-config-repo-configurations) and [gocd-cli][https://github.com/gocd-contrib/gocd-cli](https://github.com/gocd-contrib/gocd-cli).
+There is an ongoing effort to allow in-depth validation of configuration **before pushing configuration to the source control**. This is provided by [GoCD's preflight API](https://api.gocd.org/current/#preflight-check-of-config-repo-configurations) and [gocd-cli](https://github.com/gocd-contrib/gocd-cli).
 
 You have several options to configure validation tools on your workstation:
  * If you have a local docker daemon, use the [gocd-cli-dojo](https://github.com/gocd-contrib/docker-gocd-cli-dojo) image. Follow the [setup instructions](https://github.com/gocd-contrib/docker-gocd-cli-dojo#setup) in the image readme.
@@ -161,10 +159,15 @@ This command will parse and submit your yaml file to the configured GoCD server.
 ```
 gocd configrepo preflight --yaml -r dotnet-dojo pipeline.gocd.yaml
 ```
-Where `-r` is the configuration repository id, which you have earlier configured on GoCD server. You can check it on config repos page of your GoCD server, at `/go/admin/config_repos`. It in the upper left corner of each config repo.
+Where `-r` is the configuration repository id, which you have earlier configured on GoCD server. You can check it on config repos page of your GoCD server, at `/go/admin/config_repos`. It is in the upper left corner of each config repo.
 ![config repo id](config_repo_id.png)
 
-# Specification
+For new repositories, when you haven't added config repo to the server yet, you can also check if it is correct, just skip the `-r` argument.
+```
+gocd configrepo preflight --yaml pipeline.gocd.yaml
+```
+
+# Format reference
 
 See [official GoCD XML configuration reference](https://docs.gocd.org/current/configuration/configuration_reference.html)
 for details about each element. Below is a reference of format supported by this plugin.
@@ -207,7 +210,7 @@ Feel free to improve it!
 1. [Secure variables](#to-generate-an-encrypted-value)
 1. [YAML Aliases](#yaml-aliases)
 
-# Format version
+## Format version
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file, consistent across all your files.
 
@@ -1062,6 +1065,20 @@ pipelines:
           # ...
 ```
 
+
+# Issues and questions
+
+ * If you have **questions on usage**, please ask them on the [gitter chat room dedicated for configrepo-plugins](https://gitter.im/gocd/configrepo-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ * If you think there is a bug, or you have an idea for a feature and *you are not sure if it's plugin's or [GoCD](https://github.com/gocd/gocd/issues) fault/responsibity*, please ask on the chat first too.
+
+Please note this brief overview of what is done by the plugin:
+ * parsing yaml into json when GoCD server asks for it.
+
+And this is done by the GoCD server:
+ * complex logic merging multiple config repo sources and XML
+ * validation of pipelines/stages/jobs/tasks domain
+ * any UI rendering
+
 # Development
 
 ## Environment setup
@@ -1083,7 +1100,7 @@ dojo "gradle test jar"
 
 Assuming you already have a working docker, you can install dojo with:
 ```
-DOJO_VERSION=0.4.0
+DOJO_VERSION=0.4.2
 wget -O dojo https://github.com/ai-traders/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
 sudo mv dojo /usr/local/bin
 sudo chmod +x /usr/local/bin/dojo

@@ -1,4 +1,4 @@
-### 0.10.1 (2019-Apr-28)
+### 0.10.1 (2019-May-01)
 
  * switch build system to use open source openjdk-dojo image \#17574
  * remove docker image from this repo, use [new image](https://github.com/gocd-contrib/docker-gocd-cli-dojo) with gocd-cli

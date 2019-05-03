@@ -2,9 +2,6 @@
 
 set -e
 
-# Fix for multi-line environment variables not working in docker envs
-unset TRAVIS_COMMIT_MESSAGE
-
 source .build/docker-ops
 source .build/releaser
 
@@ -81,5 +78,9 @@ case "${command}" in
       --tag $VERSION \
       --name "yaml-config-plugin-$VERSION.jar" \
       --file build/libs/yaml-config-plugin-$VERSION.jar
+    ;;
+    *)
+    echo "Invalid command: '${command}'"
+    exit 1
     ;;
 esac

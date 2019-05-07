@@ -45,7 +45,7 @@ More examples are in [test resources](src/test/resources/examples/).
 
 ```yaml
 #ci.gocd.yaml
-format_version: 4
+format_version: 5
 environments:
   testing:
     environment_variables:
@@ -257,7 +257,21 @@ Feel free to improve it!
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file, consistent across all your files.
 
-#### GoCD server version from 19.3.0 and beyond
+#### GoCD server version from 19.4.0 and beyond
+
+Supports `format_version` value of `5`. In this version, support of `username` and `encrypted_password` for [git](#git-material-update) and [hg](#hg-material-update) material has been added.
+
+Using a newer `format_version` includes all the behavior of the previous versions too.
+
+```yaml
+format_version: 5
+pipelines:
+  ...
+environments:
+```
+
+
+#### GoCD server version 19.3.0
 
 Supports `format_version` value of `4`. In this version, support has been added to control the [display order of pipelines](#display-order-of-pipelines).
 
@@ -673,6 +687,20 @@ gitMaterial1:
     - src/**/*.*
 ```
 
+<a name="git-material-update"/>
+
+For **GoCD >= 19.4.0 and `format_version: 5` and above**:
+
+You need to specify `username` and `encrypted_password` explicitly as such
+```yaml
+gitMaterial1:
+  git: "http://my.git.repository.com"
+  branch: feature12
+  username: my_username
+  encrypted_password: encrypted_value
+```
+Instead of `encrypted_password` you can specify `password`.
+
 ### Svn
 
 For details about each option, see [GoCD XML reference](https://docs.gocd.org/current/configuration/configuration_reference.html#svn)
@@ -680,7 +708,7 @@ For details about each option, see [GoCD XML reference](https://docs.gocd.org/cu
 svnMaterial1:
   svn: "http://svn"
   username: "user1"
-  password: "pass1"
+  encrypted_password: "encrypted_value"
   check_externals: true
   blacklist:
     - tools
@@ -688,6 +716,7 @@ svnMaterial1:
   destination: destDir1
   auto_update: false
 ```
+Instead of `encrypted_password` you can specify `password`.
 
 ### Hg
 
@@ -700,6 +729,18 @@ hgMaterial1:
   destination: dir1
   auto_update: false
 ```
+<a name="hg-material-update"/>
+
+For **GoCD >= 19.4.0 and `format_version: 5` and above**:
+
+You need to specify `username` and `encrypted_password` explicitly as such
+```yaml
+hgMaterial1:
+  hg: repos/myhg
+  username: my_username
+  encrypted_password: encrypted_value
+```
+Instead of `encrypted_password` you can specify `password`.
 
 ### Perforce
 
@@ -707,7 +748,7 @@ hgMaterial1:
 p4Material1:
   p4: "host.domain.com:12345"
   username: johndoe
-  password: pass
+  encrypted_password: encrypted_value
   use_tickets: false
   view: |
     //depot/external... //ws/external...
@@ -718,7 +759,7 @@ p4Material1:
   auto_update: false
 ```
 
-Instead of `password` you can use `encrypted_password`.
+Instead of `encrypted_password` you can specify `password`.
 
 ### Tfs
 

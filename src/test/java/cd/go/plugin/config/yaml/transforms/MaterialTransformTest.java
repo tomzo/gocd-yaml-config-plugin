@@ -75,6 +75,11 @@ public class MaterialTransformTest {
     }
 
     @Test
+    public void shouldTransformHgWhenBranchIsPresent() throws IOException {
+        testTransform("branch.hg");
+    }
+
+    @Test
     public void shouldTransformSimpleDependency() throws IOException {
         testTransform("simple.dependency");
     }

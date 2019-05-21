@@ -259,7 +259,7 @@ Please note that it is now recommended to declare `format_version` in each `gocd
 
 #### GoCD server version from 19.4.0 and beyond
 
-Supports `format_version` value of `5`. In this version, support of `username` and `encrypted_password` for [git](#git-material-update) and [hg](#hg-material-update) material has been added.
+Supports `format_version` value of `5`. In this version, support of `username` and `encrypted_password` for [git](#git-material-update) and [hg](#hg-material-update) material has been added. In addition to that, [hg](#hg-material-update) will also support `branch` attribute.
 
 Using a newer `format_version` includes all the behavior of the previous versions too.
 
@@ -691,7 +691,7 @@ gitMaterial1:
 
 For **GoCD >= 19.4.0 and `format_version: 5` and above**:
 
-You need to specify `username` and `encrypted_password` explicitly as such
+You are advised to utilize `username` and `encrypted_password` for passing in material credentials as:
 ```yaml
 gitMaterial1:
   git: "http://my.git.repository.com"
@@ -699,7 +699,7 @@ gitMaterial1:
   username: my_username
   encrypted_password: encrypted_value
 ```
-Instead of `encrypted_password` you can specify `password`.
+Instead of `encrypted_password` you may specify `password` but `encrypted_password` makes more sense considering that the value is stored in SCM.
 
 ### Svn
 
@@ -728,19 +728,32 @@ hgMaterial1:
     - tools
   destination: dir1
   auto_update: false
+  username: my_username
+  encrypted_password: encrypted_value
+  branch: feature
 ```
 <a name="hg-material-update"/>
 
 For **GoCD >= 19.4.0 and `format_version: 5` and above**:
 
-You need to specify `username` and `encrypted_password` explicitly as such
+You are advised to utilize `username` and `encrypted_password` for passing in material credentials as:
 ```yaml
 hgMaterial1:
   hg: repos/myhg
   username: my_username
   encrypted_password: encrypted_value
 ```
-Instead of `encrypted_password` you can specify `password`.
+Instead of `encrypted_password` you may specify `password` but `encrypted_password` makes more sense considering that the value is stored in SCM.
+
+
+In addition to that, you can also leverage `branch` attribute to specify the branch for material
+
+```yaml
+hgMaterial1:
+  hg: repos/myhg
+  branch: feature
+```
+
 
 ### Perforce
 

@@ -1,5 +1,7 @@
 {
   "url": "repos/myhg",
+  "username": "username",
+  "encrypted_password": "some encrypted value",
   "filter": {
     "ignore": [
       "externals",

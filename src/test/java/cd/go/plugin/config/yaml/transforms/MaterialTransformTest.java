@@ -40,6 +40,11 @@ public class MaterialTransformTest {
     }
 
     @Test
+    public void shouldTransformGitWhenPlainPassword() throws IOException {
+        testTransform("password.git");
+    }
+
+    @Test
     public void shouldTransformCompleteGit() throws IOException {
         testTransform("complete.git");
     }
@@ -62,6 +67,16 @@ public class MaterialTransformTest {
     @Test
     public void shouldTransformCompleteHg() throws IOException {
         testTransform("complete.hg");
+    }
+
+    @Test
+    public void shouldTransformHgWhenPlainPassword() throws IOException {
+        testTransform("password.hg");
+    }
+
+    @Test
+    public void shouldTransformHgWhenBranchIsPresent() throws IOException {
+        testTransform("branch.hg");
     }
 
     @Test

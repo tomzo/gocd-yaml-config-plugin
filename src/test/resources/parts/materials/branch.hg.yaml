@@ -1,0 +1,3 @@
+hgMaterial1:
+  hg: repos/myhg
+  branch: feature

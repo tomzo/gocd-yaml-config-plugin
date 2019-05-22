@@ -3,6 +3,8 @@
   "type": "git",
   "url": "http://my.git.repository.com",
   "branch": "feature12",
+  "username": "username",
+  "encrypted_password": "some encrypted value",
   "filter": {
     "ignore": [
       "externals",

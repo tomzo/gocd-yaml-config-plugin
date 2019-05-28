@@ -552,6 +552,17 @@ The external artifact store is referenced by the `store_id`. The build specific 
         some_secure_property: "!@ESsdD323#sdu"
 ```
 
+[S3 plugin 2.x](https://github.com/Diogomrol/gocd-s3-artifact-plugin) example usage:
+```yaml
+- external:
+    id: pkg
+    store_id: s3-eu-west-1
+    configuration:
+      options:
+        Source: installers/target/
+        Destination: ${GO_ARTIFACT_LOCATOR}
+```
+
 ### Run many instances
 
 Part of job object can be [number of job to runs](https://docs.gocd.org/current/advanced_usage/admin_spawn_multiple_jobs.html):
@@ -940,6 +951,20 @@ fetch:
       DestOnAgent: foo
     secure_options:
       some_secure_property: "!@ESsdD323#sdu"
+```
+
+[S3 plugin 2.x](https://github.com/Diogomrol/gocd-s3-artifact-plugin) example usage:
+```yaml
+- fetch:
+    artifact_origin: external
+    stage: plan
+    job: plan
+    artifact_id: plan
+    configuration:
+      options:
+        IsFile: true
+        Destination: terraform
+        Source: deployment.tfplan
 ```
 
 ### Plugin

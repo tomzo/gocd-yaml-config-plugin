@@ -7,6 +7,8 @@ pipelines:
     materials:
       git:
         git: git@github.com:tomzo/gocd-yaml-config-plugin.git
+        blacklist:
+          - README.md
     stages:
       - build:
           clean_workspace: true

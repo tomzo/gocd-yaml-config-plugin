@@ -447,6 +447,8 @@ test:
       ...
 ```
 
+ * When `keep_artifacts` is set to `true` GoCD will never delete artifacts in this stage. This is equivalent of XML's `artifactCleanupProhibited`. By default this is `false`.
+
 ### Approval
 
 Stage can have [approval](https://docs.gocd.org/current/configuration/configuration_reference.html#approval),

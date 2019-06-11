@@ -1,0 +1,18 @@
+test:
+  fetch_materials: yes
+  keep_artifacts: yes
+  clean_workspace: yes
+  approval:
+    type: manual
+    allow_only_on_success: true
+    roles:
+      - manager
+    users:
+      - john
+  environment_variables:
+    TEST_NUM: 1
+  secure_variables:
+    PASSWORD: "!@ESsdD323#sdu"
+  jobs:
+    one:
+    two:

@@ -75,6 +75,30 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
+    public void respondsToGetConfigFiles() throws Exception {
+        final Gson gson = new Gson();
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "3.0", ConfigRepoMessages.REQ_CONFIG_FILES);
+        FileUtils.copyInputStreamToFile(
+                getResourceAsStream("/examples/simple.gocd.yaml"), tempDir.newFile("valid.gocd.yaml")
+        );
+        FileUtils.copyInputStreamToFile(
+                getResourceAsStream("/examples/simple-invalid.gocd.yaml"), tempDir.newFile("invalid.gocd.yaml")
+        );
+
+        request.setRequestBody(gson.toJson(
+                Collections.singletonMap("directory", tempDir.getRoot().toString())
+        ));
+
+        GoPluginApiResponse response = plugin.handle(request);
+        assertEquals(SUCCESS_RESPONSE_CODE, response.responseCode());
+
+        JsonArray files = getJsonObjectFromResponse(response).get("files").getAsJsonArray();
+        assertThat(files.size(), is(2));
+        assertTrue(files.contains(new JsonPrimitive("valid.gocd.yaml")));
+        assertTrue(files.contains(new JsonPrimitive("invalid.gocd.yaml")));
+    }
+
+    @Test
     public void shouldRespondSuccessToGetConfigurationRequest() throws UnhandledRequestTypeException {
         DefaultGoPluginApiRequest getConfigRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "go.plugin-settings.get-configuration");
 

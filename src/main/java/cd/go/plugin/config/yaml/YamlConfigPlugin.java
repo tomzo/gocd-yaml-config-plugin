@@ -48,7 +48,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
     }
 
     private GoPluginIdentifier getGoPluginIdentifier() {
-        return new GoPluginIdentifier("configrepo", Arrays.asList("1.0", "2.0"));
+        return new GoPluginIdentifier("configrepo", Arrays.asList("1.0", "2.0", "3.0"));
     }
 
     @Override
@@ -58,6 +58,8 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         switch (requestName) {
             case REQ_PLUGIN_SETTINGS_GET_CONFIGURATION:
                 return handleGetPluginSettingsConfiguration();
+            case REQ_CONFIG_FILES:
+                return handleGetConfigFiles(request);
             case REQ_PLUGIN_SETTINGS_GET_VIEW:
                 try {
                     return handleGetPluginSettingsView();
@@ -112,6 +114,24 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         if (null == settings) {
             settings = fetchPluginSettings();
         }
+    }
+
+    private GoPluginApiResponse handleGetConfigFiles(GoPluginApiRequest request) {
+        return handlingErrors(() -> {
+            ParsedRequest parsed = ParsedRequest.parse(request);
+            File baseDir = new File(parsed.getStringParam("directory"));
+            String pattern = parsed.getConfigurationKey(PLUGIN_SETTINGS_FILE_PATTERN);
+
+            if (isBlank(pattern)) {
+                pattern = getFilePattern();
+            }
+
+            String[] files = new AntDirectoryScanner().getFilesMatchingPattern(baseDir, pattern);
+            Map<String, String[]> result = new HashMap<>();
+            result.put("files", files);
+
+            return success(gson.toJson(result));
+        });
     }
 
     private GoPluginApiResponse handleParseContentRequest(GoPluginApiRequest request) {

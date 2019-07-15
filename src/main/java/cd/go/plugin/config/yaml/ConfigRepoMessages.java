@@ -10,5 +10,6 @@ public interface ConfigRepoMessages {
     String REQ_PARSE_DIRECTORY = "parse-directory";
     String REQ_PARSE_CONTENT = "parse-content";
     String REQ_PIPELINE_EXPORT = "pipeline-export";
+    String REQ_CONFIG_FILES = "config-files";
     String REQ_GET_ICON = "get-icon";
 }

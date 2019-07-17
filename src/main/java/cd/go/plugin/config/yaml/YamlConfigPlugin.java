@@ -116,24 +116,6 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         }
     }
 
-    private GoPluginApiResponse handleGetConfigFiles(GoPluginApiRequest request) {
-        return handlingErrors(() -> {
-            ParsedRequest parsed = ParsedRequest.parse(request);
-            File baseDir = new File(parsed.getStringParam("directory"));
-            String pattern = parsed.getConfigurationKey(PLUGIN_SETTINGS_FILE_PATTERN);
-
-            if (isBlank(pattern)) {
-                pattern = getFilePattern();
-            }
-
-            String[] files = new AntDirectoryScanner().getFilesMatchingPattern(baseDir, pattern);
-            Map<String, String[]> result = new HashMap<>();
-            result.put("files", files);
-
-            return success(gson.toJson(result));
-        });
-    }
-
     private GoPluginApiResponse handleParseContentRequest(GoPluginApiRequest request) {
         return handlingErrors(() -> {
             ParsedRequest parsed = ParsedRequest.parse(request);
@@ -170,21 +152,37 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         return handlingErrors(() -> {
             ParsedRequest parsed = ParsedRequest.parse(request);
             File baseDir = new File(parsed.getStringParam("directory"));
-            String pattern = parsed.getConfigurationKey(PLUGIN_SETTINGS_FILE_PATTERN);
-
-            if (isBlank(pattern)) {
-                pattern = getFilePattern();
-            }
+            String[] files = scanForConfigFiles(parsed, baseDir);
 
             YamlConfigParser parser = new YamlConfigParser();
-
-            String[] files = new AntDirectoryScanner().getFilesMatchingPattern(baseDir, pattern);
 
             JsonConfigCollection config = parser.parseFiles(baseDir, files);
             config.updateTargetVersionFromFiles();
 
             return success(gson.toJson(config.getJsonObject()));
         });
+    }
+
+    private GoPluginApiResponse handleGetConfigFiles(GoPluginApiRequest request) {
+        return handlingErrors(() -> {
+            ParsedRequest parsed = ParsedRequest.parse(request);
+            File baseDir = new File(parsed.getStringParam("directory"));
+
+            Map<String, String[]> result = new HashMap<>();
+            result.put("files", scanForConfigFiles(parsed, baseDir));
+
+            return success(gson.toJson(result));
+        });
+    }
+
+    private String[] scanForConfigFiles(ParsedRequest parsed, File baseDir) {
+        String pattern = parsed.getConfigurationKey(PLUGIN_SETTINGS_FILE_PATTERN);
+
+        if (isBlank(pattern)) {
+            pattern = getFilePattern();
+        }
+
+        return new AntDirectoryScanner().getFilesMatchingPattern(baseDir, pattern);
     }
 
     private static boolean isBlank(String pattern) {

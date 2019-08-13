@@ -30,7 +30,7 @@ dependencies {
     compile group: 'org.apache.ant', name: 'ant', version: '1.10.7'
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
     compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
-    compile group: 'org.yaml', name: 'snakeyaml', version: '1.23'
+    compile group: 'org.yaml', name: 'snakeyaml', version: '1.25'
 
     compileOnly group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginDesc.goCdVersion
     testCompile group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginDesc.goCdVersion

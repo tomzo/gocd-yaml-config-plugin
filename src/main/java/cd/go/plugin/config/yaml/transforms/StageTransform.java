@@ -25,6 +25,8 @@ public class StageTransform {
     private static final String JSON_STAGE_APPROVAL_TYPE_FIELD = "type";
     private static final String YAML_STAGE_APPROVAL_TYPE_FIELD = "type";
     private static final String JSON_STAGE_JOBS_FIELD = "jobs";
+    private static final String JSON_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD = "allow_only_on_success";
+    private static final String YAML_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD = "allow_only_on_success";
     private static final String JSON_STAGE_APPROVAL_USERS_FIELD = "users";
     private static final String YAML_STAGE_APPROVAL_USERS_FIELD = "users";
     private static final String JSON_STAGE_APPROVAL_ROLES_FIELD = "roles";
@@ -78,9 +80,9 @@ public class StageTransform {
         addOptionalValue(stageData, stage, JSON_STAGE_FETCH_FIELD, YAML_STAGE_FETCH_FIELD);
         addOptionalValue(stageData, stage, JSON_STAGE_NEVER_CLEAN_FIELD, YAML_STAGE_KEEP_ARTIFACTS_FIELD);
         addOptionalValue(stageData, stage, JSON_STAGE_CLEAN_WORK_FIELD, YAML_STAGE_CLEAN_WORK_FIELD);
+        addOptionalValue(stageData, stage, JSON_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD, YAML_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD);
 
         addInverseApproval(stageData, stage);
-
 
         Map<String, Object> yamlEnvVariables = environmentTransform.inverseTransform((List<Map<String, Object>>) stage.get(JSON_ENV_VAR_FIELD));
         if (yamlEnvVariables != null && yamlEnvVariables.size() > 0)
@@ -110,6 +112,7 @@ public class StageTransform {
             return;
 
         addRequiredValue(inverseApproval, approval, JSON_STAGE_APPROVAL_TYPE_FIELD, YAML_STAGE_APPROVAL_TYPE_FIELD);
+        addOptionalValue(inverseApproval, approval, JSON_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD, YAML_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD);
         addOptionalList(inverseApproval, approval, JSON_STAGE_APPROVAL_ROLES_FIELD, YAML_STAGE_APPROVAL_ROLES_FIELD);
         addOptionalList(inverseApproval, approval, JSON_STAGE_APPROVAL_USERS_FIELD, YAML_STAGE_APPROVAL_USERS_FIELD);
 
@@ -132,6 +135,7 @@ public class StageTransform {
         } else {
             Map<String, Object> approvalMap = (Map<String, Object>) approval;
             addRequiredString(approvalJson, approvalMap, JSON_STAGE_APPROVAL_TYPE_FIELD, YAML_STAGE_APPROVAL_TYPE_FIELD);
+            addOptionalBoolean(approvalJson, approvalMap, JSON_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD, YAML_STAGE_APPROVAL_ALLOW_ONLY_ON_SUCCESS_FIELD);
             addOptionalStringList(approvalJson, approvalMap, JSON_STAGE_APPROVAL_USERS_FIELD, YAML_STAGE_APPROVAL_USERS_FIELD);
             addOptionalStringList(approvalJson, approvalMap, JSON_STAGE_APPROVAL_ROLES_FIELD, YAML_STAGE_APPROVAL_ROLES_FIELD);
         }

@@ -216,7 +216,20 @@ Feel free to improve it!
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file, consistent across all your files.
 
-#### GoCD server version from 19.4.0 and beyond
+#### GoCD server verison from 19.8.0 and beyond
+
+Supports `format_version` value of `6`. In this version, support of `allow_only_on_success` attribute for [approval](#approval) in stage has been added. Setting this attribute to `true` will allow the stage to be manually triggered only if the previous stage has passed successfully.
+
+Using a newer `format_version` includes all the behavior of the previous versions too.
+
+```yaml
+format_version: 6
+pipelines:
+  ...
+environments:
+```
+
+#### GoCD server version from 19.4.0 to 19.7.0
 
 Supports `format_version` value of `5`. In this version, support of `username` and `encrypted_password` for [git](#git-material-update) and [hg](#hg-material-update) material has been added. In addition to that, [hg](#hg-material-update) will also support `branch` attribute.
 
@@ -460,11 +473,14 @@ If you need to set associated users or roles:
 ```yaml
 approval:
   type: manual
+  allow_only_on_success: true
   roles:
     - manager
   users:
     - john
 ```
+
+You can set `allow_only_on_success` to allow manual trigger only if the previous stage run is successful. The default value is `false`.
 
 ## Job
 

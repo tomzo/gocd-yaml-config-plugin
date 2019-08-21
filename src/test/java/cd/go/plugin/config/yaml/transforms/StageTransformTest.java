@@ -35,6 +35,11 @@ public class StageTransformTest {
     }
 
     @Test
+    public void shouldTransformCompleteStageWithManualApproval() throws IOException {
+        testTransform("complete_with_manual_approval");
+    }
+
+    @Test
     public void shouldTransformShortApprovalStage() throws IOException {
         testTransform("short_approval");
     }

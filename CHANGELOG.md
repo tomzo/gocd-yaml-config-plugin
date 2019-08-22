@@ -1,8 +1,10 @@
-### 0.11.3 (2019-Aug-21)
-
-### 0.11.1 - (2019-Aug)
+### 0.11.2 (2019-Aug-22)
 
 * updated README documenting `allow_only_on_success` attribute for approval in stages
+
+### 0.11.1 (2019-Aug-21)
+
+Release deleted.
 
 ### 0.11.0 (2019-Aug-02)
 

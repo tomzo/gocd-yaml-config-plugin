@@ -1217,6 +1217,8 @@ Assuming you already have a working docker, you can install dojo by placing the 
 DOJO_VERSION=0.6.0
 # On Linux
 wget -O dojo https://github.com/kudulab/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
+# On OSX
+# wget -O dojo https://github.com/kudulab/dojo/releases/download/${DOJO_VERSION}/dojo_darwin_amd64
 sudo mv dojo /usr/local/bin
 sudo chmod +x /usr/local/bin/dojo
 ```

@@ -1206,16 +1206,17 @@ If you have local java environment, then you may run all tests and create a read
 
 ## Building with docker and dojo
 
-You don't need to setup java on your host, if you are fine with using docker and [Dojo](https://github.com/ai-traders/dojo).
+You don't need to setup java on your host, if you are fine with using docker and [Dojo](https://github.com/kudulab/dojo).
 This is actually how our GoCD builds the plugin:
-```
+```sh
 dojo "gradle test jar"
 ```
 
-Assuming you already have a working docker, you can install dojo with:
-```
-DOJO_VERSION=0.5.0
-wget -O dojo https://github.com/ai-traders/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
+Assuming you already have a working docker, you can install dojo by placing the executable anywhere on the PATH.
+```sh
+DOJO_VERSION=0.6.0
+# On Linux
+wget -O dojo https://github.com/kudulab/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
 sudo mv dojo /usr/local/bin
 sudo chmod +x /usr/local/bin/dojo
 ```

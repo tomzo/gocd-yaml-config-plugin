@@ -85,6 +85,11 @@ public class MaterialTransformTest {
     }
 
     @Test
+    public void shouldTransformDependencyWithIgnoreForSchedulingFlag() throws IOException {
+        testTransform("ignore_for_scheduling.dependency");
+    }
+
+    @Test
     public void shouldTransformCompletePluggable() throws IOException {
         testTransform("complete.pluggable");
     }
@@ -143,6 +148,11 @@ public class MaterialTransformTest {
     @Test
     public void shouldInverseTransformSimpleDependency() throws IOException {
         testInverseTransform("simple.dependency");
+    }
+
+    @Test
+    public void shouldInverseTransformDependencyWithIgnoreForSchedulingFlag() throws IOException {
+        testInverseTransform("ignore_for_scheduling.dependency");
     }
 
     @Test

@@ -18,10 +18,12 @@ public class MaterialTransform extends ConfigurationTransform {
     public static final String JSON_MATERIAL_AUTO_UPDATE_FIELD = "auto_update";
     public static final String JSON_MATERIAL_SHALLOW_CLONE_FIELD = "shallow_clone";
     public static final String JSON_MATERIAL_SCM_PLUGIN_CONFIG_FIELD = "plugin_configuration";
+    public static final String JSON_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD = "ignore_for_scheduling";
 
     public static final String YAML_MATERIAL_TYPE_FIELD = "type";
     public static final String YAML_MATERIAL_AUTO_UPDATE_FIELD = "auto_update";
     public static final String YAML_MATERIAL_SHALLOW_CLONE_FIELD = "shallow_clone";
+    public static final String YAML_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD = "ignore_for_scheduling";
 
     public static final String YAML_SHORT_KEYWORD_GIT = "git";
     //TODO others
@@ -60,6 +62,7 @@ public class MaterialTransform extends ConfigurationTransform {
         yamlSpecialKeywords.add("use_tickets");
         yamlSpecialKeywords.add(YAML_SHORT_KEYWORD_PACKAGE_ID);
         yamlSpecialKeywords.add(YAML_SHORT_KEYWORD_SCM_ID);
+        yamlSpecialKeywords.add(YAML_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD);
     }
 
     public JsonObject transform(Object maybeMaterial) {
@@ -115,6 +118,8 @@ public class MaterialTransform extends ConfigurationTransform {
         addOptionalValue(materialdata, material, JSON_MATERIAL_CHECK_EXTERNALS_FIELD, YAML_MATERIAL_CHECK_EXTERNALS_FIELD);
         addOptionalValue(materialdata, material, JSON_MATERIAL_AUTO_UPDATE_FIELD, YAML_MATERIAL_AUTO_UPDATE_FIELD);
 
+        addOptionalValue(materialdata, material, JSON_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD, YAML_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD);
+
 
         // copy all other members
         for (Map.Entry<String, Object> materialProp : material.entrySet()) {
@@ -142,6 +147,7 @@ public class MaterialTransform extends ConfigurationTransform {
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_SHALLOW_CLONE_FIELD, YAML_MATERIAL_SHALLOW_CLONE_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_CHECK_EXTERNALS_FIELD, YAML_MATERIAL_CHECK_EXTERNALS_FIELD);
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_USE_TICKETS_FIELD, YAML_MATERIAL_USE_TICKETS_FIELD);
+        addOptionalBoolean(material, materialMap, JSON_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD, YAML_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD);
         if (materialMap.containsKey("blacklist"))
             addFilter(material, materialMap.get("blacklist"), "ignore");
         if (materialMap.containsKey("whitelist"))

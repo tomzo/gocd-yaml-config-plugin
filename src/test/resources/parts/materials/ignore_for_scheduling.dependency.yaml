@@ -1,0 +1,4 @@
+upstream:
+  pipeline: upstream-pipeline-1
+  stage: test
+  ignore_for_scheduling: true

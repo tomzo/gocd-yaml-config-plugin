@@ -3,7 +3,7 @@ p4Material1:
   username: johndoe
   password: pass
   use_tickets: false
-  view: |
+  view: |-
     //depot/external... //ws/external...
     //depot/tools... //ws/external...
   blacklist:

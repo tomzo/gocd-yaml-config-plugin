@@ -15,5 +15,6 @@
     ]
   },
   "name": "myPluggableGit",
-  "type": "plugin"
+  "type": "plugin",
+  "scm_id": "myScmId"
 }

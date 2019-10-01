@@ -45,6 +45,7 @@ public class MaterialTransform extends ConfigurationTransform {
     public MaterialTransform() {
         yamlSpecialKeywords.add(YAML_SHORT_KEYWORD_GIT);
         // TODO all other transforms
+        yamlSpecialKeywords.add("name");
         yamlSpecialKeywords.add("type");
         yamlSpecialKeywords.add("auto_update");
         yamlSpecialKeywords.add("shallow_clone");

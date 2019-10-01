@@ -1,6 +1,7 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
+import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonObject;
 import org.junit.Test;
 
@@ -9,7 +10,6 @@ import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class MaterialTransformTest {
@@ -175,8 +175,8 @@ public class MaterialTransformTest {
     }
 
     private void testInverseTransform(String caseFile, String expectedFile) throws IOException {
+        String expectedObject = loadString("parts/materials/" + expectedFile + ".yaml");
         Map<String, Object> actual = parser.inverseTransform(readJsonGson("parts/materials/" + caseFile + ".json"));
-        JsonObject transform = parser.transform(actual);
-        assertEquals((readJsonObject("parts/materials/" + expectedFile + ".json")), transform);
+        assertYamlEquivalent(expectedObject, YamlUtils.dump(actual));
     }
 }

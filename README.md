@@ -216,6 +216,26 @@ Feel free to improve it!
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file, consistent across all your files.
 
+#### GoCD server verison from 19.10.0 and beyond
+
+Supports `format_version` value of `9`. In this version, support of `ignore_for_scheduling` for [dependency materials](#dependency) has been added. Setting this attribute will skip scheduling the pipeline when the dependency material has changed.
+
+Using a newer `format_version` includes all the behavior of the previous versions too.
+
+```yaml
+format_version: 9
+pipelines:
+  ...
+environments:
+```
+
+#### GoCD server version from 19.9.0 and beyond
+
+Supports `format_version` value of `7` and `8`. In version `7`, support for [properties](#property) has been removed. In version `8`, support for `mingle` as a [tracking tool](#tracking-tool) has been removed.
+
+Using a newer `format_version` includes all the behavior of the previous versions too.
+
+
 #### GoCD server verison from 19.8.0 and beyond
 
 Supports `format_version` value of `6`. In this version, support of `allow_only_on_success` attribute for [approval](#approval) in stage has been added. Setting this attribute to `true` will allow the stage to be manually triggered only if the previous stage has passed successfully.
@@ -511,10 +531,6 @@ test:
             Tag: v${GO_PIPELINE_LABEL}
           secure_options:
             some_secure_property: "!@ESsdD323#sdu"
-  properties:
-    perf:
-      source: test.xml
-      xpath: "substring-before(//report/data/all/coverage[starts-with(@type,\u0027class\u0027)]/@value, \u0027%\u0027)"
   tasks:
     ...
 ```
@@ -603,6 +619,7 @@ tabs:
 ```
 
 ### Property
+**Note: Since GoCD version 19.9 and format_version 7, properties are no longer supported**
 
 Job can have properties, declared as a hash:
 ```yaml
@@ -854,6 +871,7 @@ To add a dependency on another pipeline stage:
 mydependency:
   pipeline: upstream-pipeline-1
   stage: test
+  ignore_for_scheduling: false
 ```
 
 **Note: `mydependency` is the name of material - it must be unique**

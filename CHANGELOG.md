@@ -1,6 +1,7 @@
-### 0.12.0 (2019-Oct-01)
+### 0.12.0 (2019-Oct-02)
 
 * Added support for `ignore_for_scheduling` to dependency materials. Updated README with changes in new Format Versions.
+* Updated library dependencies
 
 ### 0.11.2 (2019-Aug-22)
 

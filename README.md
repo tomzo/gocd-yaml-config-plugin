@@ -52,7 +52,7 @@ More examples are in [test resources](src/test/resources/examples/).
 
 ```yaml
 #ci.gocd.yaml
-format_version: 5
+format_version: 9
 environments:
   testing:
     environment_variables:
@@ -256,7 +256,7 @@ Supports `format_version` value of `5`. In this version, support of `username` a
 Using a newer `format_version` includes all the behavior of the previous versions too.
 
 ```yaml
-format_version: 5
+format_version: 9
 pipelines:
   ...
 environments:
@@ -619,7 +619,7 @@ tabs:
 ```
 
 ### Property
-**Note: Since GoCD version 19.9 and format_version 7, properties are no longer supported**
+**DEPRECATION NOTICE: Since GoCD version 19.9 and format_version 7, properties are no longer supported**
 
 Job can have properties, declared as a hash:
 ```yaml

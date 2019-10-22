@@ -216,7 +216,7 @@ Feel free to improve it!
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file, consistent across all your files.
 
-#### GoCD server verison from 19.10.0 and beyond
+#### GoCD server version from 19.10.0 and beyond
 
 Supports `format_version` value of `9`. In this version, support of `ignore_for_scheduling` for [dependency materials](#dependency) has been added. Setting this attribute will skip scheduling the pipeline when the dependency material has changed.
 
@@ -236,7 +236,7 @@ Supports `format_version` value of `7` and `8`. In version `7`, support for [pro
 Using a newer `format_version` includes all the behavior of the previous versions too.
 
 
-#### GoCD server verison from 19.8.0 and beyond
+#### GoCD server version from 19.8.0 and beyond
 
 Supports `format_version` value of `6`. In this version, support of `allow_only_on_success` attribute for [approval](#approval) in stage has been added. Setting this attribute to `true` will allow the stage to be manually triggered only if the previous stage has passed successfully.
 

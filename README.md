@@ -138,6 +138,12 @@ Or in the config XML using `<configuration>`:
 
 # Validation
 
+You can validate if proposed GoCD YAML changes will be accepted by the server. Currently, 2 options are available:
+ * Use a [GoCD mergable github action](https://github.com/GaneshSPatil/gocd-mergeable)
+ * [Validate from your local machine](#validation-using-cli)
+
+## Validation using CLI
+
 *You may find this [introductory blog post useful](https://kudulab.io/posts/gocd-preflight-validation/).*
 
 There is an ongoing effort to allow in-depth validation of configuration **before pushing configuration to the source control**. This is provided by [GoCD's preflight API](https://api.gocd.org/current/#preflight-check-of-config-repo-configurations) and [gocd-cli](https://github.com/gocd-contrib/gocd-cli).
@@ -148,14 +154,14 @@ You have several options to configure validation tools on your workstation:
 
 Either way you'll have `gocd` binary in your `PATH` or inside the docker container.
 
-## Syntax validation
+### Syntax validation
 
 This will check general validity of the yaml file, without talking to the GoCD server:
 ```bash
 gocd configrepo syntax --yaml pipeline.gocd.yaml
 ```
 
-## Preflight validation
+### Preflight validation
 
 This command will parse and submit your yaml file to the configured GoCD server.
 ```

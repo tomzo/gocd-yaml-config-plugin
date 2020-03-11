@@ -428,7 +428,7 @@ timer:
   only_on_changes: yes
 ```
 
-See [XML reference](https://docs.gocd.org/current/configuration/configuration_reference.html#timer) for more information.
+See [Quartz](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) about writing cron-like schedules.
 
 ### Pipeline locking
 

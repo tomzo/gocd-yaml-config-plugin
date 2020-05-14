@@ -14,7 +14,6 @@ class ParsedRequest {
     private static final String PARAM_NOT_A_STRING_MESSAGE = "Expected `%s` param in request type `%s` to be a string";
     private static final String PARAM_FAILED_TO_PARSE_TO_TYPE = "Failed to parse parameter `%s` for request type `%s`: %s";
     private static final String PARAM_CONFIGURATIONS = "configurations";
-    private static final String INVALID_REPO_CONFIGURATION_KEY = "Config repo configuration has invalid key `%s`";
     private final String requestName;
     private final JsonObject params;
 
@@ -97,8 +96,6 @@ class ParsedRequest {
 
                     if (key.equals(keyName)) {
                         value = configObj.getAsJsonPrimitive("value").getAsString();
-                    } else {
-                        throw new RequestParseException(format(INVALID_REPO_CONFIGURATION_KEY, key));
                     }
                 }
             }

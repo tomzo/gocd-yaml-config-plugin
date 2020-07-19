@@ -1,4 +1,8 @@
-### 0.12.1 - Unreleased
+### 0.12.2 - Unreleased
+
+### 0.12.1 (2020-Jul-21)
+
+* Support `includes` in the JSON input for pipeline export. Related to: https://github.com/gocd/gocd/pull/8266
 
 ### 0.12.0 (2019-Oct-02)
 

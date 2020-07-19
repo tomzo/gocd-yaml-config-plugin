@@ -206,7 +206,7 @@ public class MaterialTransform extends ConfigurationTransform {
         if (filter != null && !filter.isEmpty()) {
             material.put("blacklist", filter);
         }
-        filter = (List<String>) material.get("whitelist");
+        filter = (List<String>) filterList.get("whitelist");
         if (filter != null && !filter.isEmpty()) {
             material.put("whitelist", filter);
         }

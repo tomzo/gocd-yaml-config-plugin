@@ -3,7 +3,7 @@ gitMaterial1:
   username: "username"
   encrypted_password: "some encrypted value"
   branch: "feature12"
-  blacklist:
+  whitelist:
     - externals
     - tools
   destination: dir1

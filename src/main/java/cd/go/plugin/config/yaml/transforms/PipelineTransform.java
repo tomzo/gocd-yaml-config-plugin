@@ -22,7 +22,6 @@ public class PipelineTransform {
     private static final String JSON_PIPELINE_LABEL_TEMPLATE_FIELD = "label_template";
     private static final String JSON_PIPELINE_PIPE_LOCKING_FIELD = "enable_pipeline_locking";
     private static final String JSON_PIPELINE_LOCK_BEHAVIOR_FIELD = "lock_behavior";
-    private static final String JSON_PIPELINE_MINGLE_FIELD = "mingle";
     private static final String JSON_PIPELINE_TRACKING_TOOL_FIELD = "tracking_tool";
     private static final String JSON_PIPELINE_TIMER_FIELD = "timer";
     private static final String JSON_PIPELINE_MATERIALS_FIELD = "materials";
@@ -34,7 +33,6 @@ public class PipelineTransform {
     private static final String YAML_PIPELINE_LABEL_TEMPLATE_FIELD = "label_template";
     private static final String YAML_PIPELINE_PIPE_LOCKING_FIELD = "locking";
     private static final String YAML_PIPELINE_LOCK_BEHAVIOR_FIELD = "lock_behavior";
-    private static final String YAML_PIPELINE_MINGLE_FIELD = "mingle";
     private static final String YAML_PIPELINE_TRACKING_TOOL_FIELD = "tracking_tool";
     private static final String YAML_PIPELINE_TIMER_FIELD = "timer";
     private static final String YAML_PIPELINE_MATERIALS_FIELD = "materials";
@@ -75,7 +73,6 @@ public class PipelineTransform {
         addOptionalString(pipeline, pipeMap, JSON_PIPELINE_LOCK_BEHAVIOR_FIELD, YAML_PIPELINE_LOCK_BEHAVIOR_FIELD);
 
         addOptionalObject(pipeline, pipeMap, JSON_PIPELINE_TRACKING_TOOL_FIELD, YAML_PIPELINE_TRACKING_TOOL_FIELD);
-        addOptionalObject(pipeline, pipeMap, JSON_PIPELINE_MINGLE_FIELD, YAML_PIPELINE_MINGLE_FIELD);
         addTimer(pipeline, pipeMap);
 
         JsonArray jsonEnvVariables = variablesTransform.transform(pipeMap);

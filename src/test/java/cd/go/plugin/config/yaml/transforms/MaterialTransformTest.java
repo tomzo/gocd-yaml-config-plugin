@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -168,6 +169,14 @@ public class MaterialTransformTest {
     @Test
     public void shouldInverseTRansformCompletePluggable() throws IOException {
         testInverseTransform("complete.pluggable");
+    }
+
+    @Test
+    public void inverseTransform_shouldGenerateARandomMaterialNameInAbsenceOfName() {
+        Map<String, Object> material = parser.inverseTransform(readJsonGson("parts/materials/material_without_name.git.json"));
+
+        String materialName = material.keySet().stream().findFirst().get();
+        assertThat(materialName, containsString("git-"));
     }
 
     private void testTransform(String caseFile) throws IOException {

@@ -21,13 +21,16 @@ public class PipelineTransformTest {
 
     private PipelineTransform parser;
     private MaterialTransform materialTransform;
+    private StageTransform stageTransform;
+    private EnvironmentVariablesTransform environmentTransform;
+    private ParameterTransform parameterTransform;
 
     @Before
     public void SetUp() {
         materialTransform = mock(MaterialTransform.class);
-        StageTransform stageTransform = mock(StageTransform.class);
-        EnvironmentVariablesTransform environmentTransform = mock(EnvironmentVariablesTransform.class);
-        ParameterTransform parameterTransform = mock(ParameterTransform.class);
+        stageTransform = mock(StageTransform.class);
+        environmentTransform = mock(EnvironmentVariablesTransform.class);
+        parameterTransform = mock(ParameterTransform.class);
 
         parser = new PipelineTransform(materialTransform, stageTransform, environmentTransform, parameterTransform);
     }
@@ -77,6 +80,15 @@ public class PipelineTransformTest {
         when(materialTransform.inverseTransform(any(LinkedTreeMap.class))).thenReturn(materials);
 
         testInverseTransform("display_order.pipe");
+    }
+
+    @Test
+    public void inverseTransform_shouldHandleMultipleMaterialsWithoutNames() {
+        parser = new PipelineTransform(new MaterialTransform(), stageTransform, environmentTransform, parameterTransform);
+
+        Map<String, Object> pipeline = parser.inverseTransform(readJsonGson("parts/pipeline_with_multiple_materials.json"));
+
+        assertThat(((Map)((Map)pipeline.get("pipe1")).get("materials")).size(), is(2));
     }
 
     private void testTransform(String caseFile) throws IOException {

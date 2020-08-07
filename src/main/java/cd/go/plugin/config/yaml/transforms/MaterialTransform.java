@@ -10,6 +10,8 @@ import java.util.Map;
 
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalValue;
 import static cd.go.plugin.config.yaml.YamlUtils.*;
+import static java.lang.String.format;
+import static java.util.UUID.randomUUID;
 
 public class MaterialTransform extends ConfigurationTransform {
 
@@ -130,7 +132,8 @@ public class MaterialTransform extends ConfigurationTransform {
         }
 
         if (materialName == null) {
-            inverseMaterial.put(materialType, materialdata);
+            String randomName = format("%s-%s", materialType, randomUUID().toString().substring(0, 7));
+            inverseMaterial.put(randomName, materialdata);
         } else {
             inverseMaterial.put(materialName, materialdata);
         }

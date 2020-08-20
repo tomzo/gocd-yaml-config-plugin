@@ -30,7 +30,7 @@ public class RootTransform {
 
     public String inverseTransformPipeline(Map<String, Object> pipeline) {
         Map<String, Object> result = new LinkedTreeMap<>();
-        result.put("format_version", 3);
+        result.put("format_version", 9);
         result.put("pipelines", pipelineTransform.inverseTransform(pipeline));
         return YamlUtils.dump(result);
     }

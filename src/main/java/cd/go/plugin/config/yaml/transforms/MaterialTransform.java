@@ -154,7 +154,7 @@ public class MaterialTransform extends ConfigurationTransform {
         if (materialMap.containsKey("blacklist"))
             addFilter(material, materialMap.get("blacklist"), "ignore");
         if (materialMap.containsKey("whitelist"))
-            addFilter(material, materialMap.get("whitelist"), "whitelist");
+            addFilter(material, materialMap.get("whitelist"), "includes");
 
         String git = getOptionalString(materialMap, YAML_SHORT_KEYWORD_GIT);
         if (git != null) {
@@ -209,7 +209,7 @@ public class MaterialTransform extends ConfigurationTransform {
         if (filter != null && !filter.isEmpty()) {
             material.put("blacklist", filter);
         }
-        filter = (List<String>) material.get("whitelist");
+        filter = (List<String>) filterList.get("includes");
         if (filter != null && !filter.isEmpty()) {
             material.put("whitelist", filter);
         }

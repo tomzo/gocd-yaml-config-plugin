@@ -1221,7 +1221,7 @@ And this is done by the GoCD server:
 
 ## Environment setup
 
-To build and test this plugin, you'll need java jdk >= 8.
+To build and test this plugin, you'll need java jdk >= 11.
 
 If you have local java environment, then you may run all tests and create a ready to use jar with:
 ```bash
@@ -1236,16 +1236,21 @@ This is actually how our GoCD builds the plugin:
 dojo "gradle test jar"
 ```
 
-Assuming you already have a working docker, you can install dojo by placing the executable anywhere on the PATH.
-```sh
-DOJO_VERSION=0.6.0
-# On Linux
-wget -O dojo https://github.com/kudulab/dojo/releases/download/${DOJO_VERSION}/dojo_linux_amd64
-# On OSX
-# wget -O dojo https://github.com/kudulab/dojo/releases/download/${DOJO_VERSION}/dojo_darwin_amd64
-sudo mv dojo /usr/local/bin
-sudo chmod +x /usr/local/bin/dojo
+Assuming you already have a working docker, On OSX, you can install with homebrew:
 ```
+brew install kudulab/homebrew-dojo-osx/dojo
+```
+A manual install is another option:
+```sh
+version="0.9.0"
+# on Linux:
+wget -O /tmp/dojo https://github.com/kudulab/dojo/releases/download/${version}/dojo_linux_amd64
+# or on Darwin:
+# wget -O /tmp/dojo https://github.com/kudulab/dojo/releases/download/${version}/dojo_darwin_amd64
+chmod +x /tmp/dojo
+mv /tmp/dojo /usr/bin/dojo
+```
+
 Then enter a docker container with java and gradle pre-installed, by running following command at the root of the project:
 ```
 dojo
@@ -1272,7 +1277,7 @@ There are [examples of yaml partials](src/test/resources/parts) and
 
 # License
 
-Copyright 2019 Tomasz Sętkowski
+Copyright 2020 Tomasz Sętkowski
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

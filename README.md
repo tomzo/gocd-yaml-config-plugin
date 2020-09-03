@@ -825,6 +825,8 @@ myPluggableGit:
     version: 1 #plugin version
   options:
     url: git@github.com:tomzo/gocd-yaml-config-plugin.git
+  secure_options:
+    password: "encrypted_value"
   destination: destinationDir
   blacklist:
     - dir1

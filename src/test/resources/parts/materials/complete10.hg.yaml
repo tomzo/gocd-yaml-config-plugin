@@ -2,7 +2,7 @@ hgMaterial1:
   hg: repos/myhg
   username: username
   encrypted_password: some encrypted value
-  blacklist:
+  ignore:
     - externals
     - tools
   destination: dir1

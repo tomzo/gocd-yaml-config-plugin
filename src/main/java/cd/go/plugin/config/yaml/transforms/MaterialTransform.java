@@ -28,7 +28,6 @@ public class MaterialTransform extends ConfigurationTransform {
     public static final String YAML_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD = "ignore_for_scheduling";
 
     public static final String YAML_SHORT_KEYWORD_GIT = "git";
-    //TODO others
 
     public static final String YAML_BLACKLIST_KEYWORD = "blacklist";
     private static final String YAML_SHORT_KEYWORD_DEPENDENCY = "pipeline";
@@ -48,13 +47,14 @@ public class MaterialTransform extends ConfigurationTransform {
 
     public MaterialTransform() {
         yamlSpecialKeywords.add(YAML_SHORT_KEYWORD_GIT);
-        // TODO all other transforms
         yamlSpecialKeywords.add("name");
         yamlSpecialKeywords.add("type");
         yamlSpecialKeywords.add("auto_update");
         yamlSpecialKeywords.add("shallow_clone");
         yamlSpecialKeywords.add("blacklist");
         yamlSpecialKeywords.add("whitelist");
+        yamlSpecialKeywords.add("includes");
+        yamlSpecialKeywords.add("excludes");
         yamlSpecialKeywords.add("scm_id");
         yamlSpecialKeywords.add("package_id");
         yamlSpecialKeywords.add("svn");
@@ -67,10 +67,10 @@ public class MaterialTransform extends ConfigurationTransform {
         yamlSpecialKeywords.add(YAML_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD);
     }
 
-    public JsonObject transform(Object maybeMaterial) {
+    public JsonObject transform(Object maybeMaterial, int formatVersion) {
         Map<String, Object> map = (Map<String, Object>) maybeMaterial;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            return transform(entry);
+            return transform(entry, formatVersion);
         }
         throw new RuntimeException("expected material hash to have 1 item");
     }
@@ -140,7 +140,7 @@ public class MaterialTransform extends ConfigurationTransform {
         return inverseMaterial;
     }
 
-    public JsonObject transform(Map.Entry<String, Object> entry) {
+    public JsonObject transform(Map.Entry<String, Object> entry, int formatVersion) {
         String materialName = entry.getKey();
         JsonObject material = new JsonObject();
         material.addProperty(JSON_MATERIAL_NAME_FIELD, materialName);
@@ -153,8 +153,13 @@ public class MaterialTransform extends ConfigurationTransform {
         addOptionalBoolean(material, materialMap, JSON_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD, YAML_MATERIAL_IGNORE_FOR_SCHEDULING_FIELD);
         if (materialMap.containsKey("blacklist"))
             addFilter(material, materialMap.get("blacklist"), "ignore");
+        if (materialMap.containsKey("ignore"))
+            addFilter(material, materialMap.get("ignore"), "ignore");
+        String jsonIncludesKeyword = formatVersion < 10 ? "whitelist" : "includes";
+        if (materialMap.containsKey("includes"))
+            addFilter(material, materialMap.get("includes"), jsonIncludesKeyword);
         if (materialMap.containsKey("whitelist"))
-            addFilter(material, materialMap.get("whitelist"), "includes");
+            addFilter(material, materialMap.get("whitelist"), jsonIncludesKeyword);
 
         String git = getOptionalString(materialMap, YAML_SHORT_KEYWORD_GIT);
         if (git != null) {
@@ -207,11 +212,11 @@ public class MaterialTransform extends ConfigurationTransform {
     private void addInverseFilter(Map<String, Object> material, Map<String, Object> filterList) {
         List<String> filter = (List<String>) filterList.get("ignore");
         if (filter != null && !filter.isEmpty()) {
-            material.put("blacklist", filter);
+            material.put("ignore", filter);
         }
         filter = (List<String>) filterList.get("includes");
         if (filter != null && !filter.isEmpty()) {
-            material.put("whitelist", filter);
+            material.put("includes", filter);
         }
     }
 

@@ -101,7 +101,7 @@ public class PipelineTransformTest {
 
     private void testTransform(String caseFile, String expectedFile) throws IOException {
         JsonObject expectedObject = (JsonObject) readJsonObject("parts/" + expectedFile + ".json");
-        JsonObject jsonObject = parser.transform(readYamlObject("parts/" + caseFile + ".yaml"));
+        JsonObject jsonObject = parser.transform(readYamlObject("parts/" + caseFile + ".yaml"), 9);
         assertThat(jsonObject, is(new JsonObjectMatcher(expectedObject)));
     }
 

@@ -1,0 +1,11 @@
+gitMaterial1:
+  git: "http://my.git.repository.com"
+  username: "username"
+  encrypted_password: "some encrypted value"
+  branch: "feature12"
+  includes:
+    - externals
+    - tools
+  destination: dir1
+  auto_update: false
+  shallow_clone: true

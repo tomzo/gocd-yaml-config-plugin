@@ -6,7 +6,7 @@ p4Material1:
   view: |-
     //depot/external... //ws/external...
     //depot/tools... //ws/external...
-  blacklist:
+  ignore:
     - externals
     - tools
   auto_update: false

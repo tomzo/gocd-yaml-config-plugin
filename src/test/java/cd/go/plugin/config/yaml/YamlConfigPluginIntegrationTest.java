@@ -175,6 +175,32 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     @Test
+    public void shouldRespondSuccessToParseDirectoryRequestWhenFormat9WithWhitelistAndIncludes() throws UnhandledRequestTypeException, IOException {
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("format-version-9"));
+
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertNoError(responseJsonObject);
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(2));
+        JsonObject expected = (JsonObject) readJsonObject("examples.out/format-version-9.gocd.json");
+        assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
+    }
+
+    @Test
+    public void shouldRespondSuccessToParseDirectoryRequestWhenFormat10WithWhitelistAndIncludes() throws UnhandledRequestTypeException, IOException {
+        GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("format-version-10"));
+
+        assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
+        JsonObject responseJsonObject = getJsonObjectFromResponse(response);
+        assertNoError(responseJsonObject);
+        JsonArray pipelines = responseJsonObject.get("pipelines").getAsJsonArray();
+        assertThat(pipelines.size(), is(2));
+        JsonObject expected = (JsonObject) readJsonObject("examples.out/format-version-10.gocd.json");
+        assertThat(responseJsonObject, is(new JsonObjectMatcher(expected)));
+    }
+
+    @Test
     public void shouldRespondSuccessWithErrorMessagesToParseDirectoryRequestWhenSimpleInvalidCaseFile() throws UnhandledRequestTypeException, IOException {
         GoPluginApiResponse response = parseAndGetResponseForDir(setupCase("simple-invalid"));
 

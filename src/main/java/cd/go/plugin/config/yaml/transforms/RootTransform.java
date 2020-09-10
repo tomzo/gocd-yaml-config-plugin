@@ -30,7 +30,7 @@ public class RootTransform {
 
     public String inverseTransformPipeline(Map<String, Object> pipeline) {
         Map<String, Object> result = new LinkedTreeMap<>();
-        result.put("format_version", 9);
+        result.put("format_version", 10);
         result.put("pipelines", pipelineTransform.inverseTransform(pipeline));
         return YamlUtils.dump(result);
     }
@@ -38,6 +38,14 @@ public class RootTransform {
     public JsonConfigCollection transform(Object rootObj, String location) {
         JsonConfigCollection partialConfig = new JsonConfigCollection();
         Map<String, Object> rootMap = (Map<String, Object>) rootObj;
+        // must obtain format_version first
+        int formatVersion = 1;
+        for (Map.Entry<String, Object> pe : rootMap.entrySet()) {
+            if ("format_version".equalsIgnoreCase(pe.getKey())) {
+                formatVersion = Integer.valueOf((String) pe.getValue());
+                partialConfig.updateFormatVersionFound(formatVersion);
+            }
+        }
         for (Map.Entry<String, Object> pe : rootMap.entrySet()) {
             if ("pipelines".equalsIgnoreCase(pe.getKey())) {
                 if (pe.getValue() == null)
@@ -45,7 +53,7 @@ public class RootTransform {
                 Map<String, Object> pipelines = (Map<String, Object>) pe.getValue();
                 for (Map.Entry<String, Object> pipe : pipelines.entrySet()) {
                     try {
-                        JsonElement jsonPipeline = pipelineTransform.transform(pipe);
+                        JsonElement jsonPipeline = pipelineTransform.transform(pipe, formatVersion);
                         partialConfig.addPipeline(jsonPipeline, location);
                     } catch (Exception ex) {
                         partialConfig.addError(new PluginError(
@@ -65,9 +73,7 @@ public class RootTransform {
                                 String.format("Failed to parse environment %s; %s", env.getKey(), ex.getMessage()), location));
                     }
                 }
-            } else if ("format_version".equalsIgnoreCase(pe.getKey())) {
-                partialConfig.updateFormatVersionFound(Integer.valueOf((String) pe.getValue()));
-            } else if (!"common".equalsIgnoreCase(pe.getKey()))
+            } else if (!"common".equalsIgnoreCase(pe.getKey()) && !"format_version".equalsIgnoreCase(pe.getKey()))
                 throw new YamlConfigException(pe.getKey() + " is invalid, expected format_version, pipelines, environments, or common");
         }
         return partialConfig;

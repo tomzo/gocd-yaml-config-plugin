@@ -1,0 +1,36 @@
+# format-version-9.gocd.yaml
+# This test resource is for whitelist/includes migration cases
+format_version: 9
+pipelines:
+  pipe1:
+    group: simple
+    materials:
+      mygit:
+        git: http://my.example.org/mygit.git
+        # whitelist is still allowed and transforms to whitelist because format_version is 9
+        whitelist:
+          - externals
+          - tools
+    stages:
+      - build:
+          jobs:
+            build:
+              tasks:
+               - exec:
+                   command: make
+  pipe2:
+    group: simple
+    materials:
+      mygit:
+        git: http://my.example.org/mygit.git
+        # includes is allowed and transforms to whitelist because format_version is 9
+        includes:
+          - externals
+          - tools
+    stages:
+      - build:
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: make

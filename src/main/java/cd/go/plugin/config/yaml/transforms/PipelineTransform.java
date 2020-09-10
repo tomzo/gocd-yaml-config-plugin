@@ -51,15 +51,15 @@ public class PipelineTransform {
         this.parameterTransform = parameterTransform;
     }
 
-    public JsonObject transform(Object maybePipe) {
+    public JsonObject transform(Object maybePipe, int formatVersion) {
         Map<String, Object> map = (Map<String, Object>) maybePipe;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            return transform(entry);
+            return transform(entry, formatVersion);
         }
         throw new RuntimeException("expected pipeline hash to have 1 item");
     }
 
-    public JsonObject transform(Map.Entry<String, Object> entry) {
+    public JsonObject transform(Map.Entry<String, Object> entry, int formatVersion) {
         String pipelineName = entry.getKey();
         JsonObject pipeline = new JsonObject();
         pipeline.addProperty(JSON_PIPELINE_NAME_FIELD, pipelineName);
@@ -79,7 +79,7 @@ public class PipelineTransform {
         if (jsonEnvVariables != null && jsonEnvVariables.size() > 0)
             pipeline.add(JSON_ENV_VAR_FIELD, jsonEnvVariables);
 
-        addMaterials(pipeline, pipeMap);
+        addMaterials(pipeline, pipeMap, formatVersion);
         if (!pipeline.has(JSON_PIPELINE_TEMPLATE_FIELD)) {
             addStages(pipeline, pipeMap);
         }
@@ -189,19 +189,19 @@ public class PipelineTransform {
         return stagesArray;
     }
 
-    private void addMaterials(JsonObject pipeline, Map<String, Object> pipeMap) {
+    private void addMaterials(JsonObject pipeline, Map<String, Object> pipeMap, int formatVersion) {
         Object materials = pipeMap.get(YAML_PIPELINE_MATERIALS_FIELD);
         if (!(materials instanceof Map))
             throw new YamlConfigException("expected a hash of pipeline materials");
         Map<String, Object> materialsMap = (Map<String, Object>) materials;
-        JsonArray materialsArray = transformMaterials(materialsMap);
+        JsonArray materialsArray = transformMaterials(materialsMap, formatVersion);
         pipeline.add(JSON_PIPELINE_MATERIALS_FIELD, materialsArray);
     }
 
-    private JsonArray transformMaterials(Map<String, Object> materialsMap) {
+    private JsonArray transformMaterials(Map<String, Object> materialsMap, int formatVersion) {
         JsonArray materialsArray = new JsonArray();
         for (Map.Entry<String, Object> entry : materialsMap.entrySet()) {
-            materialsArray.add(materialTransform.transform(entry));
+            materialsArray.add(materialTransform.transform(entry, formatVersion));
         }
         return materialsArray;
     }

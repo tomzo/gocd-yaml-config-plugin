@@ -222,18 +222,26 @@ Feel free to improve it!
 
 Please note that it is now recommended to declare `format_version` in each `gocd.yaml` file, consistent across all your files.
 
+#### GoCD server version from 20.8.0 and beyond
+
+Supports `format_version` value of `10`. This version removes usage of `blacklist/whitelist` keywords in favour of `includes/ignore`. This is done in a backwards compatible way - you can upgrade the server and plugin first, and update the format_version to 10 after. Just replace `whitelist` by `includes`, and `blacklist` by `ignore`.
+
+Additionally, plugin is also "forwards compatible" since version 0.13.0. If you can't upgrade GoCD to 20.8.0, but want to migrate from `blacklist/whitelist` to `includes/ignore`, you can upgrade the plugin and keep the format_version that you are using. Plugin will migrate keywords under the hood, while your YAML can use `includes/ignore`.
+
+Using a newer `format_version` includes all the behavior of the previous versions too.
+
+```yaml
+format_version: 10
+pipelines:
+  ...
+environments:
+```
+
 #### GoCD server version from 19.10.0 and beyond
 
 Supports `format_version` value of `9`. In this version, support of `ignore_for_scheduling` for [dependency materials](#dependency) has been added. Setting this attribute will skip scheduling the pipeline when the dependency material has changed.
 
 Using a newer `format_version` includes all the behavior of the previous versions too.
-
-```yaml
-format_version: 9
-pipelines:
-  ...
-environments:
-```
 
 #### GoCD server version from 19.9.0 and beyond
 
@@ -248,25 +256,11 @@ Supports `format_version` value of `6`. In this version, support of `allow_only_
 
 Using a newer `format_version` includes all the behavior of the previous versions too.
 
-```yaml
-format_version: 6
-pipelines:
-  ...
-environments:
-```
-
 #### GoCD server version from 19.4.0 to 19.7.0
 
 Supports `format_version` value of `5`. In this version, support of `username` and `encrypted_password` for [git](#git-material-update) and [hg](#hg-material-update) material has been added. In addition to that, [hg](#hg-material-update) will also support `branch` attribute.
 
 Using a newer `format_version` includes all the behavior of the previous versions too.
-
-```yaml
-format_version: 9
-pipelines:
-  ...
-environments:
-```
 
 
 #### GoCD server version 19.3.0
@@ -275,47 +269,19 @@ Supports `format_version` value of `4`. In this version, support has been added 
 
 This server version also supports `format_version` of `3` and `2`. Using a newer `format_version` includes all the behavior of the previous versions too.
 
-```yaml
-format_version: 4
-pipelines:
-  ...
-environments:
-```
-
 #### GoCD server version from 18.7.0 to 19.2.0
 
 Supports `format_version` value of `3`. In this version [fetch artifact](#fetch) format was changed to include `artifact_origin`.
 
 This server version also supports `format_version` of `2`. Using a newer `format_version` includes all the behavior of the previous versions too.
 
-```yaml
-format_version: 3
-pipelines:
-  ...
-environments:
-```
-
 #### GoCD server version from 17.12.0 to 18.6.0
 
 Supports `format_version` value of `2`. In this version [pipeline locking](#pipeline-locking) behavior was changed.
 
-```yaml
-format_version: 2
-pipelines:
-  ...
-environments:
-```
-
 #### GoCD server version up to 17.11.0
 
 Supports `format_version` value of `1`. This is the initial version.
-
-```yaml
-format_version: 1
-pipelines:
-  ...
-environments:
-```
 
 # Pipeline
 
@@ -680,6 +646,10 @@ More customized git material is possible:
 gitMaterial1:
   git: "http://my.git.repository.com"
   branch: feature12
+  ignore:
+    - externals/**/*.*
+    - tools/**/*.*
+# For GoCD < 20.8.0 or plugin version < 0.13.0, you need to use blacklist instead of ignore:
   blacklist:
     - externals/**/*.*
     - tools/**/*.*
@@ -688,12 +658,15 @@ gitMaterial1:
   shallow_clone: true
 ```
 
-Since GoCD `>= 16.7.0` whitelist is also supported,
-you can specify `whitelist` **instead** of `blacklist`, as such
+Since GoCD `>= 16.7.0` includes is also supported,
+you can specify `includes` **instead** of `ignore`, as such
 ```yaml
 gitMaterial1:
   git: "git@my.git.repository.com"
   branch: "feature12"
+  includes:
+    - src/**/*.*
+# For GoCD < 20.8.0 or plugin version < 0.13.0, you need to use whitelist instead:
   whitelist:
     - src/**/*.*
 ```
@@ -729,6 +702,10 @@ svnMaterial1:
   username: "user1"
   encrypted_password: "encrypted_value"
   check_externals: true
+  ignore:
+    - tools
+    - lib
+# For GoCD < 20.8.0 or plugin version < 0.13.0, you need to use blacklist instead of ignore:
   blacklist:
     - tools
     - lib
@@ -742,6 +719,10 @@ Instead of `encrypted_password` you can specify `password`.
 ```yaml
 hgMaterial1:
   hg: repos/myhg
+  ignore:
+    - externals
+    - tools
+# For GoCD < 20.8.0 or plugin version < 0.13.0, you need to use blacklist instead of ignore:
   blacklist:
     - externals
     - tools
@@ -792,6 +773,10 @@ p4Material1:
   view: |
     //depot/external... //ws/external...
     //depot/tools... //ws/external...
+  ignore:
+    - externals
+    - tools
+# For GoCD < 20.8.0 or plugin version < 0.13.0, you need to use blacklist instead of ignore:
   blacklist:
     - externals
     - tools
@@ -810,6 +795,10 @@ Instead of `encrypted_password` you can specify `password`.
 myPluggableGit:
   scm: someScmGitRepositoryId
   destination: destinationDir
+  ignore:
+    - dir1
+    - dir2
+# For GoCD < 20.8.0 or plugin version < 0.13.0, you need to use blacklist instead of ignore:
   blacklist:
     - dir1
     - dir2
@@ -818,7 +807,7 @@ myPluggableGit:
 Since GoCD `>= 19.2.0` defining new pluggable materials that are not defined
 in the GoCD server is supported.
 
-```
+```yaml
 myPluggableGit:
   plugin_configuration:
     id: plugin_Id
@@ -828,6 +817,10 @@ myPluggableGit:
   secure_options:
     password: "encrypted_value"
   destination: destinationDir
+  ignore:
+    - dir1
+    - dir2
+# For GoCD < 20.8.0 or plugin version < 0.13.0, you need to use blacklist instead of ignore:
   blacklist:
     - dir1
     - dir2
@@ -869,7 +862,7 @@ materials:
 
 Server interprets `configrepo` material in this way:
 
-> Clone the material configuration of the repository we are parsing **as is in XML** and replace **name, destination and filters (whitelist/blacklist)**,
+> Clone the material configuration of the repository we are parsing **as is in XML** and replace **name, destination and filters (includes/ignore)**,
 then use the modified clone in place of `configrepo` material.
 
 ### Dependency

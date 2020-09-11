@@ -1,6 +1,6 @@
-### 0.13.0 - Unreleased
+### 0.13.0 (2020-Sep-11)
 
-* whitelist to includes rename
+* whitelist to includes rename, blacklist to ignore
 * V3 capabilities API implementation
 * Support `includes` in the JSON input for pipeline export. Related to: https://github.com/gocd/gocd/pull/8266
 * Fix for pipeline export with multiple materials without name, \#144

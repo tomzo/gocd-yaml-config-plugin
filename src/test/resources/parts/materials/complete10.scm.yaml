@@ -5,7 +5,7 @@ myPluggableGit:
     version: "1"
   options:
     url: url
-  blacklist:
+  ignore:
     - dir1
     - dir2
   destination: destinationDir

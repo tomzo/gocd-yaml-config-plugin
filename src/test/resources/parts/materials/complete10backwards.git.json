@@ -1,0 +1,17 @@
+{
+  "name": "gitMaterial1",
+  "type": "git",
+  "url": "http://my.git.repository.com",
+  "branch": "feature12",
+  "username": "username",
+  "encrypted_password": "some encrypted value",
+  "filter": {
+    "includes": [
+      "externals",
+      "tools"
+    ]
+  },
+  "destination": "dir1",
+  "auto_update": false,
+  "shallow_clone": true
+}

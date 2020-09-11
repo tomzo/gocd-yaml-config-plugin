@@ -1,6 +1,6 @@
 crMaterial:
   type: configrepo
-  blacklist:
+  ignore:
     - externals
     - tools
   destination: dir1

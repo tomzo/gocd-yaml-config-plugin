@@ -1,0 +1,75 @@
+{
+  "target_version": 10,
+  "errors": [],
+  "environments": [],
+  "pipelines": [
+    {
+      "location": "format-version-10.gocd.yaml",
+      "name": "pipe1",
+      "group": "simple",
+      "materials": [
+        {
+          "name": "mygit",
+          "type": "git",
+          "url": "http://my.example.org/mygit.git",
+          "filter": {
+            "includes": [
+              "externals",
+              "tools"
+            ]
+          }
+        }
+      ],
+      "stages": [
+        {
+          "name": "build",
+          "jobs": [
+            {
+              "name": "build",
+              "tasks": [
+                {
+                  "type": "exec",
+                  "command": "make"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "location": "format-version-10.gocd.yaml",
+      "name": "pipe2",
+      "group": "simple",
+      "materials": [
+        {
+          "name": "mygit",
+          "type": "git",
+          "url": "http://my.example.org/mygit.git",
+          "filter": {
+            "includes": [
+              "externals",
+              "tools"
+            ]
+          }
+        }
+      ],
+      "stages": [
+        {
+          "name": "build",
+          "jobs": [
+            {
+              "name": "build",
+              "tasks": [
+                {
+                  "type": "exec",
+                  "command": "make"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-### 0.13.0 - Unreleased
+### 0.13.0 (2020-Sep-11)
 
 * whitelist to includes rename, blacklist to ignore
 * V3 capabilities API implementation

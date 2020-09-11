@@ -7,14 +7,14 @@ plugins {
 }
 
 group 'cd.go.plugin.config.yaml'
-version "0.13.0"
+version "0.13.1"
 
 apply plugin: 'java'
 apply plugin: "com.github.jk1.dependency-license-report"
 
 project.ext {
     pluginDesc = [
-            version    : project.version,
+            version "0.13.1"
             goCdVersion: '20.4.0'
     ]
 

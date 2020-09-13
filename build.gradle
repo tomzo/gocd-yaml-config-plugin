@@ -14,7 +14,8 @@ apply plugin: "com.github.jk1.dependency-license-report"
 
 project.ext {
     pluginDesc = [
-            version "0.13.1"
+            version:
+              project.version,
             goCdVersion: '20.4.0'
     ]
 

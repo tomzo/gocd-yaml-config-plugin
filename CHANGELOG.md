@@ -1,4 +1,6 @@
-### 0.13.1 - Unreleased
+### 0.13.2 (2020-Dec-09)
+
+* use newer openjdk Dojo image kudulab/openjdk-dojo:1.4.1
 
 ### 0.13.0 (2020-Sep-11)
 

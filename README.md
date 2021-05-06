@@ -115,7 +115,7 @@ pipelines:
 
 ## File pattern
 
-The default pattern is `**/*.gocd.yaml` and `**/*.gocd.yml`, which will recursively search the entire repository for all files ending with `.gocd.yaml` or `.gocd.yml`.
+The default pattern is `**/*.gocd.yaml,**/*.gocd.yml`, which will recursively search the entire repository for all files ending with `.gocd.yaml` or `.gocd.yml`.
 
 You can set a custom file pattern per configuration repository using the GoCD configuration UI:
 ![yaml pattern config](yaml_file_pattern.png)
@@ -129,7 +129,8 @@ Or in the config XML using `<configuration>`:
     <configuration>
       <property>
         <key>file_pattern</key>
-        <value>pipeline.gocd.yaml</value>
+        <!-- comma-separate multiple patterns -->
+        <value>pipelines/build/*.yml,pipelines/lint/*.yml</value>
       </property>
     </configuration>
   </config-repo>

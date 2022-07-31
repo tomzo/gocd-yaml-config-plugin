@@ -1,3 +1,6 @@
+### 0.14.0 (2022-Jul-31)
+* Upgrade all dependencies to latest, patched versions
+
 ### 0.13.2 (2020-Dec-09)
 
 * use newer openjdk Dojo image kudulab/openjdk-dojo:1.4.1

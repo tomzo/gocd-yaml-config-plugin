@@ -13,9 +13,7 @@ import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class StageTransformTest {
     private StageTransform parser;
@@ -55,7 +53,7 @@ public class StageTransformTest {
         Map<String, Object> jobs = new LinkedTreeMap<>();
         jobs.put("one", null);
         jobs.put("two", null);
-        when(jobTransform.inverseTransform(any(LinkedTreeMap.class))).thenReturn(jobs);
+        when(jobTransform.inverseTransform(any())).thenReturn(jobs);
         testInverseTransform("complete");
     }
 

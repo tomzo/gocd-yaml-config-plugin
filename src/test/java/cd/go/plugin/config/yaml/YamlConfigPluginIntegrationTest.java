@@ -30,7 +30,6 @@ import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class YamlConfigPluginIntegrationTest {

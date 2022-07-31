@@ -42,7 +42,7 @@ case "${command}" in
     set_version_in_file "version " "build.gradle" "${next_version}"
     ;;
   build)
-    dojo "gradle test jar"
+    dojo "./gradlew test jar"
     ;;
   github_release)
     if [ -z "$GITHUB_TOKEN" ]; then

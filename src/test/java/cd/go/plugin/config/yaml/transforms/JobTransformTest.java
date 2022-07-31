@@ -3,25 +3,23 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
 import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.function.Function;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class JobTransformTest {
     private EnvironmentVariablesTransform environmentTransform;
     private TaskTransform taskTransform;
     private JobTransform parser;
 
-    @Before
+    @BeforeEach
     public void SetUp() {
         environmentTransform = new EnvironmentVariablesTransform();
         taskTransform = mock(TaskTransform.class);

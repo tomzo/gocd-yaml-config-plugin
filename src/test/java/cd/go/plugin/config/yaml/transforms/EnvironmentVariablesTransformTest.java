@@ -2,14 +2,14 @@ package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class EnvironmentVariablesTransformTest {
     private final EnvironmentVariablesTransform parser;

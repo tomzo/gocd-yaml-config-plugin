@@ -4,15 +4,15 @@ import cd.go.plugin.config.yaml.JsonObjectMatcher;
 import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 public class PipelineTransformTest {
@@ -23,7 +23,7 @@ public class PipelineTransformTest {
     private EnvironmentVariablesTransform environmentTransform;
     private ParameterTransform parameterTransform;
 
-    @Before
+    @BeforeEach
     public void SetUp() {
         materialTransform = mock(MaterialTransform.class);
         stageTransform = mock(StageTransform.class);

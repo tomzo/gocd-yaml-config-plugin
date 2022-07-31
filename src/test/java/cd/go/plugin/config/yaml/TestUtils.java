@@ -16,7 +16,7 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtils {
     private static final Gson GSON = new Gson();

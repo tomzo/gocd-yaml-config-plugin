@@ -3,16 +3,16 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class StageTransformTest {
@@ -20,7 +20,7 @@ public class StageTransformTest {
     private EnvironmentVariablesTransform environmentTransform;
     private JobTransform jobTransform;
 
-    @Before
+    @BeforeEach
     public void SetUp() {
         environmentTransform = new EnvironmentVariablesTransform();
         jobTransform = mock(JobTransform.class);

@@ -1,20 +1,19 @@
 package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonConfigCollection;
-import cd.go.plugin.config.yaml.YamlConfigException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class RootTransformTest {
@@ -22,7 +21,7 @@ public class RootTransformTest {
     private PipelineTransform pipelineTransform;
     private EnvironmentsTransform environmentsTransform;
 
-    @Before
+    @BeforeEach
     public void Setup() {
         pipelineTransform = mock(PipelineTransform.class);
         environmentsTransform = mock(EnvironmentsTransform.class);
@@ -76,10 +75,9 @@ public class RootTransformTest {
         assertThat(pipelines.get(2).getAsJsonObject().get("name").getAsString(), is("pipe3"));
     }
 
-    @Test(expected = YamlReader.YamlReaderException.class)
-    public void shouldNotTransformRootWhenYAMLHasDuplicateKeys() throws IOException {
-        readRootYaml("duplicate.materials.pipe");
-        fail("should have thrown duplicate keys error");
+    @Test
+    public void shouldNotTransformRootWhenYAMLHasDuplicateKeys() {
+        assertThrows(YamlReader.YamlReaderException.class, () -> readRootYaml("duplicate.materials.pipe"));
     }
 
     private JsonConfigCollection readRootYaml(String caseFile) throws IOException {

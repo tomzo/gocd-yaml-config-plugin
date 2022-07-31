@@ -9,6 +9,7 @@ class TeeRenderer extends TextReportRenderer implements ReportRenderer {
     def LICENSES = [
             'Apache License, Version 2.0',
             'Apache 2.0',
+            'Apache-2.0',
             'The Apache Software License, Version 2.0',
             'New BSD License'
     ]

@@ -118,3 +118,14 @@ jar {
 licenseReport {
     renderers = [new NoticeFileGenerator(new TeeRenderer(new SimpleHtmlReportRenderer()), "${project.buildDir}/reports/dependency-license/")]
 }
+
+allprojects {
+    tasks.withType(Test).configureEach {
+        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+        if (!project.hasProperty("createReports")) {
+            reports.html.required = false
+            reports.junitXml.required = false
+        }
+    }
+
+}

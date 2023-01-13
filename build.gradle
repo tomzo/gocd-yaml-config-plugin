@@ -39,7 +39,7 @@ dependencies {
     compileOnly group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginApiVersion
     testImplementation group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginApiVersion
 
-    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation platform('org.junit:junit-bom:5.9.2')
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.0'

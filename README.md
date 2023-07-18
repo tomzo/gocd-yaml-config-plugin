@@ -2,8 +2,6 @@
 
 # gocd-yaml-config-plugin
 
-[![Build Status](https://travis-ci.com/tomzo/gocd-yaml-config-plugin.svg?branch=master)](https://travis-ci.com/tomzo/gocd-yaml-config-plugin)
-
 [GoCD](https://www.gocd.org) plugin to keep **pipelines** and **environments**
 configuration in source-control in [YAML](http://www.yaml.org/).
 See [this document](https://docs.gocd.org/current/advanced_usage/pipelines_as_code.html)

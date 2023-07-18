@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 

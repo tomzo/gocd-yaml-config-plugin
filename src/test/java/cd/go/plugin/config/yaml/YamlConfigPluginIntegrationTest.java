@@ -10,7 +10,6 @@ import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -38,7 +38,6 @@ public class YamlConfigPluginIntegrationTest {
     Path tempDir;
     private YamlConfigPlugin plugin;
     private GoApplicationAccessor goAccessor;
-    private JsonParser parser;
 
     @BeforeEach
     public void setUp() {
@@ -47,7 +46,6 @@ public class YamlConfigPluginIntegrationTest {
         plugin.initializeGoApplicationAccessor(goAccessor);
         GoApiResponse settingsResponse = DefaultGoApiResponse.success("{}");
         when(goAccessor.submit(any())).thenReturn(settingsResponse);
-        parser = new JsonParser();
     }
 
     @Test
@@ -56,7 +54,7 @@ public class YamlConfigPluginIntegrationTest {
         DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "2.0", ConfigRepoMessages.REQ_PARSE_CONTENT);
 
         StringWriter w = new StringWriter();
-        IOUtils.copy(getResourceAsStream("examples/simple.gocd.yaml"), w);
+        IOUtils.copy(getResourceAsStream("examples/simple.gocd.yaml"), w, StandardCharsets.UTF_8);
         request.setRequestBody(gson.toJson(
                 Collections.singletonMap("contents",
                         Collections.singletonMap("simple.gocd.yaml", w.toString())
@@ -271,8 +269,7 @@ public class YamlConfigPluginIntegrationTest {
     @Test
     public void shouldRespondBadRequestToParseDirectoryRequestWhenRequestBodyIsNull() throws UnhandledRequestTypeException {
         DefaultGoPluginApiRequest parseDirectoryRequest = new DefaultGoPluginApiRequest("configrepo", "1.0", "parse-directory");
-        String requestBody = null;
-        parseDirectoryRequest.setRequestBody(requestBody);
+        parseDirectoryRequest.setRequestBody(null);
 
         GoPluginApiResponse response = plugin.handle(parseDirectoryRequest);
         assertThat(response.responseCode(), is(DefaultGoPluginApiResponse.BAD_REQUEST));
@@ -328,8 +325,7 @@ public class YamlConfigPluginIntegrationTest {
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.toFile());
 
         assertThat(response.responseCode(), is(SUCCESS_RESPONSE_CODE));
-        final JsonParser parser = new JsonParser();
-        JsonElement responseObj = parser.parse(response.responseBody());
+        JsonElement responseObj = JsonParser.parseString(response.responseBody());
         assertTrue(responseObj.isJsonObject());
         JsonObject obj = responseObj.getAsJsonObject();
         assertTrue(obj.has("errors"));
@@ -430,7 +426,7 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     private void assertNoError(JsonObject responseJsonObject) {
-        assertThat(responseJsonObject.get("errors"), Is.<JsonElement>is(new JsonArray()));
+        assertThat(responseJsonObject.get("errors"), is(new JsonArray()));
     }
 
     private void assertFirstError(JsonObject responseJsonObject, String expectedMessage, String expectedLocation) {
@@ -441,6 +437,6 @@ public class YamlConfigPluginIntegrationTest {
 
     private JsonObject getJsonObjectFromResponse(GoPluginApiResponse response) {
         String responseBody = response.responseBody();
-        return parser.parse(responseBody).getAsJsonObject();
+        return JsonParser.parseString(responseBody).getAsJsonObject();
     }
 }

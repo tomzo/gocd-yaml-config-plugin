@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,7 @@ public class TestUtils {
     private static final Gson GSON = new Gson();
 
     public static JsonElement readJsonObject(String path) {
-        JsonParser parser = new JsonParser();
-        return parser.parse(TestUtils.createReader(path));
+        return JsonParser.parseReader(TestUtils.createReader(path));
     }
 
     public static List<Map<String, Object>> readJsonArrayGson(String path) {
@@ -47,13 +47,13 @@ public class TestUtils {
     }
 
     public static String loadString(String path) throws IOException {
-        final InputStream resourceAsStream = getResourceAsStream(path);
-        return IOUtils.toString(resourceAsStream);
+        try (InputStream resourceAsStream = getResourceAsStream(path)) {
+            return IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+        }
     }
 
     static InputStream getResourceAsStream(String resource) {
-        final InputStream in
-                = getContextClassLoader().getResourceAsStream(resource);
+        final InputStream in = getContextClassLoader().getResourceAsStream(resource);
 
         return in == null ? TestUtils.class.getResourceAsStream(resource) : in;
     }

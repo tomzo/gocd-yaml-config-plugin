@@ -10,8 +10,8 @@ import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 public class MaterialTransformTest {
     private final MaterialTransform parser;

@@ -23,7 +23,6 @@ class ParsedRequest {
     }
 
     static ParsedRequest parse(GoPluginApiRequest req) {
-        JsonParser parser = new JsonParser();
         String requestBody = req.requestBody();
 
         if (null == requestBody || requestBody.trim().isEmpty()) {
@@ -32,7 +31,7 @@ class ParsedRequest {
 
         JsonElement parsed;
         try {
-            parsed = parser.parse(requestBody);
+            parsed = JsonParser.parseString(requestBody);
         } catch (JsonParseException e) {
             throw new RequestParseException(INVALID_JSON, e);
         }

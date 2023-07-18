@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static cd.go.plugin.config.yaml.TestUtils.readYamlObject;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 public class EnvironmentsTransformTest {
     private final EnvironmentsTransform parser;

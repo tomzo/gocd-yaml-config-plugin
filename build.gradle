@@ -1,31 +1,41 @@
-import cd.go.plugin.buildsrc.license.NoticeFileGenerator
-import cd.go.plugin.buildsrc.license.TeeRenderer
-import com.github.jk1.license.render.SimpleHtmlReportRenderer
-
-plugins {
-    id "com.github.jk1.dependency-license-report"
-}
-
-group 'cd.go.plugin.config.yaml'
-version "0.14.1"
-
 apply plugin: 'java'
-apply plugin: "com.github.jk1.dependency-license-report"
+apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
 
-project.ext {
-    pluginDesc = [
-            version: project.version,
-            goCdVersion: '20.4.0'
-    ]
+gocdPlugin {
+    id = 'yaml.config.plugin'
+    pluginVersion = '0.14.2'
+    goCdVersion = '20.4.0'
+    name = 'YAML Configuration Plugin'
+    description = 'GoCD pipelines and environments configuration in YAML'
+    vendorName = 'Tomasz Setkowski'
+    vendorUrl = 'https://github.com/tomzo/gocd-yaml-config-plugin'
 
-    pluginApiVersion = '20.3.0'
+    githubRepo {
+        owner = System.getenv('GITHUB_USER') ?: 'bob'
+        repo = 'gocd-yaml-config-plugin'
+        token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
+    }
+
+    pluginProject = project
+
+    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+    assetsToRelease = [project.tasks.jar]
 }
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+group = 'cd.go.plugin.config.yaml'
+version = gocdPlugin.fullVersion(project)
 
 repositories {
     mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+ext {
+    pluginApiVersion = '23.1.0'
 }
 
 dependencies {
@@ -46,46 +56,6 @@ dependencies {
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 }
 
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    from("src/main/resource-templates") {
-        filesMatching('*') {
-            expand project.pluginDesc
-        }
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ["src/main/java"]
-        }
-        resources {
-            srcDir 'src/main/resources'
-        }
-    }
-
-    test {
-        java {
-            srcDirs = ["src/test/java"]
-        }
-        resources {
-            srcDir 'src/test/resources'
-        }
-    }
-}
-
-task copyTestResources(type: Copy) {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
-}
-
-processTestResources {
-    dependsOn copyTestResources
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
 test {
     useJUnitPlatform()
     testLogging {
@@ -104,18 +74,11 @@ jar {
         attributes 'Main-Class': 'cd.go.plugin.config.yaml.cli.YamlPluginCli'
     }
 
-    from(generateLicenseReport) {
-        into "dependency-license-report"
-        exclude "NOTICE.txt"
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-
-    exclude "META-INF/*.SF"
-    exclude "META-INF/*.DSA"
-    exclude "META-INF/*.RSA"
-}
-
-licenseReport {
-    renderers = [new NoticeFileGenerator(new TeeRenderer(new SimpleHtmlReportRenderer()), "${project.buildDir}/reports/dependency-license/")]
+    exclude "META-INF/*.txt"
+    exclude "META-INF/*.LIST"
+    exclude "META-INF/versions/**"
 }

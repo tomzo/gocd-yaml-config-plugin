@@ -1256,12 +1256,7 @@ dojo
 
 We use semantic versioning.
 
-If you are submitting a new feature then please run a major version bump by
-```
-./tasks.sh set_version 0.X.0
-```
-
-If you are submitting a fix, then do not change any versions as patch bump is made right after each release.
+If you are submitting a new feature or patch, please bump the version in `build.gradle`.
 
 ## Tests structure
 

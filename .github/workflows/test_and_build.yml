@@ -23,7 +23,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     env:
-      GITHUB_USER:  "gocd-contrib"
+      GITHUB_USER:  "tomzo"
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
     steps:
       - uses: actions/checkout@v3

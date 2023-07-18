@@ -8,26 +8,25 @@ import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Objects;
 
 import static cd.go.plugin.config.yaml.ConfigRepoMessages.REQ_PLUGIN_SETTINGS_CHANGED;
 import static cd.go.plugin.config.yaml.PluginSettings.DEFAULT_FILE_PATTERN;
 import static cd.go.plugin.config.yaml.TestUtils.getResourceAsStream;
 import static cd.go.plugin.config.yaml.TestUtils.readJsonObject;
 import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,11 +52,10 @@ public class YamlConfigPluginIntegrationTest {
         final Gson gson = new Gson();
         DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "2.0", ConfigRepoMessages.REQ_PARSE_CONTENT);
 
-        StringWriter w = new StringWriter();
-        IOUtils.copy(getResourceAsStream("examples/simple.gocd.yaml"), w, StandardCharsets.UTF_8);
+        String simpleYaml = TestUtils.loadString("examples/simple.gocd.yaml");
         request.setRequestBody(gson.toJson(
                 Collections.singletonMap("contents",
-                        Collections.singletonMap("simple.gocd.yaml", w.toString())
+                        Collections.singletonMap("simple.gocd.yaml", simpleYaml)
                 )
         ));
 
@@ -76,12 +74,9 @@ public class YamlConfigPluginIntegrationTest {
     public void respondsToGetConfigFiles() throws Exception {
         final Gson gson = new Gson();
         DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("configrepo", "3.0", ConfigRepoMessages.REQ_CONFIG_FILES);
-        FileUtils.copyInputStreamToFile(
-                getResourceAsStream("/examples/simple.gocd.yaml"), Files.createFile(tempDir.resolve("valid.gocd.yaml")).toFile()
-        );
-        FileUtils.copyInputStreamToFile(
-                getResourceAsStream("/examples/simple-invalid.gocd.yaml"), Files.createFile(tempDir.resolve("invalid.gocd.yaml")).toFile()
-        );
+
+        Files.copy(getResourceAsStream("/examples/simple.gocd.yaml"), Files.createFile(tempDir.resolve("valid.gocd.yaml")), REPLACE_EXISTING);
+        Files.copy(getResourceAsStream("/examples/simple-invalid.gocd.yaml"), Files.createFile(tempDir.resolve("invalid.gocd.yaml")), REPLACE_EXISTING);
 
         request.setRequestBody(gson.toJson(
                 Collections.singletonMap("directory", tempDir.toFile().toString())
@@ -350,8 +345,8 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldUpdateTargetVersionWhenItIsTheSameAcrossAllFiles() throws Exception {
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_2.yaml"), Files.createFile(tempDir.resolve("v2_1.gocd.yaml")).toFile());
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_2.yaml"), Files.createFile(tempDir.resolve("v2_2.gocd.yaml")).toFile());
+        Files.copy(getResourceAsStream("/parts/roots/version_2.yaml"), Files.createFile(tempDir.resolve("v2_1.gocd.yaml")), REPLACE_EXISTING);
+        Files.copy(getResourceAsStream("/parts/roots/version_2.yaml"), Files.createFile(tempDir.resolve("v2_2.gocd.yaml")), REPLACE_EXISTING);
 
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.toFile());
         assertNoError(getJsonObjectFromResponse(response));
@@ -359,9 +354,9 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldUpdateTargetVersionWhenItIsTheDefaultOrMissingAcrossAllPipelinesAndEnvironments() throws Exception {
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_1.gocd.yaml")).toFile());
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_not_present.yaml"), Files.createFile(tempDir.resolve("v1_not_present.gocd.yaml")).toFile());
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_2.gocd.yaml")).toFile());
+        Files.copy(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_1.gocd.yaml")), REPLACE_EXISTING);
+        Files.copy(getResourceAsStream("/parts/roots/version_not_present.yaml"), Files.createFile(tempDir.resolve("v1_not_present.gocd.yaml")), REPLACE_EXISTING);
+        Files.copy(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_2.gocd.yaml")), REPLACE_EXISTING);
 
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.toFile());
         assertNoError(getJsonObjectFromResponse(response));
@@ -369,9 +364,9 @@ public class YamlConfigPluginIntegrationTest {
 
     @Test
     public void shouldFailToUpdateTargetVersionWhenItIs_NOT_TheSameAcrossAllFiles() throws Exception {
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_1.gocd.yaml")).toFile());
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_2.gocd.yaml")).toFile());
-        FileUtils.copyInputStreamToFile(getResourceAsStream("/parts/roots/version_2.yaml"), Files.createFile(tempDir.resolve("v2_1.gocd.yaml")).toFile());
+        Files.copy(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_1.gocd.yaml")), REPLACE_EXISTING);
+        Files.copy(getResourceAsStream("/parts/roots/version_1.yaml"), Files.createFile(tempDir.resolve("v1_2.gocd.yaml")), REPLACE_EXISTING);
+        Files.copy(getResourceAsStream("/parts/roots/version_2.yaml"), Files.createFile(tempDir.resolve("v2_1.gocd.yaml")), REPLACE_EXISTING);
 
         GoPluginApiResponse response = parseAndGetResponseForDir(tempDir.toFile());
         String expectedFailureMessage = "java.lang.RuntimeException: Versions across files are not unique. Found" +
@@ -400,8 +395,9 @@ public class YamlConfigPluginIntegrationTest {
         assertEquals(jsonObject.entrySet().size(), 2);
         assertEquals(jsonObject.get("content_type").getAsString(), "image/svg+xml");
         byte[] actualData = Base64.getDecoder().decode(jsonObject.get("data").getAsString());
-        byte[] expectedData = IOUtils.toByteArray(getClass().getResourceAsStream("/yaml.svg"));
-        assertArrayEquals(expectedData, actualData);
+        try (InputStream inputStream = Objects.requireNonNull(getClass().getResourceAsStream("/yaml.svg"))) {
+            assertArrayEquals(inputStream.readAllBytes(), actualData);
+        }
     }
 
     private File setupCase(String caseName) throws IOException {
@@ -409,8 +405,8 @@ public class YamlConfigPluginIntegrationTest {
     }
 
     private File setupCase(String caseName, String extension) throws IOException {
-        File simpleFile = Files.createFile(tempDir.resolve(caseName + "." + extension)).toFile();
-        FileUtils.copyInputStreamToFile(getResourceAsStream("examples/" + caseName + ".gocd.yaml"), simpleFile);
+        Path simpleFile = Files.createFile(tempDir.resolve(caseName + "." + extension));
+        Files.copy(getResourceAsStream("examples/" + caseName + ".gocd.yaml"), simpleFile, REPLACE_EXISTING);
         return tempDir.toFile();
     }
 

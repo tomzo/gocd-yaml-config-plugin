@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.io.IOUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class TestUtils {
 
     public static String loadString(String path) throws IOException {
         try (InputStream resourceAsStream = getResourceAsStream(path)) {
-            return IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+            return new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 

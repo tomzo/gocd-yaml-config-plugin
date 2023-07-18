@@ -1,0 +1,32 @@
+
+name: Create Stable Release
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      prerelease:
+        description: 'The release should be an experimental release'
+        default: 'NO'
+        required: true
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_USER:  "gocd-contrib"
+      GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      PRERELEASE:   "${{ github.event.inputs.prerelease }}"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Release
+        run: ./gradlew githubRelease

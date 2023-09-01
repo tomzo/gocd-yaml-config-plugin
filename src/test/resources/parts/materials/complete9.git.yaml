@@ -1,5 +1,5 @@
 gitMaterial1:
-  git: "http://my.git.repository.com"
+  git: "https://my.git.repository.com"
   username: "username"
   encrypted_password: "some encrypted value"
   branch: "feature12"

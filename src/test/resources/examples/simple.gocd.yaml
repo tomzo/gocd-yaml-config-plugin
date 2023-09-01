@@ -5,7 +5,7 @@ pipelines:
     materials:
       mygit:  # this is the name of material
         # says about type of material and url at once
-        git: http://my.example.org/mygit.git
+        git: https://my.example.org/mygit.git
     stages:
       - build: # name of stage
           jobs:

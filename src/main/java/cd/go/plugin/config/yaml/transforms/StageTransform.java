@@ -71,7 +71,7 @@ public class StageTransform {
 
     public Map<String, Object> inverseTransform(Map<String, Object> stage) {
         if (stage == null) {
-            return stage;
+            return null;
         }
         String stageName = (String) stage.get(JSON_STAGE_NAME_FIELD);
         Map<String, Object> inverseStage = new LinkedTreeMap<>();

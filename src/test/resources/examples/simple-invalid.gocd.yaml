@@ -5,7 +5,7 @@ pipelines:
     materials:
       # materials should be a hash - bogus !
       - mygit:
-          git: http://my.example.org/mygit.git
+          git: https://my.example.org/mygit.git
     stages:
       - build: # name of stage
           jobs:

@@ -13,7 +13,7 @@ pipelines: # tells plugin that here are pipelines by name
     materials:
       mygit: # this is the name of material
         # says about type of material and url at once
-        git: http://my.example.org/mygit.git
+        git: https://my.example.org/mygit.git
         branch: ci
       upstream:
         # type is optional here, material type is implied based on pipeline and stage fields

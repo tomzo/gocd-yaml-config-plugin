@@ -7,7 +7,7 @@
     "materials": [{
       "name": "mygit",
       "type": "git",
-      "url": "http://my.example.org/mygit.git",
+      "url": "https://my.example.org/mygit.git",
       "branch": "ci"
     }],
     "stages": [{

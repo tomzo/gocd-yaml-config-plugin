@@ -6,12 +6,9 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
-import static java.lang.String.format;
 
 public class YamlPluginCli {
     public static void main(String[] args) {
@@ -65,7 +62,7 @@ public class YamlPluginCli {
     private static InputStream getFileAsStream(String file) {
         InputStream s = null;
         try {
-            s = "-".equals(file) ? System.in : new FileInputStream(new File(file));
+            s = "-".equals(file) ? System.in : new FileInputStream(file);
         } catch (FileNotFoundException e) {
             die(1, e.getMessage());
         }
@@ -73,11 +70,11 @@ public class YamlPluginCli {
     }
 
     private static void echo(String message, Object... items) {
-        System.out.println(format(message, items));
+        System.out.printf(message + "%n", items);
     }
 
     private static void error(String message, Object... items) {
-        System.err.println(format(message, items));
+        System.err.printf(message + "%n", items);
     }
 
     private static void die(int exitCode, String message, Object... items) {

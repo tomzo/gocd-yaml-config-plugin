@@ -71,7 +71,7 @@ pipelines:
     materials:
       mygit: # this is the name of material, the name can contain only of alphanumeric & underscore characters
         # keyword git says about type of material and url at once
-        git: http://my.example.org/mygit.git
+        git: https://my.example.org/mygit.git
         branch: ci
       myupstream: # this name does not matter, but there should be no 2 materials with the same name
         # type is optional here, material type is implied based on presence of pipeline and stage fields
@@ -365,7 +365,7 @@ When `format_version` is `4` (see [above](#format-version)), the order of displa
 - Pipelines defined in GoCD's config XML will also default to -1.
 - If multiple pipelines have the same `display_order` value, their order relative to each other will be indeterminate.
 
-```json
+```yaml
 mypipeline1:
   group: group1
   display_order: 10
@@ -643,7 +643,7 @@ mygit:
 More customized git material is possible:
 ```yaml
 gitMaterial1:
-  git: "http://my.git.repository.com"
+  git: "https://my.git.repository.com"
   branch: feature12
   ignore:
     - externals/**/*.*
@@ -677,7 +677,7 @@ For **GoCD >= 19.4.0 and `format_version: 5` and above**:
 You are advised to utilize `username` and `encrypted_password` for passing in material credentials as:
 ```yaml
 gitMaterial1:
-  git: "http://my.git.repository.com"
+  git: "https://my.git.repository.com"
   branch: feature12
   username: my_username
   encrypted_password: encrypted_value

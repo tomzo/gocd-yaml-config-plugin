@@ -6,7 +6,7 @@ pipelines:
     group: simple
     materials:
       mygit:
-        git: http://my.example.org/mygit.git
+        git: https://my.example.org/mygit.git
         # whitelist is still allowed and transforms to whitelist because format_version is 9
         whitelist:
           - externals
@@ -22,7 +22,7 @@ pipelines:
     group: simple
     materials:
       mygit:
-        git: http://my.example.org/mygit.git
+        git: https://my.example.org/mygit.git
         # includes is allowed and transforms to whitelist because format_version is 9
         includes:
           - externals

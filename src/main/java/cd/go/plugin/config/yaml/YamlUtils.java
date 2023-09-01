@@ -14,9 +14,9 @@ import static java.lang.Integer.parseInt;
 
 public class YamlUtils {
     // http://yaml.org/type/bool.html
-    private static Pattern truePattern = Pattern.compile(
+    private static final Pattern PATTERN_TRUE = Pattern.compile(
             "y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON");
-    private static Pattern falsePattern = Pattern.compile(
+    private static final Pattern PATTERN_FALSE = Pattern.compile(
             "n|N|no|No|NO|false|False|FALSE|off|Off|OFF");
 
     public static String dump(Object o) {
@@ -61,8 +61,8 @@ public class YamlUtils {
         JsonArray jsonArray = new JsonArray();
         Object value = map.get(fieldName);
         if (value != null) {
-            List<String> list = (List<String>) value;
-            if (list.size() == 0)
+            @SuppressWarnings("unchecked") List<String> list = (List<String>) value;
+            if (list.isEmpty())
                 return null;
             for (String item : list) {
                 jsonArray.add(item);
@@ -86,16 +86,16 @@ public class YamlUtils {
             if (value instanceof Boolean)
                 return (Boolean) value;
             String boolText = (String) value;
-            if (truePattern.matcher(boolText).matches())
+            if (PATTERN_TRUE.matcher(boolText).matches())
                 return true;
-            else if (falsePattern.matcher(boolText).matches())
+            else if (PATTERN_FALSE.matcher(boolText).matches())
                 return false;
             throw new YamlConfigException("Expected boolean value in field " + fieldName + ", got " + boolText);
         }
         return null;
     }
 
-    public static String getOptionalString(Map map, String fieldName) {
+    public static String getOptionalString(Map<String, Object> map, String fieldName) {
         Object value = map.get(fieldName);
         if (value != null) {
             return (String) value;
@@ -103,7 +103,7 @@ public class YamlUtils {
         return null;
     }
 
-    public static Integer getOptionalInteger(Map map, String fieldName) {
+    public static Integer getOptionalInteger(Map<String, Object> map, String fieldName) {
         Object value = map.get(fieldName);
         if (value != null) {
             if (value instanceof Integer)
@@ -115,7 +115,7 @@ public class YamlUtils {
         return null;
     }
 
-    public static Object getOptionalObject(Map map, String fieldName) {
+    public static Object getOptionalObject(Map<String, Object> map, String fieldName) {
         return map.get(fieldName);
     }
 }

@@ -13,7 +13,7 @@ pipelines:
     group: aliases
     materials:
       mygit:
-        git: http://my.example.org/mygit.git
+        git: https://my.example.org/mygit.git
         branch: ci
     stages:
       - prepare:

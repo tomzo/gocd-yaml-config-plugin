@@ -10,8 +10,8 @@ import com.google.gson.internal.LinkedTreeMap;
 import java.util.Map;
 
 public class RootTransform {
-    private PipelineTransform pipelineTransform;
-    private EnvironmentsTransform environmentsTransform;
+    private final PipelineTransform pipelineTransform;
+    private final EnvironmentsTransform environmentsTransform;
 
     public RootTransform() {
         EnvironmentVariablesTransform environmentVarsTransform = new EnvironmentVariablesTransform();
@@ -37,12 +37,12 @@ public class RootTransform {
 
     public JsonConfigCollection transform(Object rootObj, String location) {
         JsonConfigCollection partialConfig = new JsonConfigCollection();
-        Map<String, Object> rootMap = (Map<String, Object>) rootObj;
+        @SuppressWarnings("unchecked") Map<String, Object> rootMap = (Map<String, Object>) rootObj;
         // must obtain format_version first
         int formatVersion = 1;
         for (Map.Entry<String, Object> pe : rootMap.entrySet()) {
             if ("format_version".equalsIgnoreCase(pe.getKey())) {
-                formatVersion = Integer.valueOf((String) pe.getValue());
+                formatVersion = Integer.parseInt((String) pe.getValue());
                 partialConfig.updateFormatVersionFound(formatVersion);
             }
         }
@@ -63,7 +63,7 @@ public class RootTransform {
             } else if ("environments".equalsIgnoreCase(pe.getKey())) {
                 if (pe.getValue() == null)
                     continue;
-                Map<String, Object> environments = (Map<String, Object>) pe.getValue();
+                @SuppressWarnings("unchecked") Map<String, Object> environments = (Map<String, Object>) pe.getValue();
                 for (Map.Entry<String, Object> env : environments.entrySet()) {
                     try {
                         JsonElement jsonEnvironment = environmentsTransform.transform(env);

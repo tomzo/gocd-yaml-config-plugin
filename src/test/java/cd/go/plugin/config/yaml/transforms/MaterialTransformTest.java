@@ -187,7 +187,7 @@ public class MaterialTransformTest {
     public void inverseTransform_shouldGenerateARandomMaterialNameInAbsenceOfName() {
         Map<String, Object> material = parser.inverseTransform(readJsonGson("parts/materials/material_without_name.git.json"));
 
-        String materialName = material.keySet().stream().findFirst().get();
+        String materialName = material.keySet().stream().findFirst().orElseThrow();
         assertThat(materialName, containsString("git-"));
     }
 

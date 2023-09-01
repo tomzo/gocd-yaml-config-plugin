@@ -15,10 +15,9 @@ public class JsonConfigCollectionTest {
     private JsonObject pipe1;
     private JsonObject pipe2;
     private JsonObject devEnv;
-    private JsonObject pipeInGroup;
 
     @BeforeEach
-    public void SetUp() {
+    public void setUp() {
         jsonCollection = new JsonConfigCollection();
 
         pipe1 = new JsonObject();
@@ -26,10 +25,6 @@ public class JsonConfigCollectionTest {
 
         pipe2 = new JsonObject();
         pipe2.addProperty("name", "pipe2");
-
-        pipeInGroup = new JsonObject();
-        pipeInGroup.addProperty("name", "pipe3");
-        pipeInGroup.addProperty("group", "mygroup");
 
         devEnv = new JsonObject();
         devEnv.addProperty("name", "dev");

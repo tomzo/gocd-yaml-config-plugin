@@ -86,7 +86,7 @@ public class PipelineTransformTest {
 
         Map<String, Object> pipeline = parser.inverseTransform(readJsonGson("parts/pipeline_with_multiple_materials.json"));
 
-        assertThat(((Map)((Map)pipeline.get("pipe1")).get("materials")).size(), is(2));
+        assertThat(((Map<?, ?>)((Map<?, ?>)pipeline.get("pipe1")).get("materials")).size(), is(2));
     }
 
     private void testTransform(String caseFile) throws IOException {

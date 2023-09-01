@@ -128,7 +128,7 @@ public class MaterialTransform extends ConfigurationTransform {
             if (yamlSpecialKeywords.contains(materialProp.getKey()))
                 continue;
             if (materialProp.getValue() instanceof String)
-                materialdata.put(materialProp.getKey(), (String) materialProp.getValue());
+                materialdata.put(materialProp.getKey(), materialProp.getValue());
         }
 
         if (materialName == null) {

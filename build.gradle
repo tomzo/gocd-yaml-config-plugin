@@ -3,7 +3,7 @@ apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-help
 
 gocdPlugin {
     id = 'yaml.config.plugin'
-    pluginVersion = '0.14.2'
+    pluginVersion = '0.14.3'
     goCdVersion = '20.4.0'
     name = 'YAML Configuration Plugin'
     description = 'GoCD pipelines and environments configuration in YAML'

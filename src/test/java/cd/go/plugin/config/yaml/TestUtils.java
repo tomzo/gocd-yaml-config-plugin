@@ -1,6 +1,5 @@
 package cd.go.plugin.config.yaml;
 
-import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -22,27 +21,25 @@ public class TestUtils {
     private static final Gson GSON = new Gson();
 
     public static JsonElement readJsonObject(String path) {
-        return JsonParser.parseReader(TestUtils.createReader(path));
+        return JsonParser.parseReader(createReader(path));
     }
 
     public static List<Map<String, Object>> readJsonArrayGson(String path) {
-        return fromJson(TestUtils.createReader(path));
+        return fromJson(createReader(path));
     }
 
     public static Map<String, Object> readJsonGson(String path) {
-        return fromJson(TestUtils.createReader(path));
+        return fromJson(createReader(path));
     }
 
     public static Object readYamlObject(String path) throws IOException {
-        YamlConfig config = new YamlConfig();
-        config.setAllowDuplicates(false);
-        YamlReader reader = new YamlReader(TestUtils.createReader(path), config);
-        return reader.read();
+        try (YamlReader reader = new YamlReader(createReader(path), YamlConfigParser.newYamlConfig())) {
+            return reader.read();
+        }
     }
 
     private static InputStreamReader createReader(String path) {
-        final InputStream resourceAsStream = getResourceAsStream(path);
-        return new InputStreamReader(resourceAsStream);
+        return new InputStreamReader(getResourceAsStream(path));
     }
 
     public static String loadString(String path) throws IOException {
@@ -51,8 +48,9 @@ public class TestUtils {
         }
     }
 
+    @SuppressWarnings("resource")
     static InputStream getResourceAsStream(String resource) {
-        final InputStream in = getContextClassLoader().getResourceAsStream(resource);
+        final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
 
         return in == null ? TestUtils.class.getResourceAsStream(resource) : in;
     }
@@ -68,7 +66,4 @@ public class TestUtils {
         return GSON.fromJson(json, new TypeToken<T>() {}.getType());
     }
 
-    private static ClassLoader getContextClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
-    }
 }

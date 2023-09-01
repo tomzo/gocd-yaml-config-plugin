@@ -1,6 +1,7 @@
 package cd.go.plugin.config.yaml;
 
 import cd.go.plugin.config.yaml.transforms.RootTransform;
+import com.esotericsoftware.yamlbeans.UnsafeYamlConfig;
 import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
@@ -38,16 +39,21 @@ public class YamlConfigParser {
                 return;
             }
 
-            YamlConfig config = new YamlConfig();
-            config.setAllowDuplicates(false);
-            YamlReader reader = new YamlReader(contentReader, config);
-            Object rootObject = reader.read();
-            JsonConfigCollection filePart = rootTransform.transform(rootObject, location);
-            result.append(filePart);
-        } catch (YamlReader.YamlReaderException e) {
-            result.addError(e.getMessage(), location);
+            try (YamlReader reader = new YamlReader(contentReader, newYamlConfig())) {
+                JsonConfigCollection filePart = rootTransform.transform(reader.read(), location);
+                result.append(filePart);
+            } catch (YamlReader.YamlReaderException e) {
+                result.addError(e.getMessage(), location);
+            }
         } catch (IOException e) {
             result.addError(e.getMessage() + " : " + e.getCause().getMessage() + " : ", location);
         }
+    }
+
+    public static YamlConfig newYamlConfig() {
+        YamlConfig config = new UnsafeYamlConfig();
+        config.readConfig.setClassTags(false);
+        config.setAllowDuplicates(false);
+        return config;
     }
 }

@@ -45,8 +45,8 @@ dependencies {
     implementation group: 'com.contrastsecurity', name: 'yamlbeans', version: '1.17'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.2'
 
-    compileOnly group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginApiVersion
-    testImplementation group: 'cd.go.plugin', name: 'go-plugin-api', version: project.pluginApiVersion
+    compileOnly "cd.go.plugin:go-plugin-api:$pluginApiVersion"
+    testImplementation "cd.go.plugin:go-plugin-api:$pluginApiVersion"
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'

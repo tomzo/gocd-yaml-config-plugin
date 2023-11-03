@@ -35,7 +35,7 @@ java {
 }
 
 ext {
-    pluginApiVersion = '23.1.0'
+    pluginApiVersion = '23.4.0'
 }
 
 dependencies {

@@ -1,4 +1,5 @@
-[![Join the chat at https://gitter.im/gocd/gocd](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gocd/configrepo-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Google Groups](https://img.shields.io/badge/Google_Groups-user_help-purple)](https://groups.google.com/g/go-cd)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub_discussions-user_&amp;_dev_chat-green)](https://github.com/gocd/gocd/discussions)
 
 # gocd-yaml-config-plugin
 

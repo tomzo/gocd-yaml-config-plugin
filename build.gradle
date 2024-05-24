@@ -39,7 +39,7 @@ ext {
 }
 
 dependencies {
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
     implementation group: 'org.apache.ant', name: 'ant', version: '1.10.14'
     implementation group: 'com.beust', name: 'jcommander', version: '1.82'
     implementation group: 'com.contrastsecurity', name: 'yamlbeans', version: '1.17'

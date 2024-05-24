@@ -10,7 +10,6 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +24,11 @@ public class TestUtils {
     }
 
     public static List<Map<String, Object>> readJsonArrayGson(String path) {
-        return fromJson(createReader(path));
+        return GSON.fromJson(createReader(path), new TypeToken<List<Map<String, Object>>>() {}.getType());
     }
 
     public static Map<String, Object> readJsonGson(String path) {
-        return fromJson(createReader(path));
+        return GSON.fromJson(createReader(path), new TypeToken<Map<String, Object>>() {}.getType());
     }
 
     public static Object readYamlObject(String path) throws IOException {
@@ -60,10 +59,6 @@ public class TestUtils {
         Object expectedParse = yaml.load(expected);
         Object actualParse = yaml.load(actual);
         assertEquals(expectedParse, actualParse);
-    }
-
-    private static <T> T fromJson(Reader json) {
-        return GSON.fromJson(json, new TypeToken<T>() {}.getType());
     }
 
 }

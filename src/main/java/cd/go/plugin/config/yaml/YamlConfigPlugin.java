@@ -120,7 +120,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
             ParsedRequest parsed = ParsedRequest.parse(request);
 
             YamlConfigParser parser = new YamlConfigParser();
-            Map<String, String> contents = parsed.getParam("contents");
+            Map<String, String> contents = parsed.getParam("contents", String.class);
             JsonConfigCollection result = new JsonConfigCollection();
             contents.forEach((filename, content) -> parser.parseStream(result, new ByteArrayInputStream(content.getBytes()), filename));
             result.updateTargetVersionFromFiles();
@@ -133,7 +133,7 @@ public class YamlConfigPlugin implements GoPlugin, ConfigRepoMessages {
         return handlingErrors(() -> {
             ParsedRequest parsed = ParsedRequest.parse(request);
 
-            Map<String, Object> pipeline = parsed.getParam("pipeline");
+            Map<String, Object> pipeline = parsed.getParam("pipeline", Object.class);
             String name = (String) pipeline.get("name");
 
             Map<String, String> responseMap = Collections.singletonMap("pipeline", new RootTransform().inverseTransformPipeline(pipeline));

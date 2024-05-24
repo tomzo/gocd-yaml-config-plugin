@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public class JSONUtils {
-    static <T> T fromJSON(String json) {
-        return new GsonBuilder().create().fromJson(json, new TypeToken<T>() {}.getType());
+    static Map<String, String> fromJSON(String json) {
+        return new GsonBuilder().create().fromJson(json, new TypeToken<Map<String, String>>() {}.getType());
     }
 
     static String toJSON(Object object) {

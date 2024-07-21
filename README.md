@@ -216,6 +216,7 @@ Feel free to improve it!
     * [pluggable scm](#pluggable)
     * [config repo](#configrepo)
 1. [Secure variables](#to-generate-an-encrypted-value)
+1. [Retrieving secrets from Secrets Management plugins in values][#retrieving-secrets-from-secrets-management-plugins-in-values)
 1. [YAML Aliases](#yaml-aliases)
 
 ## Format version
@@ -1103,7 +1104,7 @@ parameters:
 ```
 
 
-#### To generate an encrypted value
+### To generate an encrypted value
 
 **For versions of GoCD >= 17.1:**
 
@@ -1115,6 +1116,24 @@ See the [encryption API](https://api.gocd.org/current/#encrypt-a-plain-text-valu
 
 ```sh
 sudo -u go bash -c 'echo -n 'YOUR-INPUT' | openssl enc -des-cbc -a -iv 0 -K $(cat /etc/go/cipher)'
+```
+
+### Retrieving secrets from Secrets Management plugins in values
+
+Rather than using secure variables encrypted in values and source controlled, you can use [Secrets Management](https://docs.gocd.org/current/configuration/secrets_management.html) plugins
+to store secrets within various backends and have them dynamically retrieved at runtime.
+
+With any of the corresponding YAML fields documented [here](https://docs.gocd.org/current/configuration/secrets_management.html#step-4---define-secret-params) you
+can use the special syntax to denote a secret to be looked up.
+
+Note that **quoting the values is important** since braces (`{`, `}`) are important in YAML, as a superset of JSON.
+
+```yaml
+environment_variables:
+  DEPLOYMENT: testing
+  FOO: bar
+  # this value retrieves the `testing_password` secret from the `sample_secret` configuration if whichever secrets plugin is appropriate
+  MY_PASSWORD: "{{SECRET:[sample_secret][testing_password]"
 ```
 
 ### Boolean values

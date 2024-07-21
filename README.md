@@ -216,7 +216,7 @@ Feel free to improve it!
     * [pluggable scm](#pluggable)
     * [config repo](#configrepo)
 1. [Secure variables](#to-generate-an-encrypted-value)
-1. [Retrieving secrets from Secrets Management plugins in values][#retrieving-secrets-from-secrets-management-plugins-in-values)
+1. [Retrieving secrets from Secrets Management plugins in values](#retrieving-secrets-from-secrets-management-plugins-in-values)
 1. [YAML Aliases](#yaml-aliases)
 
 ## Format version

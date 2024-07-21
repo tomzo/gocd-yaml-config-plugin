@@ -1132,7 +1132,8 @@ Note that **quoting the values is important** since braces (`{`, `}`) are import
 environment_variables:
   DEPLOYMENT: testing
   FOO: bar
-  # this value retrieves the `testing_password` secret from the `sample_secret` configuration if whichever secrets plugin is appropriate
+  # this value retrieves the `testing_password` secret from the `sample_secret`
+  # configuration of whichever secrets plugin is appropriate
   MY_PASSWORD: "{{SECRET:[sample_secret][testing_password]"
 ```
 

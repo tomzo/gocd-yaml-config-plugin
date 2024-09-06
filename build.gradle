@@ -43,7 +43,7 @@ dependencies {
     implementation group: 'org.apache.ant', name: 'ant', version: '1.10.15'
     implementation group: 'com.beust', name: 'jcommander', version: '1.82'
     implementation group: 'com.contrastsecurity', name: 'yamlbeans', version: '1.17'
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.2'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.3'
 
     compileOnly "cd.go.plugin:go-plugin-api:$pluginApiVersion"
     testImplementation "cd.go.plugin:go-plugin-api:$pluginApiVersion"

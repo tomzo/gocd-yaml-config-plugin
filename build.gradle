@@ -48,7 +48,7 @@ dependencies {
     compileOnly "cd.go.plugin:go-plugin-api:$pluginApiVersion"
     testImplementation "cd.go.plugin:go-plugin-api:$pluginApiVersion"
 
-    testImplementation platform('org.junit:junit-bom:5.11.2')
+    testImplementation platform('org.junit:junit-bom:5.11.3')
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'

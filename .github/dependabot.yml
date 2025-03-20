@@ -3,12 +3,10 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: weekly
-    day: friday
+    interval: monthly
 - package-ecosystem: gradle
   directory: "/"
   schedule:
-    interval: weekly
-    day: friday
+    interval: monthly
   open-pull-requests-limit: 99
 

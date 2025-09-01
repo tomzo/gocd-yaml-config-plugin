@@ -35,7 +35,7 @@ java {
 }
 
 ext {
-    pluginApiVersion = '25.2.0'
+    pluginApiVersion = '25.3.0'
 }
 
 dependencies {
@@ -43,7 +43,7 @@ dependencies {
     implementation group: 'org.apache.ant', name: 'ant', version: '1.10.15'
     implementation group: 'com.beust', name: 'jcommander', version: '1.82'
     implementation group: 'com.contrastsecurity', name: 'yamlbeans', version: '1.17'
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.4'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.5'
 
     compileOnly "cd.go.plugin:go-plugin-api:$pluginApiVersion"
     testImplementation "cd.go.plugin:go-plugin-api:$pluginApiVersion"
@@ -52,7 +52,7 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.18.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.19.0'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
 }
 

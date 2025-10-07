@@ -32,7 +32,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         env:
           DEPENDENCY_GRAPH_INCLUDE_CONFIGURATIONS: runtimeClasspath
-  previewGithubRelease:
+  githubRelease:
     needs: test
     runs-on: ubuntu-latest
     env:

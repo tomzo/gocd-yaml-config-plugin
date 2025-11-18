@@ -26,6 +26,7 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
+          cache: gradle
       - name: Test with Gradle
         run: ./gradlew assemble check
       - name: Release with Gradle

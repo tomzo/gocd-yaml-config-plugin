@@ -42,7 +42,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 ext {
-    pluginApiVersion = '25.3.0'
+    pluginApiVersion = '25.4.0'
 }
 
 dependencies {
@@ -59,7 +59,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockito:mockito-core:5.20.0'
+    testImplementation 'org.mockito:mockito-core:5.21.0'
     testImplementation 'org.hamcrest:hamcrest:3.0'
 }
 

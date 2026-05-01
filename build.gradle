@@ -46,10 +46,10 @@ ext {
 }
 
 dependencies {
-    implementation('com.google.code.gson:gson:2.13.2') {
+    implementation('com.google.code.gson:gson:2.14.0') {
         exclude(module: 'error_prone_annotations') // Not needed at runtime
     }
-    implementation 'org.apache.ant:ant:1.10.15'
+    implementation 'org.apache.ant:ant:1.10.17'
     implementation 'com.beust:jcommander:1.82'
     implementation 'com.contrastsecurity:yamlbeans:1.17'
     implementation 'org.yaml:snakeyaml:2.6'

@@ -49,7 +49,7 @@ dependencies {
     implementation('com.google.code.gson:gson:2.14.0') {
         exclude(module: 'error_prone_annotations') // Not needed at runtime
     }
-    implementation 'org.apache.ant:ant:1.10.17'
+    implementation 'org.codehaus.plexus:plexus-utils:4.0.3'
     implementation 'org.jcommander:jcommander:3.0'
     implementation 'com.contrastsecurity:yamlbeans:1.17'
     implementation 'org.snakeyaml:snakeyaml-engine:3.0.1'

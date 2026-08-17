@@ -5,7 +5,7 @@ apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-help
 
 gocdPlugin {
     id = 'yaml.config.plugin'
-    pluginVersion = '2.0.0'
+    pluginVersion = '2.1.0'
     goCdVersion = '24.1.0'
     name = 'YAML Configuration Plugin'
     description = 'GoCD pipelines and environments configuration in YAML'
@@ -50,7 +50,7 @@ dependencies {
         exclude(module: 'error_prone_annotations') // Not needed at runtime
     }
     implementation 'org.apache.ant:ant:1.10.17'
-    implementation 'com.beust:jcommander:1.82'
+    implementation 'org.jcommander:jcommander:3.0'
     implementation 'com.contrastsecurity:yamlbeans:1.17'
     implementation 'org.snakeyaml:snakeyaml-engine:3.0.1'
 
@@ -72,24 +72,18 @@ test {
     }
 }
 
-// create a fat jar with all dependencies
+// Bundle dependencies as nested jars under lib/, which GoCD adds to the plugin classpath.
+// Bootstrap keeps the same jar runnable with `java -jar` for CLI syntax checking.
 jar {
     archiveBaseName = project.name
     preserveFileTimestamps = false
     reproducibleFileOrder = true
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
     manifest {
-        attributes 'Main-Class': 'cd.go.plugin.config.yaml.cli.YamlPluginCli'
+        attributes 'Main-Class': 'cd.go.plugin.config.yaml.cli.Bootstrap'
     }
 
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    from(configurations.runtimeClasspath) {
+        into 'lib/'
     }
-
-    exclude "allow.class" // Noise from Ant
-    exclude "module-info.class" // Not safe to include, would need to be regenerated
-    exclude "META-INF/*.txt"
-    exclude "META-INF/*.LIST"
-    exclude "META-INF/versions/**"
 }

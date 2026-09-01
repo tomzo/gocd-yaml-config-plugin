@@ -49,15 +49,15 @@ dependencies {
     implementation('com.google.code.gson:gson:2.14.0') {
         exclude(module: 'error_prone_annotations') // Not needed at runtime
     }
-    implementation 'org.codehaus.plexus:plexus-utils:4.0.3'
+    implementation 'org.codehaus.plexus:plexus-utils:4.1.0'
     implementation 'org.jcommander:jcommander:3.0'
     implementation 'com.contrastsecurity:yamlbeans:1.17'
-    implementation 'org.snakeyaml:snakeyaml-engine:3.0.1'
+    implementation 'org.snakeyaml:snakeyaml-engine:3.1.1'
 
     compileOnly "cd.go.plugin:go-plugin-api:$pluginApiVersion"
     testImplementation "cd.go.plugin:go-plugin-api:$pluginApiVersion"
 
-    testImplementation platform('org.junit:junit-bom:6.1.2')
+    testImplementation platform('org.junit:junit-bom:6.1.3')
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

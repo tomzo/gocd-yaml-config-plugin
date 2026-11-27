@@ -2,9 +2,9 @@ package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +77,8 @@ public class MaterialTransform extends ConfigurationTransform {
 
     public Map<String, Object> inverseTransform(Map<String, Object> material) {
         String materialName = (String) material.get(JSON_MATERIAL_NAME_FIELD);
-        Map<String, Object> inverseMaterial = new LinkedTreeMap<>();
-        Map<String, Object> materialdata = new LinkedTreeMap<>();
+        Map<String, Object> inverseMaterial = new LinkedHashMap<>();
+        Map<String, Object> materialdata = new LinkedHashMap<>();
 
         String materialType = (String) material.get(JSON_MATERIAL_TYPE_FIELD);
 

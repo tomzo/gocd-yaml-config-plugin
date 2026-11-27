@@ -5,8 +5,8 @@ import cd.go.plugin.config.yaml.PluginError;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonElement;
-import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RootTransform {
@@ -29,7 +29,7 @@ public class RootTransform {
     }
 
     public String inverseTransformPipeline(Map<String, Object> pipeline) {
-        Map<String, Object> result = new LinkedTreeMap<>();
+        Map<String, Object> result = new LinkedHashMap<>();
         result.put("format_version", 10);
         result.put("pipelines", pipelineTransform.inverseTransform(pipeline));
         return YamlUtils.dump(result);

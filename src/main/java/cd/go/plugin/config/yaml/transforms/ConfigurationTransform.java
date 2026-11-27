@@ -2,8 +2,8 @@ package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +33,8 @@ public class ConfigurationTransform {
         if (jsonOptions == null)
             return;
 
-        Map<String, Object> options = new LinkedTreeMap<>();
-        Map<String, Object> secureOptions = new LinkedTreeMap<>();
+        Map<String, Object> options = new LinkedHashMap<>();
+        Map<String, Object> secureOptions = new LinkedHashMap<>();
 
         for (Map<String, Object> option : jsonOptions) {
             if (option.containsKey(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD)) {
@@ -62,9 +62,9 @@ public class ConfigurationTransform {
     public Map<String, Object> inverseTransformPlainAndSecureOptions(List<Map<String, Object>> vars, String plainField, String secureField) {
         if (vars == null)
             return null;
-        Map<String, Object> result = new LinkedTreeMap<>();
-        Map<String, Object> variables = new LinkedTreeMap<>();
-        Map<String, Object> secureVariables = new LinkedTreeMap<>();
+        Map<String, Object> result = new LinkedHashMap<>();
+        Map<String, Object> variables = new LinkedHashMap<>();
+        Map<String, Object> secureVariables = new LinkedHashMap<>();
         for (Map<String, Object> var : vars) {
             if (var.containsKey(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD)) {
                 secureVariables.put((String) var.get("name"), var.get(JSON_PLUGIN_CONFIG_ENCRYPTED_VALUE_FIELD));

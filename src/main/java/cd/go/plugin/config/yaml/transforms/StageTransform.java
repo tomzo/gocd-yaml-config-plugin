@@ -3,8 +3,8 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,8 +74,8 @@ public class StageTransform {
             return null;
         }
         String stageName = (String) stage.get(JSON_STAGE_NAME_FIELD);
-        Map<String, Object> inverseStage = new LinkedTreeMap<>();
-        Map<String, Object> stageData = new LinkedTreeMap<>();
+        Map<String, Object> inverseStage = new LinkedHashMap<>();
+        Map<String, Object> stageData = new LinkedHashMap<>();
 
         addOptionalValue(stageData, stage, JSON_STAGE_FETCH_FIELD, YAML_STAGE_FETCH_FIELD);
         addOptionalValue(stageData, stage, JSON_STAGE_NEVER_CLEAN_FIELD, YAML_STAGE_KEEP_ARTIFACTS_FIELD);
@@ -95,7 +95,7 @@ public class StageTransform {
     }
 
     private void addInverseJobs(Map<String, Object> stageData, List<Map<String, Object>> jobs) {
-        Map<String, Object> inverseJobs = new LinkedTreeMap<>();
+        Map<String, Object> inverseJobs = new LinkedHashMap<>();
         for (Map<String, Object> job : jobs) {
             Map<String, Object> inverseJob = jobTransform.inverseTransform(job);
             if (inverseJob != null)
@@ -107,7 +107,7 @@ public class StageTransform {
 
     private void addInverseApproval(Map<String, Object> stageData, Map<String, Object> stage) {
         Map<String, Object> approval = (Map<String, Object>) stage.get(JSON_STAGE_APPROVAL_FIELD);
-        Map<String, Object> inverseApproval = new LinkedTreeMap<>();
+        Map<String, Object> inverseApproval = new LinkedHashMap<>();
         if (approval == null)
             return;
 

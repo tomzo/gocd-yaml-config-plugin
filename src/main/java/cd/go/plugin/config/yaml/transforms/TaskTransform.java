@@ -3,9 +3,9 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalList;
@@ -98,8 +98,8 @@ public class TaskTransform extends ConfigurationTransform {
 
     public Map<String, Object> inverseTransform(Map<String, Object> task) {
         String type = (String) task.get(JSON_TASK_TYPE_FIELD);
-        Map<String, Object> inverseTask = new LinkedTreeMap<>();
-        Map<String, Object> taskData = new LinkedTreeMap<>();
+        Map<String, Object> inverseTask = new LinkedHashMap<>();
+        Map<String, Object> taskData = new LinkedHashMap<>();
 
         addInverseOnCancel(taskData, task);
 

@@ -3,9 +3,9 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,8 +97,8 @@ public class PipelineTransform {
     }
 
     public Map<String, Object> inverseTransform(Map<String, Object> pipeline) {
-        Map<String, Object> result = new LinkedTreeMap<>();
-        Map<String, Object> pipelineMap = new LinkedTreeMap<>();
+        Map<String, Object> result = new LinkedHashMap<>();
+        Map<String, Object> pipelineMap = new LinkedHashMap<>();
         String name = (String) pipeline.get(JSON_PIPELINE_NAME_FIELD);
 
         pipelineMap.put(YAML_PIPELINE_GROUP_FIELD, pipeline.get(JSON_PIPELINE_GROUP_FIELD));
@@ -131,7 +131,7 @@ public class PipelineTransform {
     }
 
     private void addInverseMaterials(Map<String, Object> pipelineMap, List<Map<String, Object>> materials) {
-        Map<String, Object> inverseMaterials = new LinkedTreeMap<>();
+        Map<String, Object> inverseMaterials = new LinkedHashMap<>();
         for (Map<String, Object> material : materials) {
             inverseMaterials.putAll(materialTransform.inverseTransform(material));
         }

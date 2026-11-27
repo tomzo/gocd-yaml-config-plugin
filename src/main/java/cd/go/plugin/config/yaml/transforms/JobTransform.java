@@ -3,12 +3,12 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,8 +93,8 @@ public class JobTransform extends ConfigurationTransform {
         if (job == null)
             return null;
         String jobName = (String) job.get(JSON_JOB_NAME_FIELD);
-        Map<String, Object> inverseJob = new LinkedTreeMap<>();
-        Map<String, Object> jobData = new LinkedTreeMap<>();
+        Map<String, Object> inverseJob = new LinkedHashMap<>();
+        Map<String, Object> jobData = new LinkedHashMap<>();
 
         addOptionalInt(jobData, job, JSON_JOB_TIMEOUT_FIELD, YAML_JOB_TIMEOUT_FIELD);
 
@@ -132,7 +132,7 @@ public class JobTransform extends ConfigurationTransform {
         if (tabs == null || tabs.isEmpty())
             return;
 
-        Map<String, Object> inverseTabs = new LinkedTreeMap<>();
+        Map<String, Object> inverseTabs = new LinkedHashMap<>();
         for (Map<String, Object> tab : tabs) {
             inverseTabs.put((String) tab.get(JSON_JOB_TAB_NAME_FIELD), tab.get(JSON_JOB_TAB_PATH_FIELD));
         }
@@ -159,7 +159,7 @@ public class JobTransform extends ConfigurationTransform {
         if (properties == null || properties.isEmpty())
             return;
 
-        Map<String, Object> inverseProperties = new LinkedTreeMap<>();
+        Map<String, Object> inverseProperties = new LinkedHashMap<>();
 
         for (Map<String, Object> prop : properties) {
             String name = (String) prop.remove(JSON_JOB_PROP_NAME_FIELD);
@@ -199,7 +199,7 @@ public class JobTransform extends ConfigurationTransform {
 
         List<Map<String, Object>> inverseArtifacts = new ArrayList<>();
         for (Map<String, Object> artifact : artifacts) {
-            Map<String, Object> inverseArtifact = new LinkedTreeMap<>();
+            Map<String, Object> inverseArtifact = new LinkedHashMap<>();
 
             String type = (String) artifact.remove("type");
             inverseArtifact.put(type, artifact);

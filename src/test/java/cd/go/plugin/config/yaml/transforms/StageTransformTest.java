@@ -2,11 +2,11 @@ package cd.go.plugin.config.yaml.transforms;
 
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
@@ -50,7 +50,7 @@ public class StageTransformTest {
 
     @Test
     public void shouldInverseTransformCompleteStage() throws IOException {
-        Map<String, Object> jobs = new LinkedTreeMap<>();
+        Map<String, Object> jobs = new LinkedHashMap<>();
         jobs.put("one", null);
         jobs.put("two", null);
         when(jobTransform.inverseTransform(any())).thenReturn(jobs);

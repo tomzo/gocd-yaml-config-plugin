@@ -3,11 +3,11 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.JsonObjectMatcher;
 import cd.go.plugin.config.yaml.YamlUtils;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.TestUtils.*;
@@ -64,8 +64,8 @@ public class PipelineTransformTest {
 
     @Test
     public void shouldInverseTransformPipeline() throws IOException {
-        Map<String, Object> materials = new LinkedTreeMap<>();
-        materials.put("foo", new LinkedTreeMap<>());
+        Map<String, Object> materials = new LinkedHashMap<>();
+        materials.put("foo", new LinkedHashMap<>());
         when(materialTransform.inverseTransform(any())).thenReturn(materials);
 
         testInverseTransform("export.pipe");
@@ -73,8 +73,8 @@ public class PipelineTransformTest {
 
     @Test
     public void shouldInverseTransformAPipelineWhichHasADisplayOrderWeight() throws IOException {
-        Map<String, Object> materials = new LinkedTreeMap<>();
-        materials.put("foo", new LinkedTreeMap<>());
+        Map<String, Object> materials = new LinkedHashMap<>();
+        materials.put("foo", new LinkedHashMap<>());
         when(materialTransform.inverseTransform(any())).thenReturn(materials);
 
         testInverseTransform("display_order.pipe");

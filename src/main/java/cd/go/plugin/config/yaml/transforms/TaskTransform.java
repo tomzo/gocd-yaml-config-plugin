@@ -3,9 +3,9 @@ package cd.go.plugin.config.yaml.transforms;
 import cd.go.plugin.config.yaml.YamlConfigException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static cd.go.plugin.config.yaml.JSONUtils.addOptionalList;
@@ -98,8 +98,8 @@ public class TaskTransform extends ConfigurationTransform {
 
     public Map<String, Object> inverseTransform(Map<String, Object> task) {
         String type = (String) task.get(JSON_TASK_TYPE_FIELD);
-        Map<String, Object> inverseTask = new LinkedTreeMap<>();
-        Map<String, Object> taskData = new LinkedTreeMap<>();
+        Map<String, Object> inverseTask = new LinkedHashMap<>();
+        Map<String, Object> taskData = new LinkedHashMap<>();
 
         addInverseOnCancel(taskData, task);
 
@@ -123,7 +123,7 @@ public class TaskTransform extends ConfigurationTransform {
     private void addInverseOnCancel(Map<String, Object> taskData, Map<String, Object> task) {
         Object on_cancel = task.get(JSON_TASK_CANCEL_FIELD);
         if (on_cancel != null) {
-            if (!(on_cancel instanceof LinkedTreeMap))
+            if (!(on_cancel instanceof Map))
                 throw new YamlConfigException("expected on_cancel task to be a hash");
             taskData.put(YAML_TASK_CANCEL_FIELD, inverseTransform((Map<String, Object>) on_cancel));
         }

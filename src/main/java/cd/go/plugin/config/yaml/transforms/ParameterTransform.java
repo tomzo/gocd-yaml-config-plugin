@@ -2,8 +2,8 @@ package cd.go.plugin.config.yaml.transforms;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +33,8 @@ public class ParameterTransform {
     public Map<String, Object> inverseTransform(List<Map<String, Object>> params) {
         if (params == null || params.isEmpty())
             return null;
-        Map<String, Object> result = new LinkedTreeMap<>();
-        Map<String, Object> inverseParams = new LinkedTreeMap<>();
+        Map<String, Object> result = new LinkedHashMap<>();
+        Map<String, Object> inverseParams = new LinkedHashMap<>();
         for (Map<String, Object> param : params) {
             inverseParams.putAll(inverseTransformParam(param));
         }
@@ -44,10 +44,8 @@ public class ParameterTransform {
 
     public Map<String, Object> inverseTransformParam(Map<String, Object> param) {
         String name = (String) param.get(JSON_PARAM_NAME_FIELD);
-        Map<String, Object> inverseParam = new LinkedTreeMap<>();
+        Map<String, Object> inverseParam = new LinkedHashMap<>();
         inverseParam.put(name, param.get(JSON_PARAM_VALUE_FIELD));
         return inverseParam;
     }
 }
-
-

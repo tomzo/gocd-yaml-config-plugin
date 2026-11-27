@@ -42,14 +42,14 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 ext {
-    pluginApiVersion = '26.1.0'
+    pluginApiVersion = '26.2.0'
 }
 
 dependencies {
     implementation('com.google.code.gson:gson:2.15.0') {
         exclude(module: 'error_prone_annotations') // Not needed at runtime
     }
-    implementation 'org.codehaus.plexus:plexus-utils:4.1.0'
+    implementation 'org.codehaus.plexus:plexus-utils:4.2.0'
     implementation 'org.jcommander:jcommander:3.0'
     implementation 'com.contrastsecurity:yamlbeans:1.17'
     implementation 'org.snakeyaml:snakeyaml-engine:3.2'

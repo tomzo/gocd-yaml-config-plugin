@@ -123,7 +123,7 @@ public class TaskTransform extends ConfigurationTransform {
     private void addInverseOnCancel(Map<String, Object> taskData, Map<String, Object> task) {
         Object on_cancel = task.get(JSON_TASK_CANCEL_FIELD);
         if (on_cancel != null) {
-            if (!(on_cancel instanceof LinkedTreeMap))
+            if (!(on_cancel instanceof Map))
                 throw new YamlConfigException("expected on_cancel task to be a hash");
             taskData.put(YAML_TASK_CANCEL_FIELD, inverseTransform((Map<String, Object>) on_cancel));
         }
